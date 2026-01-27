@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Flashcards - Módulo 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .stat.correct .stat-value { color: #2ecc71; }
+        .stat.wrong .stat-value { color: #e74c3c; }
+        .stat.streak .stat-value { color: #f39c12; }
+
+        /* Category Selector */
+        .category-selector {
+            margin-bottom: 30px;
+        }
+
+        .category-selector label {
+            display: block;
+            margin-bottom: 10px;
+            color: #888;
+        }
+
+        .category-selector select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .category-selector select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            color: #fff;
+        }
+
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .mode-btn.active:hover {
+            background: linear-gradient(90deg, #e67e22, #c0392b);
+        }
+
+        /* Flashcard */
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-category {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .flashcard-word {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .flashcard-hint {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.7);
+            font-style: italic;
+        }
+
+        .flashcard-instruction {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .action-btn.wrong {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+        }
+
+        .action-btn.correct {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* Results Screen */
+        .results {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .results-stat {
+            text-align: center;
+        }
+
+        .results-stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .results-stat-label {
+            color: #888;
+        }
+
+        .restart-btn {
+            padding: 18px 50px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            color: #fff;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Keyboard Hints */
+        .keyboard-hints {
+            text-align: center;
+            color: #555;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+
+        .keyboard-hints kbd {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 5px;
+            margin: 0 3px;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .start-btn {
+            padding: 20px 60px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            color: #fff;
+            font-weight: 600;
+            margin-top: 30px;
+            transition: all 0.3s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .flashcard {
+                height: 250px;
+            }
+
+            .flashcard-word {
+                font-size: 1.8rem;
+            }
+
+            .action-btn {
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
+
+            .stats-bar {
+                gap: 15px;
+            }
+
+            .stat {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🇪🇸 Spanish Flashcards</h1>
+            <p>Módulo 1 - Sandra Gonzales</p>
+        </header>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat correct">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Rätt</div>
+            </div>
+            <div class="stat wrong">
+                <div class="stat-value" id="wrongCount">0</div>
+                <div class="stat-label">Fel</div>
+            </div>
+            <div class="stat streak">
+                <div class="stat-value" id="streakCount">0</div>
+                <div class="stat-label">Streak 🔥</div>
+            </div>
+        </div>
+
+        <!-- Category Selector -->
+        <div class="category-selector">
+            <label for="categorySelect">Välj kategori:</label>
+            <select id="categorySelect">
+                <option value="all">Alla kategorier</option>
+            </select>
+        </div>
+
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="es_to_sv">🇪🇸 → 🇸🇪</button>
+            <button class="mode-btn" data-mode="sv_to_es">🇸🇪 → 🇪🇸</button>
+            <button class="mode-btn" data-mode="mixed">Blandat</button>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <p style="font-size: 1.2rem; color: #888; margin-bottom: 20px;">
+                Välj kategori och riktning, sen klicka på starta!
+            </p>
+            <button class="start-btn" id="startBtn">Starta Quiz! 🚀</button>
+        </div>
+
+        <!-- Quiz Area -->
+        <div id="quizArea" class="hidden">
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span id="progressText">Kort 1 av 10</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Flashcard -->
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-face flashcard-front">
+                        <div class="flashcard-category" id="cardCategory">Kategori</div>
+                        <div class="flashcard-word" id="cardFront">Palabra</div>
+                        <div class="flashcard-hint" id="cardHint"></div>
+                        <div class="flashcard-instruction">Klicka eller tryck mellanslag för att vända</div>
+                    </div>
+                    <div class="flashcard-face flashcard-back">
+                        <div class="flashcard-category">Svar</div>
+                        <div class="flashcard-word" id="cardBack">Ord</div>
+                        <div class="flashcard-hint" id="cardNote"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn wrong" id="wrongBtn" disabled>
+                    ❌ Fel (1)
+                </button>
+                <button class="action-btn correct" id="correctBtn" disabled>
+                    ✅ Rätt (2)
+                </button>
+            </div>
+
+            <!-- Keyboard Hints -->
+            <div class="keyboard-hints">
+                <kbd>Space</kbd> Vänd kort &nbsp; <kbd>1</kbd> Fel &nbsp; <kbd>2</kbd> Rätt &nbsp; <kbd>→</kbd> Nästa
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results" id="resultsScreen">
+            <h2>🎉 Quiz klar!</h2>
+            <div class="results-stats">
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div>
+                    <div class="results-stat-label">Rätt</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div>
+                    <div class="results-stat-label">Fel</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div>
+                    <div class="results-stat-label">Träffsäkerhet</div>
+                </div>
+            </div>
+            <button class="restart-btn" id="restartBtn">Kör igen! 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        // Flashcard Data - Embedded from modulo-1-data.json
+        const flashcardData = {
+            "numeros_cardinales": {
+                "name": "Siffror",
+                "items": [
+                    {"es": "cero", "sv": "0"}, {"es": "uno", "sv": "1"}, {"es": "dos", "sv": "2"},
+                    {"es": "tres", "sv": "3"}, {"es": "cuatro", "sv": "4"}, {"es": "cinco", "sv": "5"},
+                    {"es": "seis", "sv": "6"}, {"es": "siete", "sv": "7"}, {"es": "ocho", "sv": "8"},
+                    {"es": "nueve", "sv": "9"}, {"es": "diez", "sv": "10"}, {"es": "once", "sv": "11"},
+                    {"es": "doce", "sv": "12"}, {"es": "trece", "sv": "13"}, {"es": "catorce", "sv": "14"},
+                    {"es": "quince", "sv": "15"}, {"es": "dieciséis", "sv": "16"}, {"es": "diecisiete", "sv": "17"},
+                    {"es": "dieciocho", "sv": "18"}, {"es": "diecinueve", "sv": "19"}, {"es": "veinte", "sv": "20"},
+                    {"es": "treinta", "sv": "30"}, {"es": "cuarenta", "sv": "40"}, {"es": "cincuenta", "sv": "50"},
+                    {"es": "sesenta", "sv": "60"}, {"es": "setenta", "sv": "70"}, {"es": "ochenta", "sv": "80"},
+                    {"es": "noventa", "sv": "90"}, {"es": "cien", "sv": "100"}, {"es": "mil", "sv": "1000"}
+                ]
+            },
+            "saludos": {
+                "name": "Hälsningar",
+                "items": [
+                    {"es": "¡Hola!", "sv": "Hej!"},
+                    {"es": "¿Qué tal?", "sv": "Hur är det?"},
+                    {"es": "¿Cómo estás?", "sv": "Hur mår du?"},
+                    {"es": "¡Buenos días!", "sv": "God morgon!"},
+                    {"es": "¡Buenas tardes!", "sv": "God eftermiddag!"},
+                    {"es": "¡Buenas noches!", "sv": "God kväll!"},
+                    {"es": "Adiós", "sv": "Hejdå"},
+                    {"es": "¡Hasta luego!", "sv": "Vi ses!"},
+                    {"es": "¡Hasta mañana!", "sv": "Vi ses imorgon!"},
+                    {"es": "Mucho gusto", "sv": "Trevligt att träffas"},
+                    {"es": "Bien, gracias", "sv": "Bra, tack"},
+                    {"es": "Muy bien", "sv": "Mycket bra"}
+                ]
+            },
+            "interrogativos": {
+                "name": "Frågeord",
+                "items": [
+                    {"es": "¿Qué?", "sv": "Vad?"},
+                    {"es": "¿Quién?", "sv": "Vem?"},
+                    {"es": "¿Cómo?", "sv": "Hur?"},
+                    {"es": "¿Cuándo?", "sv": "När?"},
+                    {"es": "¿Dónde?", "sv": "Var?"},
+                    {"es": "¿De dónde?", "sv": "Varifrån?"},
+                    {"es": "¿Cuánto?", "sv": "Hur mycket?"},
+                    {"es": "¿Cuántos?", "sv": "Hur många?"},
+                    {"es": "¿Por qué?", "sv": "Varför?"},
+                    {"es": "Porque", "sv": "Därför att"},
+                    {"es": "¿Cuál?", "sv": "Vilken?"}
+                ]
+            },
+            "familia": {
+                "name": "Familjen",
+                "items": [
+                    {"es": "el padre", "sv": "pappan"},
+                    {"es": "la madre", "sv": "mamman"},
+                    {"es": "los padres", "sv": "föräldrarna"},
+                    {"es": "el hijo", "sv": "sonen"},
+                    {"es": "la hija", "sv": "dottern"},
+                    {"es": "el hermano", "sv": "brodern"},
+                    {"es": "la hermana", "sv": "systern"},
+                    {"es": "el abuelo", "sv": "farfar/morfar"},
+                    {"es": "la abuela", "sv": "farmor/mormor"},
+                    {"es": "el tío", "sv": "farbror/morbror"},
+                    {"es": "la tía", "sv": "faster/moster"},
+                    {"es": "el primo", "sv": "kusinen (man)"},
+                    {"es": "la prima", "sv": "kusinen (kvinna)"},
+                    {"es": "el marido", "sv": "maken"},
+                    {"es": "la mujer", "sv": "hustrun"},
+                    {"es": "el novio", "sv": "pojkvännen"},
+                    {"es": "la novia", "sv": "flickvännen"}
+                ]
+            },
+            "colores": {
+                "name": "Färger",
+                "items": [
+                    {"es": "negro", "sv": "svart"},
+                    {"es": "blanco", "sv": "vit"},
+                    {"es": "gris", "sv": "grå"},
+                    {"es": "rojo", "sv": "röd"},
+                    {"es": "azul", "sv": "blå"},
+                    {"es": "verde", "sv": "grön"},
+                    {"es": "amarillo", "sv": "gul"},
+                    {"es": "naranja", "sv": "orange"},
+                    {"es": "rosa", "sv": "rosa"},
+                    {"es": "marrón", "sv": "brun"},
+                    {"es": "morado", "sv": "lila"}
+                ]
+            },
+            "emociones": {
+                "name": "Känslor",
+                "items": [
+                    {"es": "Estoy contento/a", "sv": "Jag är glad"},
+                    {"es": "Estoy triste", "sv": "Jag är ledsen"},
+                    {"es": "Estoy enfadado/a", "sv": "Jag är arg"},
+                    {"es": "Estoy cansado/a", "sv": "Jag är trött"},
+                    {"es": "Estoy enfermo/a", "sv": "Jag är sjuk"},
+                    {"es": "Estoy bien", "sv": "Jag mår bra"},
+                    {"es": "Estoy mal", "sv": "Jag mår dåligt"}
+                ]
+            },
+            "dias_semana": {
+                "name": "Veckodagar",
+                "items": [
+                    {"es": "lunes", "sv": "måndag"},
+                    {"es": "martes", "sv": "tisdag"},
+                    {"es": "miércoles", "sv": "onsdag"},
+                    {"es": "jueves", "sv": "torsdag"},
+                    {"es": "viernes", "sv": "fredag"},
+                    {"es": "sábado", "sv": "lördag"},
+                    {"es": "domingo", "sv": "söndag"}
+                ]
+            },
+            "presentacion": {
+                "name": "Presentera dig",
+                "items": [
+                    {"es": "¿Cómo te llamas?", "sv": "Vad heter du?"},
+                    {"es": "Me llamo...", "sv": "Jag heter..."},
+                    {"es": "¿De dónde eres?", "sv": "Var kommer du ifrån?"},
+                    {"es": "Soy de Suecia", "sv": "Jag är från Sverige"},
+                    {"es": "¿Cuántos años tienes?", "sv": "Hur gammal är du?"},
+                    {"es": "Tengo ... años", "sv": "Jag är ... år"},
+                    {"es": "¿Dónde vives?", "sv": "Var bor du?"},
+                    {"es": "Vivo en...", "sv": "Jag bor i..."},
+                    {"es": "¿A qué te dedicas?", "sv": "Vad jobbar du med?"},
+                    {"es": "Soy estudiante", "sv": "Jag är student"}
+                ]
+            },
+            "verbos": {
+                "name": "Verb (yo-form)",
+                "items": [
+                    {"es": "soy", "sv": "jag är (permanent)"},
+                    {"es": "estoy", "sv": "jag är (tillfälligt)/befinner mig"},
+                    {"es": "tengo", "sv": "jag har"},
+                    {"es": "vivo", "sv": "jag bor"},
+                    {"es": "trabajo", "sv": "jag arbetar"},
+                    {"es": "hablo", "sv": "jag pratar"},
+                    {"es": "me llamo", "sv": "jag heter"},
+                    {"es": "quiero", "sv": "jag vill"},
+                    {"es": "necesito", "sv": "jag behöver"},
+                    {"es": "me gusta", "sv": "jag gillar"}
+                ]
+            },
+            "paises": {
+                "name": "Länder & nationaliteter",
+                "items": [
+                    {"es": "España - español/a", "sv": "Spanien - spansk"},
+                    {"es": "Suecia - sueco/a", "sv": "Sverige - svensk"},
+                    {"es": "Francia - francés/a", "sv": "Frankrike - fransk"},
+                    {"es": "Alemania - alemán/a", "sv": "Tyskland - tysk"},
+                    {"es": "Italia - italiano/a", "sv": "Italien - italiensk"},
+                    {"es": "México - mexicano/a", "sv": "Mexiko - mexikansk"},
+                    {"es": "Argentina - argentino/a", "sv": "Argentina - argentinsk"},
+                    {"es": "Estados Unidos", "sv": "USA"}
+                ]
+            },
+            "posesivos": {
+                "name": "Possessiva pronomen",
+                "items": [
+                    {"es": "mi / mis", "sv": "min / mina"},
+                    {"es": "tu / tus", "sv": "din / dina"},
+                    {"es": "su / sus", "sv": "hans/hennes/deras"},
+                    {"es": "nuestro/a", "sv": "vår"},
+                    {"es": "vuestro/a", "sv": "er (ni)"}
+                ]
+            },
+            "ser_estar": {
+                "name": "SER vs ESTAR",
+                "items": [
+                    {"es": "Soy sueco", "sv": "Jag är svensk (nationalitet=SER)"},
+                    {"es": "Soy médico", "sv": "Jag är läkare (yrke=SER)"},
+                    {"es": "Estoy en Madrid", "sv": "Jag är i Madrid (plats=ESTAR)"},
+                    {"es": "Estoy cansado", "sv": "Jag är trött (tillstånd=ESTAR)"},
+                    {"es": "Es alto", "sv": "Han är lång (egenskap=SER)"},
+                    {"es": "Está enfermo", "sv": "Han är sjuk (tillstånd=ESTAR)"}
+                ]
+            }
+        };
+
+        // App State
+        let currentCards = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let isFlipped = false;
+        let currentMode = 'es_to_sv';
+        let currentCategory = 'all';
+
+        // DOM Elements
+        const categorySelect = document.getElementById('categorySelect');
+        const flashcard = document.getElementById('flashcard');
+        const cardFront = document.getElementById('cardFront');
+        const cardBack = document.getElementById('cardBack');
+        const cardCategory = document.getElementById('cardCategory');
+        const cardNote = document.getElementById('cardNote');
+        const correctBtn = document.getElementById('correctBtn');
+        const wrongBtn = document.getElementById('wrongBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const progressPercent = document.getElementById('progressPercent');
+        const startScreen = document.getElementById('startScreen');
+        const quizArea = document.getElementById('quizArea');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // Initialize categories
+        function initCategories() {
+            Object.keys(flashcardData).forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${flashcardData[key].name} (${flashcardData[key].items.length})`;
+                categorySelect.appendChild(option);
+            });
+        }
+
+        // Get cards for current selection
+        function getCards() {
+            let cards = [];
+
+            if (currentCategory === 'all') {
+                Object.keys(flashcardData).forEach(key => {
+                    flashcardData[key].items.forEach(item => {
+                        cards.push({...item, category: flashcardData[key].name});
+                    });
+                });
+            } else {
+                flashcardData[currentCategory].items.forEach(item => {
+                    cards.push({...item, category: flashcardData[currentCategory].name});
+                });
+            }
+
+            // Shuffle
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+
+            return cards;
+        }
+
+        // Display current card
+        function displayCard() {
+            if (currentIndex >= currentCards.length) {
+                showResults();
+                return;
+            }
+
+            const card = currentCards[currentIndex];
+            let front, back;
+
+            if (currentMode === 'es_to_sv') {
+                front = card.es;
+                back = card.sv;
+            } else if (currentMode === 'sv_to_es') {
+                front = card.sv;
+                back = card.es;
+            } else {
+                // Mixed mode
+                if (Math.random() > 0.5) {
+                    front = card.es;
+                    back = card.sv;
+                } else {
+                    front = card.sv;
+                    back = card.es;
+                }
+            }
+
+            cardFront.textContent = front;
+            cardBack.textContent = back;
+            cardCategory.textContent = card.category;
+            cardNote.textContent = card.note || '';
+
+            // Reset flip
+            flashcard.classList.remove('flipped');
+            isFlipped = false;
+
+            // Disable buttons until flipped
+            correctBtn.disabled = true;
+            wrongBtn.disabled = true;
+
+            // Update progress
+            updateProgress();
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentIndex / currentCards.length) * 100;
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `Kort ${currentIndex + 1} av ${currentCards.length}`;
+            progressPercent.textContent = `${Math.round(progress)}%`;
+
+            // Update stats
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('wrongCount').textContent = wrongCount;
+            document.getElementById('streakCount').textContent = streak;
+        }
+
+        // Flip card
+        function flipCard() {
+            flashcard.classList.toggle('flipped');
+            isFlipped = !isFlipped;
+
+            if (isFlipped) {
+                correctBtn.disabled = false;
+                wrongBtn.disabled = false;
+            }
+        }
+
+        // Handle answer
+        function handleAnswer(isCorrect) {
+            if (!isFlipped) return;
+
+            if (isCorrect) {
+                correctCount++;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+            } else {
+                wrongCount++;
+                streak = 0;
+            }
+
+            currentIndex++;
+            displayCard();
+        }
+
+        // Show results
+        function showResults() {
+            quizArea.classList.add('hidden');
+            resultsScreen.classList.add('show');
+
+            document.getElementById('finalCorrect').textContent = correctCount;
+            document.getElementById('finalWrong').textContent = wrongCount;
+
+            const total = correctCount + wrongCount;
+            const percent = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            document.getElementById('finalPercent').textContent = `${percent}%`;
+
+            // Save to localStorage
+            saveProgress();
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const saved = JSON.parse(localStorage.getItem('spanishFlashcards') || '{}');
+            saved.totalCorrect = (saved.totalCorrect || 0) + correctCount;
+            saved.totalWrong = (saved.totalWrong || 0) + wrongCount;
+            saved.sessions = (saved.sessions || 0) + 1;
+            saved.lastSession = new Date().toISOString();
+            localStorage.setItem('spanishFlashcards', JSON.stringify(saved));
+        }
+
+        // Start quiz
+        function startQuiz() {
+            currentCategory = categorySelect.value;
+            currentCards = getCards();
+            currentIndex = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            streak = 0;
+
+            startScreen.classList.add('hidden');
+            resultsScreen.classList.remove('show');
+            quizArea.classList.remove('hidden');
+
+            displayCard();
+        }
+
+        // Event Listeners
+        startBtn.addEventListener('click', startQuiz);
+        restartBtn.addEventListener('click', startQuiz);
+        flashcard.addEventListener('click', flipCard);
+        correctBtn.addEventListener('click', () => handleAnswer(true));
+        wrongBtn.addEventListener('click', () => handleAnswer(false));
+
+        // Mode toggle
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMode = btn.dataset.mode;
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (startScreen.classList.contains('hidden') && !resultsScreen.classList.contains('show')) {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    flipCard();
+                } else if (e.key === '1') {
+                    handleAnswer(false);
+                } else if (e.key === '2') {
+                    handleAnswer(true);
+                } else if (e.key === 'ArrowRight') {
+                    if (isFlipped) handleAnswer(true);
+                }
+            } else if (e.code === 'Enter' || e.code === 'Space') {
+                if (!startScreen.classList.contains('hidden')) {
+                    startQuiz();
+                } else if (resultsScreen.classList.contains('show')) {
+                    startQuiz();
+                }
+            }
+        });
+
+        // Initialize
+        initCategories();
+    </script>
+</body>
+</html>

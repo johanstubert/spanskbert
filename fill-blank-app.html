@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fyll i luckan - Spanish</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: #888;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .stat.correct .stat-value { color: #2ecc71; }
+        .stat.wrong .stat-value { color: #e74c3c; }
+        .stat.streak .stat-value { color: #f39c12; }
+
+        .category-selector {
+            margin-bottom: 25px;
+        }
+
+        .category-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+        }
+
+        .category-selector select {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .category-selector select option {
+            background: #1a1a2e;
+        }
+
+        .progress-container {
+            margin-bottom: 25px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .exercise-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .exercise-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .sentence {
+            font-size: 1.6rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .blank {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 3px solid #f39c12;
+            margin: 0 5px;
+            padding: 5px 10px;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .hint {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .hint strong {
+            color: #aaa;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .answer-input:focus {
+            border-color: #f39c12;
+        }
+
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .answer-input.wrong {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .submit-btn {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+            transform: none;
+        }
+
+        .feedback {
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .feedback.wrong {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .correct-answer {
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .next-btn.show {
+            display: block;
+        }
+
+        .start-screen, .results {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+        }
+
+        .start-btn, .restart-btn {
+            padding: 18px 50px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            color: #fff;
+            font-weight: 600;
+            margin-top: 25px;
+            transition: all 0.3s;
+        }
+
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .results-stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .results-stat-label {
+            color: #888;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .keyboard-hints {
+            text-align: center;
+            color: #555;
+            font-size: 0.8rem;
+            margin-top: 15px;
+        }
+
+        .keyboard-hints kbd {
+            background: rgba(255,255,255,0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 500px) {
+            .sentence {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fyll i luckan</h1>
+            <p>Komplettera meningen med rätt spanskt ord</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat correct">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Rätt</div>
+            </div>
+            <div class="stat wrong">
+                <div class="stat-value" id="wrongCount">0</div>
+                <div class="stat-label">Fel</div>
+            </div>
+            <div class="stat streak">
+                <div class="stat-value" id="streakCount">0</div>
+                <div class="stat-label">Streak</div>
+            </div>
+        </div>
+
+        <div class="category-selector">
+            <label for="categorySelect">Välj kategori:</label>
+            <select id="categorySelect">
+                <option value="all">Alla kategorier</option>
+            </select>
+        </div>
+
+        <div class="start-screen" id="startScreen">
+            <p style="font-size: 1.1rem; color: #888; margin-bottom: 15px;">
+                Du ser en mening med en lucka. Skriv in det spanska ordet som saknas!
+            </p>
+            <button class="start-btn" id="startBtn">Starta!</button>
+        </div>
+
+        <div id="exerciseArea" class="hidden">
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span id="progressText">Uppgift 1 av 15</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="exercise-label" id="exerciseLabel">Skriv det spanska ordet</div>
+                <div class="sentence" id="sentence">
+                    Jag heter <span class="blank" id="blankDisplay">___</span>
+                </div>
+                <div class="hint" id="hint">
+                    <strong>Ledtråd:</strong> <span id="hintText">Me llamo...</span>
+                </div>
+
+                <div class="input-section">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Skriv svaret..." autocomplete="off" autocapitalize="off">
+                    <br>
+                    <button class="submit-btn" id="submitBtn">Kontrollera</button>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback">
+                <div id="feedbackText"></div>
+                <div class="correct-answer" id="correctAnswer"></div>
+            </div>
+
+            <button class="next-btn" id="nextBtn">Nästa uppgift →</button>
+
+            <div class="keyboard-hints">
+                <kbd>Enter</kbd> Kontrollera / Nästa
+            </div>
+        </div>
+
+        <div class="results hidden" id="resultsScreen">
+            <h2>Bra jobbat!</h2>
+            <div class="results-stats">
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div>
+                    <div class="results-stat-label">Rätt</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div>
+                    <div class="results-stat-label">Fel</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div>
+                    <div class="results-stat-label">Resultat</div>
+                </div>
+            </div>
+            <button class="restart-btn" id="restartBtn">Kör igen!</button>
+        </div>
+    </div>
+
+    <script>
+        // Sentence templates with blanks
+        const sentenceTemplates = {
+            "saludos": [
+                { sv: "Hej! Hur mår du?", template: "¡___! ¿Cómo estás?", answer: "Hola", hint: "Grundläggande hälsning" },
+                { sv: "God morgon!", template: "¡Buenos ___!", answer: "días", hint: "Morgonhälsning" },
+                { sv: "God eftermiddag!", template: "¡Buenas ___!", answer: "tardes", hint: "Eftermiddagshälsning" },
+                { sv: "Vi ses!", template: "¡Hasta ___!", answer: "luego", hint: "Avskedsfras" },
+                { sv: "Trevligt att träffas", template: "Mucho ___", answer: "gusto", hint: "När man möter någon" },
+                { sv: "Bra, tack", template: "Bien, ___", answer: "gracias", hint: "Artigt svar" },
+                { sv: "Vi ses imorgon!", template: "¡Hasta ___!", answer: "mañana", hint: "Avslut när man ses igen nästa dag" }
+            ],
+            "presentacion": [
+                { sv: "Jag heter Johan", template: "Me ___ Johan", answer: "llamo", hint: "Verb för att säga sitt namn" },
+                { sv: "Jag är från Sverige", template: "Soy ___ Suecia", answer: "de", hint: "Preposition för ursprung" },
+                { sv: "Jag är 30 år", template: "Tengo treinta ___", answer: "años", hint: "Spanskt ord för år/ålder" },
+                { sv: "Var bor du?", template: "¿Dónde ___?", answer: "vives", hint: "Verb: att bo (du-form)" },
+                { sv: "Jag bor i Palma", template: "___ en Palma", answer: "Vivo", hint: "Verb: att bo (jag-form)" },
+                { sv: "Vad heter du?", template: "¿Cómo te ___?", answer: "llamas", hint: "Verb: att heta (du-form)" },
+                { sv: "Hur gammal är du?", template: "¿Cuántos años ___?", answer: "tienes", hint: "Verb: att ha (du-form)" }
+            ],
+            "familia": [
+                { sv: "Min mamma heter Maria", template: "Mi ___ se llama María", answer: "madre", hint: "Kvinnlig förälder" },
+                { sv: "Jag har en bror", template: "Tengo un ___", answer: "hermano", hint: "Manligt syskon" },
+                { sv: "Min syster är ung", template: "Mi ___ es joven", answer: "hermana", hint: "Kvinnligt syskon" },
+                { sv: "Mina föräldrar bor i Stockholm", template: "Mis ___ viven en Estocolmo", answer: "padres", hint: "Föräldrar (plural)" },
+                { sv: "Jag har en flickvän", template: "Tengo una ___", answer: "novia", hint: "Romantisk partner (kvinna)" },
+                { sv: "Min farfar är gammal", template: "Mi ___ es viejo", answer: "abuelo", hint: "Manlig morförälder/farförälder" }
+            ],
+            "colores": [
+                { sv: "Himlen är blå", template: "El cielo es ___", answer: "azul", hint: "Himlens färg" },
+                { sv: "Gräset är grönt", template: "La hierba es ___", answer: "verde", hint: "Naturens färg" },
+                { sv: "Solen är gul", template: "El sol es ___", answer: "amarillo", hint: "Solens färg" },
+                { sv: "Snön är vit", template: "La nieve es ___", answer: "blanca", hint: "Snöns färg (femininum)" },
+                { sv: "Natten är svart", template: "La noche es ___", answer: "negra", hint: "Mörkrets färg (femininum)" },
+                { sv: "Rosen är röd", template: "La rosa es ___", answer: "roja", hint: "Kärlekens färg (femininum)" }
+            ],
+            "emociones": [
+                { sv: "Jag är glad", template: "Estoy ___", answer: "contento", hint: "Positiv känsla" },
+                { sv: "Jag är trött", template: "Estoy ___", answer: "cansado", hint: "Efter en lång dag" },
+                { sv: "Hon är ledsen", template: "Ella está ___", answer: "triste", hint: "Negativ känsla, sorgen" },
+                { sv: "Jag mår bra", template: "Estoy ___", answer: "bien", hint: "Positivt tillstånd" },
+                { sv: "Han är arg", template: "Él está ___", answer: "enfadado", hint: "Irriterad, upprörd" }
+            ],
+            "dias_semana": [
+                { sv: "Idag är det måndag", template: "Hoy es ___", answer: "lunes", hint: "Första arbetsdagen" },
+                { sv: "Imorgon är det fredag", template: "Mañana es ___", answer: "viernes", hint: "Sista arbetsdagen" },
+                { sv: "Jag gillar lördagar", template: "Me gustan los ___", answer: "sábados", hint: "Första helgdagen" },
+                { sv: "Söndagar är lugna", template: "Los ___ son tranquilos", answer: "domingos", hint: "Vilodag" }
+            ],
+            "verbos": [
+                { sv: "Jag pratar spanska", template: "___ español", answer: "Hablo", hint: "Verb: att prata (jag-form)" },
+                { sv: "Jag arbetar på kontoret", template: "___ en la oficina", answer: "Trabajo", hint: "Verb: att arbeta (jag-form)" },
+                { sv: "Jag vill lära mig", template: "___ aprender", answer: "Quiero", hint: "Verb: att vilja (jag-form)" },
+                { sv: "Jag behöver hjälp", template: "___ ayuda", answer: "Necesito", hint: "Verb: att behöva (jag-form)" },
+                { sv: "Jag gillar kaffe", template: "Me ___ el café", answer: "gusta", hint: "Verb: att gilla" }
+            ],
+            "interrogativos": [
+                { sv: "Vad gör du?", template: "¿___ haces?", answer: "Qué", hint: "Frågeord: vad" },
+                { sv: "Var är du?", template: "¿___ estás?", answer: "Dónde", hint: "Frågeord: var" },
+                { sv: "Hur mår du?", template: "¿___ estás?", answer: "Cómo", hint: "Frågeord: hur" },
+                { sv: "Vem är det?", template: "¿___ es?", answer: "Quién", hint: "Frågeord: vem" },
+                { sv: "När kommer du?", template: "¿___ vienes?", answer: "Cuándo", hint: "Frågeord: när" },
+                { sv: "Varför?", template: "¿Por ___?", answer: "qué", hint: "Frågeord: varför" }
+            ],
+            "ser_estar": [
+                { sv: "Jag är svensk (nationalitet)", template: "___ sueco", answer: "Soy", hint: "SER för permanenta egenskaper" },
+                { sv: "Jag är i Madrid", template: "___ en Madrid", answer: "Estoy", hint: "ESTAR för plats" },
+                { sv: "Han är läkare", template: "Él ___ médico", answer: "es", hint: "SER för yrke" },
+                { sv: "Hon är trött", template: "Ella ___ cansada", answer: "está", hint: "ESTAR för tillstånd" },
+                { sv: "Boken är intressant", template: "El libro ___ interesante", answer: "es", hint: "SER för egenskaper" }
+            ]
+        };
+
+        // App State
+        let exercises = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let streak = 0;
+        let hasAnswered = false;
+        const EXERCISE_COUNT = 15;
+
+        // DOM Elements
+        const categorySelect = document.getElementById('categorySelect');
+        const startScreen = document.getElementById('startScreen');
+        const exerciseArea = document.getElementById('exerciseArea');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const sentence = document.getElementById('sentence');
+        const blankDisplay = document.getElementById('blankDisplay');
+        const hintText = document.getElementById('hintText');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const feedback = document.getElementById('feedback');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function init() {
+            // Populate categories
+            Object.keys(sentenceTemplates).forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                const names = {
+                    saludos: "Hälsningar",
+                    presentacion: "Presentation",
+                    familia: "Familjen",
+                    colores: "Färger",
+                    emociones: "Känslor",
+                    dias_semana: "Veckodagar",
+                    verbos: "Verb",
+                    interrogativos: "Frågeord",
+                    ser_estar: "SER vs ESTAR"
+                };
+                option.textContent = `${names[key] || key} (${sentenceTemplates[key].length})`;
+                categorySelect.appendChild(option);
+            });
+
+            document.getElementById('startBtn').addEventListener('click', startExercise);
+            document.getElementById('restartBtn').addEventListener('click', startExercise);
+            submitBtn.addEventListener('click', checkAnswer);
+            nextBtn.addEventListener('click', nextExercise);
+
+            answerInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    if (!hasAnswered) {
+                        checkAnswer();
+                    } else {
+                        nextExercise();
+                    }
+                }
+            });
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startExercise() {
+            const category = categorySelect.value;
+            let allExercises = [];
+
+            if (category === 'all') {
+                Object.values(sentenceTemplates).forEach(items => {
+                    allExercises = allExercises.concat(items);
+                });
+            } else {
+                allExercises = [...sentenceTemplates[category]];
+            }
+
+            shuffle(allExercises);
+            exercises = allExercises.slice(0, Math.min(EXERCISE_COUNT, allExercises.length));
+
+            currentIndex = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            streak = 0;
+
+            startScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            exerciseArea.classList.remove('hidden');
+
+            displayExercise();
+        }
+
+        function displayExercise() {
+            if (currentIndex >= exercises.length) {
+                showResults();
+                return;
+            }
+
+            hasAnswered = false;
+            const ex = exercises[currentIndex];
+
+            // Display sentence with blank
+            const parts = ex.template.split('___');
+            sentence.innerHTML = parts[0] + '<span class="blank" id="blankDisplay">___</span>' + (parts[1] || '');
+
+            hintText.textContent = ex.hint;
+            document.getElementById('exerciseLabel').textContent = `Svenska: "${ex.sv}"`;
+
+            answerInput.value = '';
+            answerInput.className = 'answer-input';
+            answerInput.disabled = false;
+            answerInput.focus();
+
+            submitBtn.disabled = false;
+            feedback.classList.remove('show', 'correct', 'wrong');
+            nextBtn.classList.remove('show');
+
+            updateProgress();
+            updateStats();
+        }
+
+        function normalizeAnswer(str) {
+            return str.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[¡¿!?.,]/g, '')
+                .trim();
+        }
+
+        function checkAnswer() {
+            if (hasAnswered) return;
+
+            const userAnswer = answerInput.value.trim();
+            if (!userAnswer) return;
+
+            hasAnswered = true;
+            const ex = exercises[currentIndex];
+            const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(ex.answer);
+
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+
+            if (isCorrect) {
+                correctCount++;
+                streak++;
+                answerInput.classList.add('correct');
+                document.getElementById('blankDisplay').textContent = ex.answer;
+                document.getElementById('blankDisplay').style.color = '#2ecc71';
+                document.getElementById('feedbackText').textContent = 'Rätt!';
+                document.getElementById('correctAnswer').textContent = '';
+                feedback.className = 'feedback show correct';
+            } else {
+                wrongCount++;
+                streak = 0;
+                answerInput.classList.add('wrong');
+                document.getElementById('blankDisplay').textContent = ex.answer;
+                document.getElementById('blankDisplay').style.color = '#2ecc71';
+                document.getElementById('feedbackText').textContent = 'Inte riktigt...';
+                document.getElementById('correctAnswer').textContent = `Rätt svar: ${ex.answer}`;
+                feedback.className = 'feedback show wrong';
+            }
+
+            nextBtn.classList.add('show');
+            updateStats();
+        }
+
+        function nextExercise() {
+            currentIndex++;
+            displayExercise();
+        }
+
+        function updateProgress() {
+            const progress = (currentIndex / exercises.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `Uppgift ${currentIndex + 1} av ${exercises.length}`;
+            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+        }
+
+        function updateStats() {
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('wrongCount').textContent = wrongCount;
+            document.getElementById('streakCount').textContent = streak;
+        }
+
+        function showResults() {
+            exerciseArea.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('finalCorrect').textContent = correctCount;
+            document.getElementById('finalWrong').textContent = wrongCount;
+            const total = correctCount + wrongCount;
+            const percent = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            document.getElementById('finalPercent').textContent = `${percent}%`;
+
+            const saved = JSON.parse(localStorage.getItem('spanishFillBlank') || '{}');
+            saved.totalCorrect = (saved.totalCorrect || 0) + correctCount;
+            saved.totalWrong = (saved.totalWrong || 0) + wrongCount;
+            saved.sessions = (saved.sessions || 0) + 1;
+            localStorage.setItem('spanishFillBlank', JSON.stringify(saved));
+        }
+
+        init();
+    </script>
+</body>
+</html>

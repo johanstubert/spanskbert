@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanskbert - Din spanska träningsapp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #f39c12, #e74c3c, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .mode-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .mode-card.flashcards::before {
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+        }
+
+        .mode-card.quiz::before {
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+        }
+
+        .mode-card.fill-blank::before {
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+        }
+
+        .mode-card.match-pairs::before {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+        }
+
+        .mode-card.sentence-builder::before {
+            background: linear-gradient(90deg, #9b59b6, #e91e63);
+        }
+
+        .mode-card.verb-trainer::before {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+
+        .mode-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .mode-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .mode-desc {
+            font-size: 0.9rem;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        .mode-stats {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 35px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .category-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .category-icon {
+            font-size: 1.4rem;
+            margin-right: 14px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .category-name {
+            flex: 1;
+            font-size: 1.05rem;
+        }
+
+        .category-count {
+            font-size: 0.85rem;
+            color: #666;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #555;
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: #888;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .modes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            .logo {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🇪🇸</div>
+            <h1>Spanskbert</h1>
+        </header>
+
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSessions">0</div>
+                <div class="stat-label">Träningspass</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalCorrect">0</div>
+                <div class="stat-label">Rätta svar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Träffsäkerhet</div>
+            </div>
+        </div>
+
+        <div class="section-title">Träningslägen</div>
+
+        <div class="modes-grid">
+            <a href="flashcard-app.html" class="mode-card flashcards">
+                <div class="mode-icon">🃏</div>
+                <div class="mode-title">Flashcards</div>
+                <div class="mode-desc">Flippa kort mellan spanska och svenska. Klassisk glosträning.</div>
+                <div class="mode-stats" id="flashcardStats"></div>
+            </a>
+
+            <a href="quiz-app.html" class="mode-card quiz">
+                <div class="mode-icon">❓</div>
+                <div class="mode-title">Quiz</div>
+                <div class="mode-desc">Välj rätt översättning bland fyra alternativ.</div>
+                <div class="mode-stats" id="quizStats"></div>
+            </a>
+
+            <a href="fill-blank-app.html" class="mode-card fill-blank">
+                <div class="mode-icon">✏️</div>
+                <div class="mode-title">Fyll i luckan</div>
+                <div class="mode-desc">Komplettera meningar med rätt spanskt ord.</div>
+                <div class="mode-stats" id="fillBlankStats"></div>
+            </a>
+
+            <a href="match-pairs-app.html" class="mode-card match-pairs">
+                <div class="mode-icon">🔗</div>
+                <div class="mode-title">Matcha par</div>
+                <div class="mode-desc">Koppla ihop spanska och svenska ord på tid.</div>
+                <div class="mode-stats" id="matchPairsStats"></div>
+            </a>
+
+            <a href="sentence-builder-app.html" class="mode-card sentence-builder">
+                <div class="mode-icon">🧱</div>
+                <div class="mode-title">Meningsbyggare</div>
+                <div class="mode-desc">Sätt orden i rätt ordning för att bygga meningar.</div>
+                <div class="mode-stats" id="sentenceBuilderStats"></div>
+            </a>
+
+            <a href="flashcard-trainer.py" class="mode-card verb-trainer" style="opacity: 0.5; pointer-events: none;">
+                <div class="mode-icon">📝</div>
+                <div class="mode-title">Verbträning</div>
+                <div class="mode-desc">Öva på verbböjningar. (Kommer snart)</div>
+                <div class="mode-stats"></div>
+            </a>
+        </div>
+
+        <div class="section-title">Kategorier</div>
+
+        <div class="categories-list">
+            <a href="flashcard-app.html" class="category-item" data-count="30">
+                <span class="category-icon">🔢</span>
+                <span class="category-name">Siffror</span>
+                <span class="category-count">30 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="12">
+                <span class="category-icon">👋</span>
+                <span class="category-name">Hälsningar</span>
+                <span class="category-count">12 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="11">
+                <span class="category-icon">❓</span>
+                <span class="category-name">Frågeord</span>
+                <span class="category-count">11 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="17">
+                <span class="category-icon">👨‍👩‍👧‍👦</span>
+                <span class="category-name">Familjen</span>
+                <span class="category-count">17 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="11">
+                <span class="category-icon">🎨</span>
+                <span class="category-name">Färger</span>
+                <span class="category-count">11 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="7">
+                <span class="category-icon">😊</span>
+                <span class="category-name">Känslor</span>
+                <span class="category-count">7 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="7">
+                <span class="category-icon">📅</span>
+                <span class="category-name">Veckodagar</span>
+                <span class="category-count">7 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="10">
+                <span class="category-icon">🗣️</span>
+                <span class="category-name">Presentera dig</span>
+                <span class="category-count">10 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="10">
+                <span class="category-icon">📝</span>
+                <span class="category-name">Verb (yo-form)</span>
+                <span class="category-count">10 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="8">
+                <span class="category-icon">🌍</span>
+                <span class="category-name">Länder & nationaliteter</span>
+                <span class="category-count">8 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="5">
+                <span class="category-icon">👤</span>
+                <span class="category-name">Possessiva pronomen</span>
+                <span class="category-count">5 ord</span>
+            </a>
+            <a href="flashcard-app.html" class="category-item" data-count="6">
+                <span class="category-icon">⚖️</span>
+                <span class="category-name">SER vs ESTAR</span>
+                <span class="category-count">6 ord</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>Spanskbert v1.0 — Byggt för Johan Stubert</p>
+            <p style="margin-top: 8px;">
+                <a href="../PROGRESS.md">Se framsteg</a> ·
+                <a href="../vocabulary/words.md">Ordlista</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function loadStats() {
+            let totalSessions = 0;
+            let totalCorrect = 0;
+            let totalWrong = 0;
+
+            // Flashcards
+            const flashcards = JSON.parse(localStorage.getItem('spanishFlashcards') || '{}');
+            if (flashcards.sessions) {
+                totalSessions += flashcards.sessions;
+                totalCorrect += flashcards.totalCorrect || 0;
+                totalWrong += flashcards.totalWrong || 0;
+                document.getElementById('flashcardStats').textContent =
+                    `${flashcards.sessions} pass · ${flashcards.totalCorrect || 0} rätt`;
+            }
+
+            // Quiz
+            const quiz = JSON.parse(localStorage.getItem('spanishQuiz') || '{}');
+            if (quiz.sessions) {
+                totalSessions += quiz.sessions;
+                totalCorrect += quiz.totalCorrect || 0;
+                totalWrong += quiz.totalWrong || 0;
+                document.getElementById('quizStats').textContent =
+                    `${quiz.sessions} pass · ${quiz.totalCorrect || 0} rätt`;
+            }
+
+            // Fill blank
+            const fillBlank = JSON.parse(localStorage.getItem('spanishFillBlank') || '{}');
+            if (fillBlank.sessions) {
+                totalSessions += fillBlank.sessions;
+                totalCorrect += fillBlank.totalCorrect || 0;
+                totalWrong += fillBlank.totalWrong || 0;
+                document.getElementById('fillBlankStats').textContent =
+                    `${fillBlank.sessions} pass · ${fillBlank.totalCorrect || 0} rätt`;
+            }
+
+            // Match pairs
+            const matchPairs = JSON.parse(localStorage.getItem('spanishMatchPairs') || '{}');
+            if (matchPairs.sessions) {
+                totalSessions += matchPairs.sessions;
+                totalCorrect += matchPairs.totalMatches || 0;
+                totalWrong += (matchPairs.totalAttempts || 0) - (matchPairs.totalMatches || 0);
+                document.getElementById('matchPairsStats').textContent =
+                    `${matchPairs.sessions} pass · ${matchPairs.totalMatches || 0} matchade`;
+            }
+
+            // Sentence builder
+            const sentenceBuilder = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
+            if (sentenceBuilder.sessions) {
+                totalSessions += sentenceBuilder.sessions;
+                totalCorrect += sentenceBuilder.totalCorrect || 0;
+                totalWrong += sentenceBuilder.totalWrong || 0;
+                document.getElementById('sentenceBuilderStats').textContent =
+                    `${sentenceBuilder.sessions} pass · ${sentenceBuilder.totalCorrect || 0} rätt`;
+            }
+
+            // Update totals
+            document.getElementById('totalSessions').textContent = totalSessions;
+            document.getElementById('totalCorrect').textContent = totalCorrect;
+
+            const total = totalCorrect + totalWrong;
+            const accuracy = total > 0 ? Math.round((totalCorrect / total) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

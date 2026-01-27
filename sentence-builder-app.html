@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meningsbyggare - Spanish</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 0;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: #888;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px 18px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        .stat.correct .stat-value { color: #2ecc71; }
+        .stat.wrong .stat-value { color: #e74c3c; }
+        .stat.streak .stat-value { color: #f39c12; }
+
+        .progress-container {
+            margin-bottom: 25px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .exercise-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .translation-label {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .swedish-sentence {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .build-area-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .build-area {
+            min-height: 60px;
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            transition: border-color 0.3s;
+        }
+
+        .build-area.active {
+            border-color: rgba(155, 89, 182, 0.5);
+        }
+
+        .build-area.correct {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .build-area.wrong {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .build-area-placeholder {
+            color: #555;
+            font-style: italic;
+        }
+
+        .word-bank-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            min-height: 50px;
+        }
+
+        .word-chip {
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(233, 30, 99, 0.3));
+            border: 2px solid rgba(155, 89, 182, 0.5);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .word-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .word-chip.in-build {
+            background: rgba(52, 152, 219, 0.3);
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        .word-chip.used {
+            opacity: 0.3;
+            cursor: default;
+            transform: none;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .check-btn, .clear-btn {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .check-btn {
+            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            color: #fff;
+        }
+
+        .check-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .check-btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .clear-btn {
+            background: rgba(255,255,255,0.1);
+            color: #888;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .clear-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        .feedback {
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .feedback.wrong {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .correct-sentence {
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .next-btn.show {
+            display: block;
+        }
+
+        .start-screen, .results {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+        }
+
+        .start-btn, .restart-btn {
+            padding: 16px 45px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            color: #fff;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .results-stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .results-stat-label {
+            color: #888;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .keyboard-hints {
+            text-align: center;
+            color: #555;
+            font-size: 0.8rem;
+            margin-top: 15px;
+        }
+
+        .keyboard-hints kbd {
+            background: rgba(255,255,255,0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 500px) {
+            .swedish-sentence {
+                font-size: 1.2rem;
+            }
+            .word-chip {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Meningsbyggare</h1>
+            <p>Sätt orden i rätt ordning för att bilda en spansk mening</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat correct">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Rätt</div>
+            </div>
+            <div class="stat wrong">
+                <div class="stat-value" id="wrongCount">0</div>
+                <div class="stat-label">Fel</div>
+            </div>
+            <div class="stat streak">
+                <div class="stat-value" id="streakCount">0</div>
+                <div class="stat-label">Streak</div>
+            </div>
+        </div>
+
+        <div class="start-screen" id="startScreen">
+            <p style="font-size: 1.05rem; color: #888; margin-bottom: 12px;">
+                Du ser en svensk mening och spanska ord i slumpmässig ordning.<br>
+                Klicka på orden i rätt ordning för att bygga den spanska meningen!
+            </p>
+            <button class="start-btn" id="startBtn">Starta!</button>
+        </div>
+
+        <div id="exerciseArea" class="hidden">
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span id="progressText">Mening 1 av 10</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="exercise-card">
+                <div class="translation-label">Översätt till spanska:</div>
+                <div class="swedish-sentence" id="swedishSentence">Jag heter Johan</div>
+
+                <div class="build-area-label">Din mening:</div>
+                <div class="build-area" id="buildArea">
+                    <span class="build-area-placeholder">Klicka på orden nedan...</span>
+                </div>
+
+                <div class="word-bank-label">Tillgängliga ord:</div>
+                <div class="word-bank" id="wordBank"></div>
+
+                <div class="buttons">
+                    <button class="clear-btn" id="clearBtn">Rensa</button>
+                    <button class="check-btn" id="checkBtn" disabled>Kontrollera</button>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback">
+                <div id="feedbackText"></div>
+                <div class="correct-sentence" id="correctSentence"></div>
+            </div>
+
+            <button class="next-btn" id="nextBtn">Nästa mening →</button>
+
+            <div class="keyboard-hints">
+                <kbd>Enter</kbd> Kontrollera / Nästa &nbsp; <kbd>Backspace</kbd> Ta bort sista ordet
+            </div>
+        </div>
+
+        <div class="results hidden" id="resultsScreen">
+            <h2>Bra jobbat!</h2>
+            <div class="results-stats">
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div>
+                    <div class="results-stat-label">Rätt</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div>
+                    <div class="results-stat-label">Fel</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div>
+                    <div class="results-stat-label">Resultat</div>
+                </div>
+            </div>
+            <button class="restart-btn" id="restartBtn">Kör igen!</button>
+        </div>
+    </div>
+
+    <script>
+        // Sentences to build
+        const sentences = [
+            { sv: "Jag heter Johan", es: "Me llamo Johan" },
+            { sv: "Hur mår du?", es: "¿Cómo estás?" },
+            { sv: "Jag mår bra, tack", es: "Estoy bien, gracias" },
+            { sv: "Var kommer du ifrån?", es: "¿De dónde eres?" },
+            { sv: "Jag är från Sverige", es: "Soy de Suecia" },
+            { sv: "Jag bor i Palma", es: "Vivo en Palma" },
+            { sv: "Hur gammal är du?", es: "¿Cuántos años tienes?" },
+            { sv: "Jag är trettio år", es: "Tengo treinta años" },
+            { sv: "Trevligt att träffas", es: "Mucho gusto" },
+            { sv: "God morgon!", es: "¡Buenos días!" },
+            { sv: "God eftermiddag!", es: "¡Buenas tardes!" },
+            { sv: "God kväll!", es: "¡Buenas noches!" },
+            { sv: "Vi ses!", es: "¡Hasta luego!" },
+            { sv: "Vi ses imorgon!", es: "¡Hasta mañana!" },
+            { sv: "Vad heter du?", es: "¿Cómo te llamas?" },
+            { sv: "Var bor du?", es: "¿Dónde vives?" },
+            { sv: "Jag pratar lite spanska", es: "Hablo un poco de español" },
+            { sv: "Jag gillar kaffe", es: "Me gusta el café" },
+            { sv: "Jag har en bror", es: "Tengo un hermano" },
+            { sv: "Min mamma heter Maria", es: "Mi madre se llama María" },
+            { sv: "Jag är trött", es: "Estoy cansado" },
+            { sv: "Jag är glad", es: "Estoy contento" },
+            { sv: "Himlen är blå", es: "El cielo es azul" },
+            { sv: "Idag är det måndag", es: "Hoy es lunes" },
+            { sv: "Jag arbetar på kontoret", es: "Trabajo en la oficina" },
+            { sv: "Jag vill lära mig spanska", es: "Quiero aprender español" },
+            { sv: "Jag behöver hjälp", es: "Necesito ayuda" },
+            { sv: "Vad gör du?", es: "¿Qué haces?" },
+            { sv: "Var är du?", es: "¿Dónde estás?" },
+            { sv: "Jag är svensk", es: "Soy sueco" }
+        ];
+
+        // App State
+        let exercises = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let streak = 0;
+        let builtWords = [];
+        let hasAnswered = false;
+        const EXERCISE_COUNT = 10;
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const exerciseArea = document.getElementById('exerciseArea');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const swedishSentence = document.getElementById('swedishSentence');
+        const buildArea = document.getElementById('buildArea');
+        const wordBank = document.getElementById('wordBank');
+        const checkBtn = document.getElementById('checkBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const feedback = document.getElementById('feedback');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function init() {
+            document.getElementById('startBtn').addEventListener('click', startExercise);
+            document.getElementById('restartBtn').addEventListener('click', startExercise);
+            checkBtn.addEventListener('click', checkAnswer);
+            clearBtn.addEventListener('click', clearBuild);
+            nextBtn.addEventListener('click', nextExercise);
+
+            document.addEventListener('keydown', (e) => {
+                if (exerciseArea.classList.contains('hidden')) return;
+
+                if (e.key === 'Enter') {
+                    if (!hasAnswered && builtWords.length > 0) {
+                        checkAnswer();
+                    } else if (hasAnswered) {
+                        nextExercise();
+                    }
+                } else if (e.key === 'Backspace' && !hasAnswered) {
+                    e.preventDefault();
+                    removeLastWord();
+                }
+            });
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function tokenize(sentence) {
+            // Split by spaces but keep punctuation attached where appropriate
+            return sentence.match(/[¿¡]?[\wáéíóúüñÁÉÍÓÚÜÑ]+[.,!?]?|[.,!?]/g) || [];
+        }
+
+        function startExercise() {
+            exercises = shuffle([...sentences]).slice(0, EXERCISE_COUNT);
+            currentIndex = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            streak = 0;
+
+            startScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            exerciseArea.classList.remove('hidden');
+
+            displayExercise();
+        }
+
+        function displayExercise() {
+            if (currentIndex >= exercises.length) {
+                showResults();
+                return;
+            }
+
+            hasAnswered = false;
+            builtWords = [];
+
+            const ex = exercises[currentIndex];
+            swedishSentence.textContent = ex.sv;
+
+            // Tokenize and shuffle Spanish words
+            const words = tokenize(ex.es);
+            const shuffledWords = shuffle([...words]);
+
+            // Clear and populate word bank
+            wordBank.innerHTML = '';
+            shuffledWords.forEach((word, i) => {
+                const chip = document.createElement('div');
+                chip.className = 'word-chip';
+                chip.textContent = word;
+                chip.dataset.index = i;
+                chip.dataset.word = word;
+                chip.addEventListener('click', () => addWord(chip));
+                wordBank.appendChild(chip);
+            });
+
+            // Reset build area
+            buildArea.innerHTML = '<span class="build-area-placeholder">Klicka på orden nedan...</span>';
+            buildArea.classList.remove('correct', 'wrong');
+
+            checkBtn.disabled = true;
+            feedback.classList.remove('show', 'correct', 'wrong');
+            nextBtn.classList.remove('show');
+
+            updateProgress();
+            updateStats();
+        }
+
+        function addWord(chip) {
+            if (hasAnswered || chip.classList.contains('used')) return;
+
+            chip.classList.add('used');
+            builtWords.push({
+                word: chip.dataset.word,
+                chipIndex: chip.dataset.index
+            });
+
+            renderBuildArea();
+            checkBtn.disabled = builtWords.length === 0;
+        }
+
+        function removeWord(index) {
+            if (hasAnswered) return;
+
+            const removed = builtWords.splice(index, 1)[0];
+
+            // Re-enable the chip in word bank
+            const chips = wordBank.querySelectorAll('.word-chip');
+            chips.forEach(chip => {
+                if (chip.dataset.index === removed.chipIndex) {
+                    chip.classList.remove('used');
+                }
+            });
+
+            renderBuildArea();
+            checkBtn.disabled = builtWords.length === 0;
+        }
+
+        function removeLastWord() {
+            if (builtWords.length > 0) {
+                removeWord(builtWords.length - 1);
+            }
+        }
+
+        function renderBuildArea() {
+            if (builtWords.length === 0) {
+                buildArea.innerHTML = '<span class="build-area-placeholder">Klicka på orden nedan...</span>';
+                return;
+            }
+
+            buildArea.innerHTML = '';
+            builtWords.forEach((item, i) => {
+                const chip = document.createElement('div');
+                chip.className = 'word-chip in-build';
+                chip.textContent = item.word;
+                chip.addEventListener('click', () => removeWord(i));
+                buildArea.appendChild(chip);
+            });
+        }
+
+        function clearBuild() {
+            if (hasAnswered) return;
+
+            builtWords = [];
+            const chips = wordBank.querySelectorAll('.word-chip');
+            chips.forEach(chip => chip.classList.remove('used'));
+            renderBuildArea();
+            checkBtn.disabled = true;
+        }
+
+        function normalizeForComparison(str) {
+            return str.toLowerCase()
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function checkAnswer() {
+            if (hasAnswered || builtWords.length === 0) return;
+
+            hasAnswered = true;
+            const ex = exercises[currentIndex];
+            const userSentence = builtWords.map(w => w.word).join(' ');
+            const isCorrect = normalizeForComparison(userSentence) === normalizeForComparison(ex.es);
+
+            checkBtn.disabled = true;
+
+            if (isCorrect) {
+                correctCount++;
+                streak++;
+                buildArea.classList.add('correct');
+                document.getElementById('feedbackText').textContent = 'Perfekt!';
+                document.getElementById('correctSentence').textContent = '';
+                feedback.className = 'feedback show correct';
+            } else {
+                wrongCount++;
+                streak = 0;
+                buildArea.classList.add('wrong');
+                document.getElementById('feedbackText').textContent = 'Inte riktigt...';
+                document.getElementById('correctSentence').textContent = `Rätt: ${ex.es}`;
+                feedback.className = 'feedback show wrong';
+            }
+
+            nextBtn.classList.add('show');
+            updateStats();
+        }
+
+        function nextExercise() {
+            currentIndex++;
+            displayExercise();
+        }
+
+        function updateProgress() {
+            const progress = (currentIndex / exercises.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `Mening ${currentIndex + 1} av ${exercises.length}`;
+            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+        }
+
+        function updateStats() {
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('wrongCount').textContent = wrongCount;
+            document.getElementById('streakCount').textContent = streak;
+        }
+
+        function showResults() {
+            exerciseArea.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('finalCorrect').textContent = correctCount;
+            document.getElementById('finalWrong').textContent = wrongCount;
+            const total = correctCount + wrongCount;
+            const percent = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            document.getElementById('finalPercent').textContent = `${percent}%`;
+
+            const saved = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
+            saved.totalCorrect = (saved.totalCorrect || 0) + correctCount;
+            saved.totalWrong = (saved.totalWrong || 0) + wrongCount;
+            saved.sessions = (saved.sessions || 0) + 1;
+            localStorage.setItem('spanishSentenceBuilder', JSON.stringify(saved));
+        }
+
+        init();
+    </script>
+</body>
+</html>

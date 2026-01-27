@@ -139,6 +139,66 @@
             gap: 10px;
         }
 
+        /* Category Groups */
+        .category-group {
+            margin-bottom: 15px;
+        }
+
+        .category-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .category-group-header:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .category-group-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .category-group-title .group-icon {
+            font-size: 1.2rem;
+        }
+
+        .category-group-count {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .category-group-arrow {
+            color: #666;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .category-group.expanded .category-group-arrow {
+            transform: rotate(180deg);
+        }
+
+        .category-group-items {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            padding-left: 12px;
+        }
+
+        .category-group.expanded .category-group-items {
+            display: flex;
+        }
+
         .category-item {
             display: flex;
             align-items: center;
@@ -926,42 +986,111 @@
             return array;
         }
 
+        // Category groups definition
+        const categoryGroups = {
+            "situationer": {
+                name: "Situationer",
+                icon: "🎯",
+                categories: ["en_la_tienda", "en_el_taxi", "en_el_restaurante", "en_el_bar", "en_el_hotel", "direcciones", "emergencias"]
+            },
+            "grundlaggande": {
+                name: "Grundläggande",
+                icon: "📚",
+                categories: ["saludos", "numeros", "interrogativos", "familia", "colores", "emociones", "dias_semana", "presentacion", "verbos", "paises"]
+            }
+        };
+
+        // Create category item HTML
+        function createCategoryItem(key, categoryProgress) {
+            const cat = flashcardData[key];
+            const progress = categoryProgress[key] || 0;
+            const circumference = 2 * Math.PI * 18;
+            const offset = circumference - (progress / 100) * circumference;
+
+            const item = document.createElement('div');
+            item.className = 'category-item';
+            item.dataset.category = key;
+            item.innerHTML = `
+                <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">
+                    ${cat.icon}
+                </div>
+                <div class="category-info">
+                    <div class="category-name">${cat.name}</div>
+                    <div class="category-count">${cat.items.length} frågor</div>
+                </div>
+                <div class="progress-circle">
+                    <svg width="45" height="45">
+                        <circle class="bg" cx="22.5" cy="22.5" r="18"></circle>
+                        <circle class="progress" cx="22.5" cy="22.5" r="18"
+                            stroke-dasharray="${circumference}"
+                            stroke-dashoffset="${offset}"
+                            style="stroke: ${cat.color}"></circle>
+                    </svg>
+                </div>
+            `;
+            item.addEventListener('click', () => startQuiz(key));
+            return item;
+        }
+
         function initCategories() {
             const saved = JSON.parse(localStorage.getItem('spanishQuiz') || '{}');
             const categoryProgress = saved.categoryProgress || {};
+            const expandedGroups = JSON.parse(localStorage.getItem('spanishQuizExpanded') || '["situationer"]');
 
-            Object.keys(flashcardData).forEach(key => {
-                const cat = flashcardData[key];
-                const progress = categoryProgress[key] || 0;
-                const circumference = 2 * Math.PI * 18;
-                const offset = circumference - (progress / 100) * circumference;
+            // Create category groups
+            Object.keys(categoryGroups).forEach(groupKey => {
+                const group = categoryGroups[groupKey];
+                const totalQuestions = group.categories.reduce((sum, catKey) => sum + flashcardData[catKey].items.length, 0);
 
-                const item = document.createElement('div');
-                item.className = 'category-item';
-                item.dataset.category = key;
-                item.innerHTML = `
-                    <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">
-                        ${cat.icon}
+                const groupEl = document.createElement('div');
+                groupEl.className = 'category-group' + (expandedGroups.includes(groupKey) ? ' expanded' : '');
+                groupEl.dataset.group = groupKey;
+
+                // Group header
+                const header = document.createElement('div');
+                header.className = 'category-group-header';
+                header.innerHTML = `
+                    <div class="category-group-title">
+                        <span class="group-icon">${group.icon}</span>
+                        ${group.name}
                     </div>
-                    <div class="category-info">
-                        <div class="category-name">${cat.name}</div>
-                        <div class="category-count">${cat.items.length} frågor</div>
-                    </div>
-                    <div class="progress-circle">
-                        <svg width="45" height="45">
-                            <circle class="bg" cx="22.5" cy="22.5" r="18"></circle>
-                            <circle class="progress" cx="22.5" cy="22.5" r="18"
-                                stroke-dasharray="${circumference}"
-                                stroke-dashoffset="${offset}"
-                                style="stroke: ${cat.color}"></circle>
-                        </svg>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="category-group-count">${group.categories.length} kategorier · ${totalQuestions} frågor</span>
+                        <span class="category-group-arrow">▼</span>
                     </div>
                 `;
-                item.addEventListener('click', () => startQuiz(key));
-                categoriesList.appendChild(item);
+                header.addEventListener('click', () => toggleGroup(groupKey));
+
+                // Group items container
+                const itemsContainer = document.createElement('div');
+                itemsContainer.className = 'category-group-items';
+
+                // Add categories to group
+                group.categories.forEach(catKey => {
+                    if (flashcardData[catKey]) {
+                        itemsContainer.appendChild(createCategoryItem(catKey, categoryProgress));
+                    }
+                });
+
+                groupEl.appendChild(header);
+                groupEl.appendChild(itemsContainer);
+                categoriesList.appendChild(groupEl);
             });
 
             updateOverviewStats();
+        }
+
+        // Toggle group expanded/collapsed
+        function toggleGroup(groupKey) {
+            const groupEl = document.querySelector(`.category-group[data-group="${groupKey}"]`);
+            groupEl.classList.toggle('expanded');
+
+            // Save expanded state
+            const expandedGroups = [];
+            document.querySelectorAll('.category-group.expanded').forEach(g => {
+                expandedGroups.push(g.dataset.group);
+            });
+            localStorage.setItem('spanishQuizExpanded', JSON.stringify(expandedGroups));
         }
 
         function updateOverviewStats() {

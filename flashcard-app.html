@@ -1091,7 +1091,7 @@
         function initCategories() {
             const saved = JSON.parse(localStorage.getItem('spanishFlashcards') || '{}');
             const categoryProgress = saved.categoryProgress || {};
-            const expandedGroups = JSON.parse(localStorage.getItem('spanishFlashcardsExpanded') || '["situationer"]');
+            const expandedGroups = JSON.parse(localStorage.getItem('spanishFlashcardsExpanded') || '[]');
 
             // Create category groups
             Object.keys(categoryGroups).forEach(groupKey => {
@@ -1373,6 +1373,15 @@
 
         // Initialize
         initCategories();
+
+        // Check for category in URL hash (from index.html link)
+        const hash = window.location.hash;
+        if (hash.startsWith('#category=')) {
+            const category = hash.replace('#category=', '');
+            if (flashcardData[category]) {
+                startQuiz(category);
+            }
+        }
     </script>
 </body>
 </html>

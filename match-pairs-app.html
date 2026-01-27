@@ -46,6 +46,20 @@
         .main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
         .section-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
         .categories-list { display: flex; flex-direction: column; gap: 10px; }
+        .category-group { margin-bottom: 15px; }
+        .category-group-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; background: rgba(255,255,255,0.08);
+            border-radius: 12px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px;
+        }
+        .category-group-header:hover { background: rgba(255,255,255,0.12); }
+        .category-group-title { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 600; color: #fff; }
+        .category-group-title .group-icon { font-size: 1.2rem; }
+        .category-group-count { color: #888; font-size: 0.85rem; }
+        .category-group-arrow { color: #666; font-size: 1.2rem; transition: transform 0.3s; }
+        .category-group.expanded .category-group-arrow { transform: rotate(180deg); }
+        .category-group-items { display: none; flex-direction: column; gap: 8px; padding-left: 12px; }
+        .category-group.expanded .category-group-items { display: flex; }
         .category-item {
             display: flex; align-items: center; padding: 16px;
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
@@ -215,21 +229,73 @@
         const swedishColumn = document.getElementById('swedishColumn');
         const resultsScreen = document.getElementById('resultsScreen');
 
+        const categoryGroups = {
+            "grundlaggande": {
+                name: "Grundläggande",
+                icon: "📚",
+                categories: ["saludos", "numeros", "familia", "colores", "dias_semana"]
+            }
+        };
+
+        function createCategoryItem(key) {
+            const cat = gameData[key];
+            const item = document.createElement('div');
+            item.className = 'category-item';
+            item.innerHTML = `
+                <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">${cat.icon}</div>
+                <div class="category-info"><div class="category-name">${cat.name}</div><div class="category-count">${cat.items.length} par</div></div>
+                <div class="progress-circle"><svg width="45" height="45"><circle class="bg" cx="22.5" cy="22.5" r="18"></circle><circle class="progress" cx="22.5" cy="22.5" r="18" stroke-dasharray="113" stroke-dashoffset="113" style="stroke: ${cat.color}"></circle></svg></div>
+            `;
+            item.addEventListener('click', () => startGame(key));
+            return item;
+        }
+
         function initCategories() {
             const saved = JSON.parse(localStorage.getItem('spanishMatchPairs') || '{}');
-            Object.keys(gameData).forEach(key => {
-                const cat = gameData[key];
-                const item = document.createElement('div');
-                item.className = 'category-item';
-                item.innerHTML = `
-                    <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">${cat.icon}</div>
-                    <div class="category-info"><div class="category-name">${cat.name}</div><div class="category-count">${cat.items.length} par</div></div>
-                    <div class="progress-circle"><svg width="45" height="45"><circle class="bg" cx="22.5" cy="22.5" r="18"></circle><circle class="progress" cx="22.5" cy="22.5" r="18" stroke-dasharray="113" stroke-dashoffset="113" style="stroke: ${cat.color}"></circle></svg></div>
+            const expandedGroups = JSON.parse(localStorage.getItem('spanishMatchPairsExpanded') || '[]');
+
+            Object.keys(categoryGroups).forEach(groupKey => {
+                const group = categoryGroups[groupKey];
+                const totalItems = group.categories.reduce((sum, catKey) => sum + (gameData[catKey]?.items.length || 0), 0);
+
+                const groupEl = document.createElement('div');
+                groupEl.className = 'category-group' + (expandedGroups.includes(groupKey) ? ' expanded' : '');
+                groupEl.dataset.group = groupKey;
+
+                const header = document.createElement('div');
+                header.className = 'category-group-header';
+                header.innerHTML = `
+                    <div class="category-group-title"><span class="group-icon">${group.icon}</span>${group.name}</div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="category-group-count">${group.categories.length} kategorier · ${totalItems} par</span>
+                        <span class="category-group-arrow">▼</span>
+                    </div>
                 `;
-                item.addEventListener('click', () => startGame(key));
-                categoriesList.appendChild(item);
+                header.addEventListener('click', () => toggleGroup(groupKey));
+
+                const itemsContainer = document.createElement('div');
+                itemsContainer.className = 'category-group-items';
+
+                group.categories.forEach(catKey => {
+                    if (gameData[catKey]) {
+                        itemsContainer.appendChild(createCategoryItem(catKey));
+                    }
+                });
+
+                groupEl.appendChild(header);
+                groupEl.appendChild(itemsContainer);
+                categoriesList.appendChild(groupEl);
             });
+
             updateOverviewStats();
+        }
+
+        function toggleGroup(groupKey) {
+            const groupEl = document.querySelector(`.category-group[data-group="${groupKey}"]`);
+            groupEl.classList.toggle('expanded');
+            const expandedGroups = [];
+            document.querySelectorAll('.category-group.expanded').forEach(g => expandedGroups.push(g.dataset.group));
+            localStorage.setItem('spanishMatchPairsExpanded', JSON.stringify(expandedGroups));
         }
 
         function updateOverviewStats() {

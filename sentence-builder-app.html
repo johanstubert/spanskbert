@@ -3,530 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meningsbyggare - Spanish</title>
+    <title>Spanskbert - Meningsbyggare</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
             color: #fff;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 16px; background: rgba(255,255,255,0.1);
+            border: none; border-radius: 10px; color: #888;
+            font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+            text-decoration: none; margin-bottom: 20px;
         }
-
-        header {
-            text-align: center;
-            padding: 25px 0;
-        }
-
+        .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        header { text-align: center; padding: 20px 0 30px; }
         header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 8px;
+            font-size: 2.5rem;
             background: linear-gradient(90deg, #9b59b6, #e91e63);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
         }
-
-        header p {
-            color: #888;
+        header p { color: #888; font-size: 1rem; }
+        .stats-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 18px 12px; text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; }
+        .stat-value.sessions { color: #9b59b6; }
+        .stat-value.correct { color: #2ecc71; }
+        .stat-value.streak { color: #f39c12; }
+        .stat-label { font-size: 0.8rem; color: #888; margin-top: 5px; }
+        .main-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+        .main-btn {
+            padding: 18px 20px; border: none; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
         }
-
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+        .main-btn.primary { background: linear-gradient(90deg, #9b59b6, #e91e63); color: #fff; }
+        .main-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .section-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .categories-list { display: flex; flex-direction: column; gap: 10px; }
+        .category-item {
+            display: flex; align-items: center; padding: 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 15px; cursor: pointer; transition: all 0.2s;
         }
-
-        .stat {
-            text-align: center;
-            padding: 10px 18px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+        .category-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+        .category-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-right: 15px; flex-shrink: 0;
         }
-
-        .stat-value {
-            font-size: 1.6rem;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 3px;
-        }
-
+        .category-info { flex: 1; }
+        .category-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+        .category-count { font-size: 0.9rem; color: #888; }
+        .progress-circle { width: 45px; height: 45px; }
+        .progress-circle svg { transform: rotate(-90deg); }
+        .progress-circle .bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 4; }
+        .progress-circle .progress { fill: none; stroke: #2ecc71; stroke-width: 4; stroke-linecap: round; }
+        .exercise-view { display: none; }
+        .exercise-view.active { display: block; }
+        .category-view { display: block; }
+        .category-view.hidden { display: none; }
+        .exercise-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .exercise-title { font-size: 1.3rem; font-weight: 600; }
+        .exercise-progress-text { color: #888; font-size: 0.95rem; }
+        .stats-bar { display: flex; justify-content: center; gap: 25px; margin-bottom: 25px; }
+        .stat { text-align: center; padding: 12px 20px; background: rgba(255,255,255,0.05); border-radius: 12px; }
+        .stat .stat-value { font-size: 1.5rem; }
         .stat.correct .stat-value { color: #2ecc71; }
         .stat.wrong .stat-value { color: #e74c3c; }
         .stat.streak .stat-value { color: #f39c12; }
-
-        .progress-container {
-            margin-bottom: 25px;
+        .progress-container { margin-bottom: 25px; }
+        .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #9b59b6, #e91e63); border-radius: 3px; transition: width 0.3s; }
+        .question-card {
+            background: rgba(255,255,255,0.05); border-radius: 20px;
+            padding: 25px; margin-bottom: 20px; text-align: center;
         }
-
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            color: #888;
-            font-size: 0.85rem;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #9b59b6, #e91e63);
-            border-radius: 3px;
-            transition: width 0.3s;
-        }
-
-        .exercise-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-        }
-
-        .translation-label {
-            font-size: 0.85rem;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .swedish-sentence {
-            font-size: 1.4rem;
-            text-align: center;
-            margin-bottom: 25px;
-            color: #3498db;
-            font-weight: 500;
-        }
-
-        .build-area-label {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .build-area {
-            min-height: 60px;
-            border: 2px dashed rgba(255,255,255,0.2);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
+        .question-label { font-size: 0.85rem; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .question-translation { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #fff; }
+        .answer-area {
+            min-height: 60px; border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 12px; padding: 15px; margin-bottom: 20px;
+            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
             align-items: center;
-            transition: border-color 0.3s;
         }
-
-        .build-area.active {
-            border-color: rgba(155, 89, 182, 0.5);
-        }
-
-        .build-area.correct {
-            border-color: #2ecc71;
-            background: rgba(46, 204, 113, 0.1);
-        }
-
-        .build-area.wrong {
-            border-color: #e74c3c;
-            background: rgba(231, 76, 60, 0.1);
-        }
-
-        .build-area-placeholder {
-            color: #555;
-            font-style: italic;
-        }
-
-        .word-bank-label {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .word-bank {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-            min-height: 50px;
-        }
-
-        .word-chip {
-            padding: 12px 18px;
-            background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(233, 30, 99, 0.3));
-            border: 2px solid rgba(155, 89, 182, 0.5);
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1.05rem;
+        .answer-area.correct { border-color: #2ecc71; background: rgba(46, 204, 113, 0.1); }
+        .answer-area.wrong { border-color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
+        .word-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+        .word-btn {
+            padding: 12px 18px; border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px; background: rgba(255,255,255,0.05);
+            color: #fff; font-size: 1rem; cursor: pointer;
             transition: all 0.2s;
-            user-select: none;
         }
-
-        .word-chip:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .word-chip.in-build {
-            background: rgba(52, 152, 219, 0.3);
-            border-color: rgba(52, 152, 219, 0.5);
-        }
-
-        .word-chip.used {
-            opacity: 0.3;
-            cursor: default;
-            transform: none;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .check-btn, .clear-btn {
-            padding: 14px 35px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .check-btn {
+        .word-btn:hover:not(.used) { border-color: #9b59b6; background: rgba(155, 89, 182, 0.2); }
+        .word-btn.used { opacity: 0.3; cursor: default; }
+        .word-btn.in-answer { background: linear-gradient(90deg, #9b59b6, #e91e63); border-color: transparent; }
+        .check-btn, .next-btn {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
             background: linear-gradient(90deg, #9b59b6, #e91e63);
-            color: #fff;
+            color: #fff; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
         }
-
-        .check-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .check-btn:disabled {
-            opacity: 0.5;
-            cursor: default;
-        }
-
-        .clear-btn {
-            background: rgba(255,255,255,0.1);
-            color: #888;
-            border: 2px solid rgba(255,255,255,0.1);
-        }
-
-        .clear-btn:hover {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-        }
-
-        .feedback {
-            text-align: center;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .feedback.show {
-            display: block;
-        }
-
-        .feedback.correct {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-        }
-
-        .feedback.wrong {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-        }
-
-        .correct-sentence {
-            margin-top: 10px;
-            font-size: 1.1rem;
-        }
-
-        .next-btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
+        .check-btn:hover, .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .next-btn { display: none; }
+        .next-btn.show { display: block; }
+        .feedback { text-align: center; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .feedback.wrong { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .correct-answer { font-size: 0.9rem; color: #888; margin-top: 10px; }
+        .results { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; display: none; }
+        .results.show { display: block; }
+        .results h2 { font-size: 1.8rem; margin-bottom: 20px; }
+        .results-stats { display: flex; justify-content: center; gap: 30px; margin: 25px 0; }
+        .results-stat { text-align: center; }
+        .results-stat-value { font-size: 2.5rem; font-weight: bold; }
+        .results-stat-label { color: #888; font-size: 0.9rem; }
+        .restart-btn {
+            padding: 16px 40px; border: none; border-radius: 15px;
+            font-size: 1rem; cursor: pointer;
             background: linear-gradient(90deg, #9b59b6, #e91e63);
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: none;
+            color: #fff; font-weight: 600; margin-top: 15px; transition: all 0.3s;
         }
-
-        .next-btn.show {
-            display: block;
-        }
-
-        .start-screen, .results {
-            text-align: center;
-            padding: 40px 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-        }
-
-        .start-btn, .restart-btn {
-            padding: 16px 45px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            background: linear-gradient(90deg, #9b59b6, #e91e63);
-            color: #fff;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-
-        .results-stats {
-            display: flex;
-            justify-content: center;
-            gap: 35px;
-            margin: 25px 0;
-            flex-wrap: wrap;
-        }
-
-        .results-stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .results-stat-label {
-            color: #888;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .keyboard-hints {
-            text-align: center;
-            color: #555;
-            font-size: 0.8rem;
-            margin-top: 15px;
-        }
-
-        .keyboard-hints kbd {
-            background: rgba(255,255,255,0.1);
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
+        .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
         @media (max-width: 500px) {
-            .swedish-sentence {
-                font-size: 1.2rem;
-            }
-            .word-chip {
-                padding: 10px 14px;
-                font-size: 0.95rem;
-            }
+            .container { padding: 15px; }
+            header h1 { font-size: 2rem; }
+            .word-btn { padding: 10px 14px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Meningsbyggare</h1>
-            <p>Sätt orden i rätt ordning för att bilda en spansk mening</p>
-        </header>
-
-        <div class="stats-bar">
-            <div class="stat correct">
-                <div class="stat-value" id="correctCount">0</div>
-                <div class="stat-label">Rätt</div>
+        <div class="category-view" id="categoryView">
+            <a href="index.html" class="back-btn"><span>←</span> Huvudmeny</a>
+            <header>
+                <h1>Meningsbyggare</h1>
+                <p>Sätt orden i rätt ordning</p>
+            </header>
+            <div class="stats-overview">
+                <div class="stat-card"><div class="stat-value sessions" id="totalSessions">0</div><div class="stat-label">Övningar</div></div>
+                <div class="stat-card"><div class="stat-value correct" id="totalCorrect">0</div><div class="stat-label">Rätt</div></div>
+                <div class="stat-card"><div class="stat-value streak" id="accuracy">0%</div><div class="stat-label">Träffsäkerhet</div></div>
             </div>
-            <div class="stat wrong">
-                <div class="stat-value" id="wrongCount">0</div>
-                <div class="stat-label">Fel</div>
+            <div class="main-buttons">
+                <button class="main-btn primary" id="practiceAllBtn">Öva alla</button>
+                <button class="main-btn secondary" id="randomBtn">Slumpa</button>
             </div>
-            <div class="stat streak">
-                <div class="stat-value" id="streakCount">0</div>
-                <div class="stat-label">Streak</div>
-            </div>
+            <div class="section-title">Kategorier</div>
+            <div class="categories-list" id="categoriesList"></div>
         </div>
 
-        <div class="start-screen" id="startScreen">
-            <p style="font-size: 1.05rem; color: #888; margin-bottom: 12px;">
-                Du ser en svensk mening och spanska ord i slumpmässig ordning.<br>
-                Klicka på orden i rätt ordning för att bygga den spanska meningen!
-            </p>
-            <button class="start-btn" id="startBtn">Starta!</button>
-        </div>
-
-        <div id="exerciseArea" class="hidden">
+        <div class="exercise-view" id="exerciseView">
+            <button class="back-btn" id="backToCategories"><span>←</span> Tillbaka</button>
+            <div class="exercise-header">
+                <div class="exercise-title" id="exerciseTitle">Kategori</div>
+                <div class="exercise-progress-text" id="exerciseProgressText">1/10</div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat correct"><div class="stat-value" id="correctCount">0</div><div class="stat-label">Rätt</div></div>
+                <div class="stat wrong"><div class="stat-value" id="wrongCount">0</div><div class="stat-label">Fel</div></div>
+                <div class="stat streak"><div class="stat-value" id="currentStreak">0</div><div class="stat-label">Streak</div></div>
+            </div>
             <div class="progress-container">
-                <div class="progress-text">
-                    <span id="progressText">Mening 1 av 10</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
             </div>
-
-            <div class="exercise-card">
-                <div class="translation-label">Översätt till spanska:</div>
-                <div class="swedish-sentence" id="swedishSentence">Jag heter Johan</div>
-
-                <div class="build-area-label">Din mening:</div>
-                <div class="build-area" id="buildArea">
-                    <span class="build-area-placeholder">Klicka på orden nedan...</span>
-                </div>
-
-                <div class="word-bank-label">Tillgängliga ord:</div>
-                <div class="word-bank" id="wordBank"></div>
-
-                <div class="buttons">
-                    <button class="clear-btn" id="clearBtn">Rensa</button>
-                    <button class="check-btn" id="checkBtn" disabled>Kontrollera</button>
-                </div>
+            <div class="question-card">
+                <div class="question-label">Bygg meningen</div>
+                <div class="question-translation" id="questionTranslation">Svensk översättning</div>
             </div>
-
-            <div class="feedback" id="feedback">
-                <div id="feedbackText"></div>
-                <div class="correct-sentence" id="correctSentence"></div>
-            </div>
-
-            <button class="next-btn" id="nextBtn">Nästa mening →</button>
-
-            <div class="keyboard-hints">
-                <kbd>Enter</kbd> Kontrollera / Nästa &nbsp; <kbd>Backspace</kbd> Ta bort sista ordet
-            </div>
-        </div>
-
-        <div class="results hidden" id="resultsScreen">
-            <h2>Bra jobbat!</h2>
-            <div class="results-stats">
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div>
-                    <div class="results-stat-label">Rätt</div>
+            <div class="answer-area" id="answerArea"></div>
+            <div class="word-buttons" id="wordButtons"></div>
+            <div class="feedback" id="feedback"></div>
+            <div class="correct-answer" id="correctAnswer"></div>
+            <button class="check-btn" id="checkBtn">Kolla svar</button>
+            <button class="next-btn" id="nextBtn">Nästa →</button>
+            <div class="results" id="resultsScreen">
+                <h2>Bra jobbat!</h2>
+                <div class="results-stats">
+                    <div class="results-stat"><div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div><div class="results-stat-label">Rätt</div></div>
+                    <div class="results-stat"><div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div><div class="results-stat-label">Fel</div></div>
+                    <div class="results-stat"><div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div><div class="results-stat-label">Resultat</div></div>
                 </div>
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div>
-                    <div class="results-stat-label">Fel</div>
-                </div>
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div>
-                    <div class="results-stat-label">Resultat</div>
-                </div>
+                <button class="restart-btn" id="restartBtn">Kör igen!</button>
+                <br><button class="back-btn" id="backFromResults" style="margin-top: 15px;">← Välj annan kategori</button>
             </div>
-            <button class="restart-btn" id="restartBtn">Kör igen!</button>
         </div>
     </div>
 
     <script>
-        // Sentences to build
-        const sentences = [
-            { sv: "Jag heter Johan", es: "Me llamo Johan" },
-            { sv: "Hur mår du?", es: "¿Cómo estás?" },
-            { sv: "Jag mår bra, tack", es: "Estoy bien, gracias" },
-            { sv: "Var kommer du ifrån?", es: "¿De dónde eres?" },
-            { sv: "Jag är från Sverige", es: "Soy de Suecia" },
-            { sv: "Jag bor i Palma", es: "Vivo en Palma" },
-            { sv: "Hur gammal är du?", es: "¿Cuántos años tienes?" },
-            { sv: "Jag är trettio år", es: "Tengo treinta años" },
-            { sv: "Trevligt att träffas", es: "Mucho gusto" },
-            { sv: "God morgon!", es: "¡Buenos días!" },
-            { sv: "God eftermiddag!", es: "¡Buenas tardes!" },
-            { sv: "God kväll!", es: "¡Buenas noches!" },
-            { sv: "Vi ses!", es: "¡Hasta luego!" },
-            { sv: "Vi ses imorgon!", es: "¡Hasta mañana!" },
-            { sv: "Vad heter du?", es: "¿Cómo te llamas?" },
-            { sv: "Var bor du?", es: "¿Dónde vives?" },
-            { sv: "Jag pratar lite spanska", es: "Hablo un poco de español" },
-            { sv: "Jag gillar kaffe", es: "Me gusta el café" },
-            { sv: "Jag har en bror", es: "Tengo un hermano" },
-            { sv: "Min mamma heter Maria", es: "Mi madre se llama María" },
-            { sv: "Jag är trött", es: "Estoy cansado" },
-            { sv: "Jag är glad", es: "Estoy contento" },
-            { sv: "Himlen är blå", es: "El cielo es azul" },
-            { sv: "Idag är det måndag", es: "Hoy es lunes" },
-            { sv: "Jag arbetar på kontoret", es: "Trabajo en la oficina" },
-            { sv: "Jag vill lära mig spanska", es: "Quiero aprender español" },
-            { sv: "Jag behöver hjälp", es: "Necesito ayuda" },
-            { sv: "Vad gör du?", es: "¿Qué haces?" },
-            { sv: "Var är du?", es: "¿Dónde estás?" },
-            { sv: "Jag är svensk", es: "Soy sueco" }
-        ];
+        const exerciseData = {
+            "saludos": {
+                "name": "Hälsningar", "icon": "👋", "color": "#f39c12",
+                "items": [
+                    {"sentence": "¡Buenos días!", "translation": "God morgon!"},
+                    {"sentence": "¿Cómo estás?", "translation": "Hur mår du?"},
+                    {"sentence": "Mucho gusto", "translation": "Trevligt att träffas"},
+                    {"sentence": "Hasta luego", "translation": "Vi ses!"},
+                    {"sentence": "Bien, gracias", "translation": "Bra, tack"}
+                ]
+            },
+            "presentacion": {
+                "name": "Presentera dig", "icon": "🗣️", "color": "#e67e22",
+                "items": [
+                    {"sentence": "Me llamo Johan", "translation": "Jag heter Johan"},
+                    {"sentence": "Soy de Suecia", "translation": "Jag är från Sverige"},
+                    {"sentence": "Tengo treinta años", "translation": "Jag är 30 år"},
+                    {"sentence": "Vivo en Palma", "translation": "Jag bor i Palma"},
+                    {"sentence": "Soy sueco", "translation": "Jag är svensk"}
+                ]
+            },
+            "familia": {
+                "name": "Familjen", "icon": "👨‍👩‍👧", "color": "#9b59b6",
+                "items": [
+                    {"sentence": "Mi padre se llama Pedro", "translation": "Min pappa heter Pedro"},
+                    {"sentence": "Tengo un hermano", "translation": "Jag har en bror"},
+                    {"sentence": "Mi madre es alta", "translation": "Min mamma är lång"},
+                    {"sentence": "Tengo dos hijos", "translation": "Jag har två barn"}
+                ]
+            },
+            "verbos": {
+                "name": "Verb", "icon": "📝", "color": "#8e44ad",
+                "items": [
+                    {"sentence": "Hablo español", "translation": "Jag pratar spanska"},
+                    {"sentence": "Trabajo en Barcelona", "translation": "Jag jobbar i Barcelona"},
+                    {"sentence": "Me gusta la música", "translation": "Jag gillar musik"},
+                    {"sentence": "Quiero aprender", "translation": "Jag vill lära mig"},
+                    {"sentence": "Necesito ayuda", "translation": "Jag behöver hjälp"}
+                ]
+            }
+        };
 
-        // App State
-        let exercises = [];
+        let questions = [];
         let currentIndex = 0;
         let correctCount = 0;
         let wrongCount = 0;
         let streak = 0;
-        let builtWords = [];
+        let currentCategory = null;
         let hasAnswered = false;
-        const EXERCISE_COUNT = 10;
+        let selectedWords = [];
+        let currentWords = [];
 
-        // DOM Elements
-        const startScreen = document.getElementById('startScreen');
-        const exerciseArea = document.getElementById('exerciseArea');
-        const resultsScreen = document.getElementById('resultsScreen');
-        const swedishSentence = document.getElementById('swedishSentence');
-        const buildArea = document.getElementById('buildArea');
-        const wordBank = document.getElementById('wordBank');
-        const checkBtn = document.getElementById('checkBtn');
-        const clearBtn = document.getElementById('clearBtn');
+        const categoryView = document.getElementById('categoryView');
+        const exerciseView = document.getElementById('exerciseView');
+        const categoriesList = document.getElementById('categoriesList');
+        const answerArea = document.getElementById('answerArea');
+        const wordButtons = document.getElementById('wordButtons');
         const feedback = document.getElementById('feedback');
+        const correctAnswer = document.getElementById('correctAnswer');
+        const checkBtn = document.getElementById('checkBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const resultsScreen = document.getElementById('resultsScreen');
 
-        function init() {
-            document.getElementById('startBtn').addEventListener('click', startExercise);
-            document.getElementById('restartBtn').addEventListener('click', startExercise);
-            checkBtn.addEventListener('click', checkAnswer);
-            clearBtn.addEventListener('click', clearBuild);
-            nextBtn.addEventListener('click', nextExercise);
-
-            document.addEventListener('keydown', (e) => {
-                if (exerciseArea.classList.contains('hidden')) return;
-
-                if (e.key === 'Enter') {
-                    if (!hasAnswered && builtWords.length > 0) {
-                        checkAnswer();
-                    } else if (hasAnswered) {
-                        nextExercise();
-                    }
-                } else if (e.key === 'Backspace' && !hasAnswered) {
-                    e.preventDefault();
-                    removeLastWord();
-                }
+        function initCategories() {
+            const saved = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
+            const categoryProgress = saved.categoryProgress || {};
+            Object.keys(exerciseData).forEach(key => {
+                const cat = exerciseData[key];
+                const progress = categoryProgress[key] || 0;
+                const circumference = 2 * Math.PI * 18;
+                const offset = circumference - (progress / 100) * circumference;
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                item.innerHTML = `
+                    <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">${cat.icon}</div>
+                    <div class="category-info"><div class="category-name">${cat.name}</div><div class="category-count">${cat.items.length} meningar</div></div>
+                    <div class="progress-circle"><svg width="45" height="45"><circle class="bg" cx="22.5" cy="22.5" r="18"></circle><circle class="progress" cx="22.5" cy="22.5" r="18" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="stroke: ${cat.color}"></circle></svg></div>
+                `;
+                item.addEventListener('click', () => startExercise(key));
+                categoriesList.appendChild(item);
             });
+            updateOverviewStats();
+        }
+
+        function updateOverviewStats() {
+            const saved = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
+            document.getElementById('totalSessions').textContent = saved.sessions || 0;
+            document.getElementById('totalCorrect').textContent = saved.totalCorrect || 0;
+            const total = (saved.totalCorrect || 0) + (saved.totalWrong || 0);
+            const acc = total > 0 ? Math.round((saved.totalCorrect / total) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${acc}%`;
         }
 
         function shuffle(array) {
@@ -537,199 +299,142 @@
             return array;
         }
 
-        function tokenize(sentence) {
-            // Split by spaces but keep punctuation attached where appropriate
-            return sentence.match(/[¿¡]?[\wáéíóúüñÁÉÍÓÚÜÑ]+[.,!?]?|[.,!?]/g) || [];
+        function startExercise(category) {
+            currentCategory = category;
+            let items = category === 'all'
+                ? Object.values(exerciseData).flatMap(c => c.items)
+                : exerciseData[category].items;
+            questions = shuffle([...items]);
+            currentIndex = 0; correctCount = 0; wrongCount = 0; streak = 0;
+            const title = category === 'all' ? 'Alla kategorier' : exerciseData[category].name;
+            document.getElementById('exerciseTitle').textContent = title;
+            categoryView.classList.add('hidden');
+            exerciseView.classList.add('active');
+            resultsScreen.classList.remove('show');
+            displayQuestion();
         }
 
-        function startExercise() {
-            exercises = shuffle([...sentences]).slice(0, EXERCISE_COUNT);
-            currentIndex = 0;
-            correctCount = 0;
-            wrongCount = 0;
-            streak = 0;
-
-            startScreen.classList.add('hidden');
-            resultsScreen.classList.add('hidden');
-            exerciseArea.classList.remove('hidden');
-
-            displayExercise();
-        }
-
-        function displayExercise() {
-            if (currentIndex >= exercises.length) {
-                showResults();
-                return;
-            }
-
+        function displayQuestion() {
+            if (currentIndex >= questions.length) { showResults(); return; }
             hasAnswered = false;
-            builtWords = [];
-
-            const ex = exercises[currentIndex];
-            swedishSentence.textContent = ex.sv;
-
-            // Tokenize and shuffle Spanish words
-            const words = tokenize(ex.es);
-            const shuffledWords = shuffle([...words]);
-
-            // Clear and populate word bank
-            wordBank.innerHTML = '';
+            selectedWords = [];
+            const q = questions[currentIndex];
+            document.getElementById('questionTranslation').textContent = q.translation;
+            currentWords = q.sentence.replace(/[¡¿]/g, '').split(' ');
+            const shuffledWords = shuffle([...currentWords]);
+            answerArea.innerHTML = '';
+            answerArea.className = 'answer-area';
+            wordButtons.innerHTML = '';
             shuffledWords.forEach((word, i) => {
-                const chip = document.createElement('div');
-                chip.className = 'word-chip';
-                chip.textContent = word;
-                chip.dataset.index = i;
-                chip.dataset.word = word;
-                chip.addEventListener('click', () => addWord(chip));
-                wordBank.appendChild(chip);
+                const btn = document.createElement('button');
+                btn.className = 'word-btn';
+                btn.textContent = word;
+                btn.dataset.index = i;
+                btn.addEventListener('click', () => selectWord(btn, word));
+                wordButtons.appendChild(btn);
             });
-
-            // Reset build area
-            buildArea.innerHTML = '<span class="build-area-placeholder">Klicka på orden nedan...</span>';
-            buildArea.classList.remove('correct', 'wrong');
-
-            checkBtn.disabled = true;
             feedback.classList.remove('show', 'correct', 'wrong');
+            correctAnswer.textContent = '';
+            checkBtn.style.display = 'block';
             nextBtn.classList.remove('show');
-
             updateProgress();
-            updateStats();
         }
 
-        function addWord(chip) {
-            if (hasAnswered || chip.classList.contains('used')) return;
-
-            chip.classList.add('used');
-            builtWords.push({
-                word: chip.dataset.word,
-                chipIndex: chip.dataset.index
-            });
-
-            renderBuildArea();
-            checkBtn.disabled = builtWords.length === 0;
+        function selectWord(btn, word) {
+            if (hasAnswered || btn.classList.contains('used')) return;
+            btn.classList.add('used');
+            selectedWords.push(word);
+            const answerBtn = document.createElement('button');
+            answerBtn.className = 'word-btn in-answer';
+            answerBtn.textContent = word;
+            answerBtn.addEventListener('click', () => removeWord(answerBtn, btn, word));
+            answerArea.appendChild(answerBtn);
         }
 
-        function removeWord(index) {
+        function removeWord(answerBtn, originalBtn, word) {
             if (hasAnswered) return;
-
-            const removed = builtWords.splice(index, 1)[0];
-
-            // Re-enable the chip in word bank
-            const chips = wordBank.querySelectorAll('.word-chip');
-            chips.forEach(chip => {
-                if (chip.dataset.index === removed.chipIndex) {
-                    chip.classList.remove('used');
-                }
-            });
-
-            renderBuildArea();
-            checkBtn.disabled = builtWords.length === 0;
-        }
-
-        function removeLastWord() {
-            if (builtWords.length > 0) {
-                removeWord(builtWords.length - 1);
-            }
-        }
-
-        function renderBuildArea() {
-            if (builtWords.length === 0) {
-                buildArea.innerHTML = '<span class="build-area-placeholder">Klicka på orden nedan...</span>';
-                return;
-            }
-
-            buildArea.innerHTML = '';
-            builtWords.forEach((item, i) => {
-                const chip = document.createElement('div');
-                chip.className = 'word-chip in-build';
-                chip.textContent = item.word;
-                chip.addEventListener('click', () => removeWord(i));
-                buildArea.appendChild(chip);
-            });
-        }
-
-        function clearBuild() {
-            if (hasAnswered) return;
-
-            builtWords = [];
-            const chips = wordBank.querySelectorAll('.word-chip');
-            chips.forEach(chip => chip.classList.remove('used'));
-            renderBuildArea();
-            checkBtn.disabled = true;
-        }
-
-        function normalizeForComparison(str) {
-            return str.toLowerCase()
-                .replace(/\s+/g, ' ')
-                .trim();
+            answerArea.removeChild(answerBtn);
+            originalBtn.classList.remove('used');
+            selectedWords = selectedWords.filter(w => w !== word || selectedWords.indexOf(word) !== selectedWords.lastIndexOf(word) ? w !== word : false);
+            const idx = selectedWords.indexOf(word);
+            if (idx > -1) selectedWords.splice(idx, 1);
         }
 
         function checkAnswer() {
-            if (hasAnswered || builtWords.length === 0) return;
-
+            if (hasAnswered) return;
             hasAnswered = true;
-            const ex = exercises[currentIndex];
-            const userSentence = builtWords.map(w => w.word).join(' ');
-            const isCorrect = normalizeForComparison(userSentence) === normalizeForComparison(ex.es);
-
-            checkBtn.disabled = true;
-
-            if (isCorrect) {
-                correctCount++;
-                streak++;
-                buildArea.classList.add('correct');
-                document.getElementById('feedbackText').textContent = 'Perfekt!';
-                document.getElementById('correctSentence').textContent = '';
+            const userAnswer = selectedWords.join(' ');
+            const correctSentence = currentWords.join(' ');
+            if (userAnswer.toLowerCase() === correctSentence.toLowerCase()) {
+                correctCount++; streak++;
+                answerArea.classList.add('correct');
+                feedback.textContent = 'Rätt!';
                 feedback.className = 'feedback show correct';
             } else {
-                wrongCount++;
-                streak = 0;
-                buildArea.classList.add('wrong');
-                document.getElementById('feedbackText').textContent = 'Inte riktigt...';
-                document.getElementById('correctSentence').textContent = `Rätt: ${ex.es}`;
+                wrongCount++; streak = 0;
+                answerArea.classList.add('wrong');
+                feedback.textContent = 'Fel!';
                 feedback.className = 'feedback show wrong';
+                correctAnswer.textContent = `Rätt svar: ${questions[currentIndex].sentence}`;
             }
-
+            checkBtn.style.display = 'none';
             nextBtn.classList.add('show');
             updateStats();
         }
 
-        function nextExercise() {
-            currentIndex++;
-            displayExercise();
-        }
+        function nextQuestion() { currentIndex++; displayQuestion(); }
 
         function updateProgress() {
-            const progress = (currentIndex / exercises.length) * 100;
+            const progress = (currentIndex / questions.length) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
-            document.getElementById('progressText').textContent = `Mening ${currentIndex + 1} av ${exercises.length}`;
-            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+            document.getElementById('exerciseProgressText').textContent = `${currentIndex + 1}/${questions.length}`;
         }
 
         function updateStats() {
             document.getElementById('correctCount').textContent = correctCount;
             document.getElementById('wrongCount').textContent = wrongCount;
-            document.getElementById('streakCount').textContent = streak;
+            document.getElementById('currentStreak').textContent = streak;
         }
 
         function showResults() {
-            exerciseArea.classList.add('hidden');
-            resultsScreen.classList.remove('hidden');
-
             document.getElementById('finalCorrect').textContent = correctCount;
             document.getElementById('finalWrong').textContent = wrongCount;
             const total = correctCount + wrongCount;
             const percent = total > 0 ? Math.round((correctCount / total) * 100) : 0;
             document.getElementById('finalPercent').textContent = `${percent}%`;
+            resultsScreen.classList.add('show');
+            saveProgress(percent);
+        }
 
+        function saveProgress(percent) {
             const saved = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
             saved.totalCorrect = (saved.totalCorrect || 0) + correctCount;
             saved.totalWrong = (saved.totalWrong || 0) + wrongCount;
             saved.sessions = (saved.sessions || 0) + 1;
+            if (currentCategory && currentCategory !== 'all') {
+                saved.categoryProgress = saved.categoryProgress || {};
+                saved.categoryProgress[currentCategory] = Math.max(saved.categoryProgress[currentCategory] || 0, percent);
+            }
             localStorage.setItem('spanishSentenceBuilder', JSON.stringify(saved));
         }
 
-        init();
+        function backToCategories() {
+            exerciseView.classList.remove('active');
+            categoryView.classList.remove('hidden');
+            resultsScreen.classList.remove('show');
+            updateOverviewStats();
+            categoriesList.innerHTML = '';
+            initCategories();
+        }
+
+        document.getElementById('practiceAllBtn').addEventListener('click', () => startExercise('all'));
+        document.getElementById('randomBtn').addEventListener('click', () => startExercise('all'));
+        document.getElementById('backToCategories').addEventListener('click', backToCategories);
+        document.getElementById('backFromResults').addEventListener('click', backToCategories);
+        document.getElementById('restartBtn').addEventListener('click', () => { resultsScreen.classList.remove('show'); startExercise(currentCategory); });
+        checkBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+        initCategories();
     </script>
 </body>
 </html>

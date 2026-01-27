@@ -3,554 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fyll i luckan - Spanish</title>
+    <title>Spanskbert - Fyll i luckan</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
             color: #fff;
         }
-
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 20px;
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 16px; background: rgba(255,255,255,0.1);
+            border: none; border-radius: 10px; color: #888;
+            font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+            text-decoration: none; margin-bottom: 20px;
         }
-
-        header {
-            text-align: center;
-            padding: 30px 0;
-        }
-
+        .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        header { text-align: center; padding: 20px 0 30px; }
         header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
             background: linear-gradient(90deg, #e74c3c, #f39c12);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
         }
-
-        header p {
-            color: #888;
+        header p { color: #888; font-size: 1rem; }
+        .stats-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 18px 12px; text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; }
+        .stat-value.sessions { color: #e74c3c; }
+        .stat-value.correct { color: #2ecc71; }
+        .stat-value.streak { color: #f39c12; }
+        .stat-label { font-size: 0.8rem; color: #888; margin-top: 5px; }
+        .main-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+        .main-btn {
+            padding: 18px 20px; border: none; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
         }
-
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+        .main-btn.primary { background: linear-gradient(90deg, #e74c3c, #f39c12); color: #fff; }
+        .main-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .section-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .categories-list { display: flex; flex-direction: column; gap: 10px; }
+        .category-item {
+            display: flex; align-items: center; padding: 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 15px; cursor: pointer; transition: all 0.2s;
         }
-
-        .stat {
-            text-align: center;
-            padding: 12px 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+        .category-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+        .category-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-right: 15px; flex-shrink: 0;
         }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: #888;
-            margin-top: 4px;
-        }
-
+        .category-info { flex: 1; }
+        .category-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+        .category-count { font-size: 0.9rem; color: #888; }
+        .progress-circle { width: 45px; height: 45px; }
+        .progress-circle svg { transform: rotate(-90deg); }
+        .progress-circle .bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 4; }
+        .progress-circle .progress { fill: none; stroke: #2ecc71; stroke-width: 4; stroke-linecap: round; }
+        .exercise-view { display: none; }
+        .exercise-view.active { display: block; }
+        .category-view { display: block; }
+        .category-view.hidden { display: none; }
+        .exercise-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .exercise-title { font-size: 1.3rem; font-weight: 600; }
+        .exercise-progress-text { color: #888; font-size: 0.95rem; }
+        .stats-bar { display: flex; justify-content: center; gap: 25px; margin-bottom: 25px; }
+        .stat { text-align: center; padding: 12px 20px; background: rgba(255,255,255,0.05); border-radius: 12px; }
+        .stat .stat-value { font-size: 1.5rem; }
         .stat.correct .stat-value { color: #2ecc71; }
         .stat.wrong .stat-value { color: #e74c3c; }
         .stat.streak .stat-value { color: #f39c12; }
-
-        .category-selector {
-            margin-bottom: 25px;
+        .progress-container { margin-bottom: 25px; }
+        .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #f39c12); border-radius: 3px; transition: width 0.3s; }
+        .question-card {
+            background: rgba(255,255,255,0.05); border-radius: 20px;
+            padding: 30px; margin-bottom: 20px; text-align: center;
         }
-
-        .category-selector label {
-            display: block;
-            margin-bottom: 8px;
-            color: #888;
-        }
-
-        .category-selector select {
-            width: 100%;
-            padding: 14px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .category-selector select option {
-            background: #1a1a2e;
-        }
-
-        .progress-container {
-            margin-bottom: 25px;
-        }
-
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            color: #888;
-            font-size: 0.85rem;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #e74c3c, #f39c12);
-            border-radius: 3px;
-            transition: width 0.3s;
-        }
-
-        .exercise-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 35px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .exercise-label {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .sentence {
-            font-size: 1.6rem;
-            line-height: 1.8;
-            margin-bottom: 25px;
-        }
-
-        .blank {
-            display: inline-block;
-            min-width: 120px;
-            border-bottom: 3px solid #f39c12;
-            margin: 0 5px;
-            padding: 5px 10px;
-            color: #f39c12;
-            font-weight: bold;
-        }
-
-        .hint {
-            font-size: 0.95rem;
-            color: #888;
-            margin-bottom: 20px;
-        }
-
-        .hint strong {
-            color: #aaa;
-        }
-
-        .input-section {
-            margin-bottom: 20px;
-        }
-
+        .question-label { font-size: 0.85rem; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .question-sentence { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; line-height: 1.6; }
+        .question-sentence .blank { color: #e74c3c; border-bottom: 3px solid #e74c3c; padding: 0 20px; }
+        .question-translation { font-size: 1rem; color: #888; font-style: italic; }
+        .input-area { margin-bottom: 20px; }
         .answer-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 15px 20px;
-            font-size: 1.2rem;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.3s;
+            width: 100%; padding: 16px; font-size: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 12px;
+            background: rgba(255,255,255,0.05); color: #fff;
+            text-align: center; outline: none; transition: all 0.3s;
         }
-
-        .answer-input:focus {
-            border-color: #f39c12;
-        }
-
-        .answer-input.correct {
-            border-color: #2ecc71;
-            background: rgba(46, 204, 113, 0.1);
-        }
-
-        .answer-input.wrong {
-            border-color: #e74c3c;
-            background: rgba(231, 76, 60, 0.1);
-        }
-
-        .submit-btn {
-            padding: 14px 40px;
-            border: none;
-            border-radius: 12px;
+        .answer-input:focus { border-color: #e74c3c; }
+        .answer-input.correct { border-color: #2ecc71; background: rgba(46, 204, 113, 0.2); }
+        .answer-input.wrong { border-color: #e74c3c; background: rgba(231, 76, 60, 0.2); }
+        .check-btn, .next-btn {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
             background: linear-gradient(90deg, #e74c3c, #f39c12);
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 15px;
+            color: #fff; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
         }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: default;
-            transform: none;
-        }
-
-        .feedback {
-            text-align: center;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .feedback.show {
-            display: block;
-        }
-
-        .feedback.correct {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-        }
-
-        .feedback.wrong {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-        }
-
-        .correct-answer {
-            font-size: 1.1rem;
-            margin-top: 10px;
-        }
-
-        .next-btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
+        .check-btn:hover, .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .next-btn { display: none; }
+        .next-btn.show { display: block; }
+        .feedback { text-align: center; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .feedback.wrong { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .keyboard-hints { text-align: center; color: #555; font-size: 0.8rem; margin-top: 15px; }
+        .keyboard-hints kbd { background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 4px; margin: 0 2px; }
+        .results { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; display: none; }
+        .results.show { display: block; }
+        .results h2 { font-size: 1.8rem; margin-bottom: 20px; }
+        .results-stats { display: flex; justify-content: center; gap: 30px; margin: 25px 0; }
+        .results-stat { text-align: center; }
+        .results-stat-value { font-size: 2.5rem; font-weight: bold; }
+        .results-stat-label { color: #888; font-size: 0.9rem; }
+        .restart-btn {
+            padding: 16px 40px; border: none; border-radius: 15px;
+            font-size: 1rem; cursor: pointer;
             background: linear-gradient(90deg, #e74c3c, #f39c12);
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: none;
+            color: #fff; font-weight: 600; margin-top: 15px; transition: all 0.3s;
         }
-
-        .next-btn.show {
-            display: block;
-        }
-
-        .start-screen, .results {
-            text-align: center;
-            padding: 50px 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-        }
-
-        .start-btn, .restart-btn {
-            padding: 18px 50px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            background: linear-gradient(90deg, #e74c3c, #f39c12);
-            color: #fff;
-            font-weight: 600;
-            margin-top: 25px;
-            transition: all 0.3s;
-        }
-
-        .results-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 30px 0;
-        }
-
-        .results-stat-value {
-            font-size: 3rem;
-            font-weight: bold;
-        }
-
-        .results-stat-label {
-            color: #888;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .keyboard-hints {
-            text-align: center;
-            color: #555;
-            font-size: 0.8rem;
-            margin-top: 15px;
-        }
-
-        .keyboard-hints kbd {
-            background: rgba(255,255,255,0.1);
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
+        .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
         @media (max-width: 500px) {
-            .sentence {
-                font-size: 1.3rem;
-            }
+            .container { padding: 15px; }
+            header h1 { font-size: 2rem; }
+            .question-sentence { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Fyll i luckan</h1>
-            <p>Komplettera meningen med rätt spanskt ord</p>
-        </header>
-
-        <div class="stats-bar">
-            <div class="stat correct">
-                <div class="stat-value" id="correctCount">0</div>
-                <div class="stat-label">Rätt</div>
+        <div class="category-view" id="categoryView">
+            <a href="index.html" class="back-btn"><span>←</span> Huvudmeny</a>
+            <header>
+                <h1>Fyll i luckan</h1>
+                <p>Komplettera meningar med rätt ord</p>
+            </header>
+            <div class="stats-overview">
+                <div class="stat-card"><div class="stat-value sessions" id="totalSessions">0</div><div class="stat-label">Övningar</div></div>
+                <div class="stat-card"><div class="stat-value correct" id="totalCorrect">0</div><div class="stat-label">Rätt</div></div>
+                <div class="stat-card"><div class="stat-value streak" id="accuracy">0%</div><div class="stat-label">Träffsäkerhet</div></div>
             </div>
-            <div class="stat wrong">
-                <div class="stat-value" id="wrongCount">0</div>
-                <div class="stat-label">Fel</div>
+            <div class="main-buttons">
+                <button class="main-btn primary" id="practiceAllBtn">Öva alla</button>
+                <button class="main-btn secondary" id="randomBtn">Slumpa</button>
             </div>
-            <div class="stat streak">
-                <div class="stat-value" id="streakCount">0</div>
-                <div class="stat-label">Streak</div>
-            </div>
+            <div class="section-title">Kategorier</div>
+            <div class="categories-list" id="categoriesList"></div>
         </div>
 
-        <div class="category-selector">
-            <label for="categorySelect">Välj kategori:</label>
-            <select id="categorySelect">
-                <option value="all">Alla kategorier</option>
-            </select>
-        </div>
-
-        <div class="start-screen" id="startScreen">
-            <p style="font-size: 1.1rem; color: #888; margin-bottom: 15px;">
-                Du ser en mening med en lucka. Skriv in det spanska ordet som saknas!
-            </p>
-            <button class="start-btn" id="startBtn">Starta!</button>
-        </div>
-
-        <div id="exerciseArea" class="hidden">
+        <div class="exercise-view" id="exerciseView">
+            <button class="back-btn" id="backToCategories"><span>←</span> Tillbaka</button>
+            <div class="exercise-header">
+                <div class="exercise-title" id="exerciseTitle">Kategori</div>
+                <div class="exercise-progress-text" id="exerciseProgressText">1/10</div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat correct"><div class="stat-value" id="correctCount">0</div><div class="stat-label">Rätt</div></div>
+                <div class="stat wrong"><div class="stat-value" id="wrongCount">0</div><div class="stat-label">Fel</div></div>
+                <div class="stat streak"><div class="stat-value" id="currentStreak">0</div><div class="stat-label">Streak</div></div>
+            </div>
             <div class="progress-container">
-                <div class="progress-text">
-                    <span id="progressText">Uppgift 1 av 15</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
             </div>
-
-            <div class="exercise-card">
-                <div class="exercise-label" id="exerciseLabel">Skriv det spanska ordet</div>
-                <div class="sentence" id="sentence">
-                    Jag heter <span class="blank" id="blankDisplay">___</span>
-                </div>
-                <div class="hint" id="hint">
-                    <strong>Ledtråd:</strong> <span id="hintText">Me llamo...</span>
-                </div>
-
-                <div class="input-section">
-                    <input type="text" class="answer-input" id="answerInput" placeholder="Skriv svaret..." autocomplete="off" autocapitalize="off">
-                    <br>
-                    <button class="submit-btn" id="submitBtn">Kontrollera</button>
-                </div>
+            <div class="question-card">
+                <div class="question-label">Fyll i rätt ord</div>
+                <div class="question-sentence" id="questionSentence">Mening med <span class="blank">___</span></div>
+                <div class="question-translation" id="questionTranslation">Svensk översättning</div>
             </div>
-
-            <div class="feedback" id="feedback">
-                <div id="feedbackText"></div>
-                <div class="correct-answer" id="correctAnswer"></div>
+            <div class="input-area">
+                <input type="text" class="answer-input" id="answerInput" placeholder="Skriv svaret..." autocomplete="off">
             </div>
-
-            <button class="next-btn" id="nextBtn">Nästa uppgift →</button>
-
-            <div class="keyboard-hints">
-                <kbd>Enter</kbd> Kontrollera / Nästa
+            <div class="feedback" id="feedback"></div>
+            <button class="check-btn" id="checkBtn">Kolla svar</button>
+            <button class="next-btn" id="nextBtn">Nästa →</button>
+            <div class="keyboard-hints"><kbd>Enter</kbd> Kolla/Nästa</div>
+            <div class="results" id="resultsScreen">
+                <h2>Bra jobbat!</h2>
+                <div class="results-stats">
+                    <div class="results-stat"><div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div><div class="results-stat-label">Rätt</div></div>
+                    <div class="results-stat"><div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div><div class="results-stat-label">Fel</div></div>
+                    <div class="results-stat"><div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div><div class="results-stat-label">Resultat</div></div>
+                </div>
+                <button class="restart-btn" id="restartBtn">Kör igen!</button>
+                <br><button class="back-btn" id="backFromResults" style="margin-top: 15px;">← Välj annan kategori</button>
             </div>
-        </div>
-
-        <div class="results hidden" id="resultsScreen">
-            <h2>Bra jobbat!</h2>
-            <div class="results-stats">
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div>
-                    <div class="results-stat-label">Rätt</div>
-                </div>
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div>
-                    <div class="results-stat-label">Fel</div>
-                </div>
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div>
-                    <div class="results-stat-label">Resultat</div>
-                </div>
-            </div>
-            <button class="restart-btn" id="restartBtn">Kör igen!</button>
         </div>
     </div>
 
     <script>
-        // Sentence templates with blanks
-        const sentenceTemplates = {
-            "saludos": [
-                { sv: "Hej! Hur mår du?", template: "¡___! ¿Cómo estás?", answer: "Hola", hint: "Grundläggande hälsning" },
-                { sv: "God morgon!", template: "¡Buenos ___!", answer: "días", hint: "Morgonhälsning" },
-                { sv: "God eftermiddag!", template: "¡Buenas ___!", answer: "tardes", hint: "Eftermiddagshälsning" },
-                { sv: "Vi ses!", template: "¡Hasta ___!", answer: "luego", hint: "Avskedsfras" },
-                { sv: "Trevligt att träffas", template: "Mucho ___", answer: "gusto", hint: "När man möter någon" },
-                { sv: "Bra, tack", template: "Bien, ___", answer: "gracias", hint: "Artigt svar" },
-                { sv: "Vi ses imorgon!", template: "¡Hasta ___!", answer: "mañana", hint: "Avslut när man ses igen nästa dag" }
-            ],
-            "presentacion": [
-                { sv: "Jag heter Johan", template: "Me ___ Johan", answer: "llamo", hint: "Verb för att säga sitt namn" },
-                { sv: "Jag är från Sverige", template: "Soy ___ Suecia", answer: "de", hint: "Preposition för ursprung" },
-                { sv: "Jag är 30 år", template: "Tengo treinta ___", answer: "años", hint: "Spanskt ord för år/ålder" },
-                { sv: "Var bor du?", template: "¿Dónde ___?", answer: "vives", hint: "Verb: att bo (du-form)" },
-                { sv: "Jag bor i Palma", template: "___ en Palma", answer: "Vivo", hint: "Verb: att bo (jag-form)" },
-                { sv: "Vad heter du?", template: "¿Cómo te ___?", answer: "llamas", hint: "Verb: att heta (du-form)" },
-                { sv: "Hur gammal är du?", template: "¿Cuántos años ___?", answer: "tienes", hint: "Verb: att ha (du-form)" }
-            ],
-            "familia": [
-                { sv: "Min mamma heter Maria", template: "Mi ___ se llama María", answer: "madre", hint: "Kvinnlig förälder" },
-                { sv: "Jag har en bror", template: "Tengo un ___", answer: "hermano", hint: "Manligt syskon" },
-                { sv: "Min syster är ung", template: "Mi ___ es joven", answer: "hermana", hint: "Kvinnligt syskon" },
-                { sv: "Mina föräldrar bor i Stockholm", template: "Mis ___ viven en Estocolmo", answer: "padres", hint: "Föräldrar (plural)" },
-                { sv: "Jag har en flickvän", template: "Tengo una ___", answer: "novia", hint: "Romantisk partner (kvinna)" },
-                { sv: "Min farfar är gammal", template: "Mi ___ es viejo", answer: "abuelo", hint: "Manlig morförälder/farförälder" }
-            ],
-            "colores": [
-                { sv: "Himlen är blå", template: "El cielo es ___", answer: "azul", hint: "Himlens färg" },
-                { sv: "Gräset är grönt", template: "La hierba es ___", answer: "verde", hint: "Naturens färg" },
-                { sv: "Solen är gul", template: "El sol es ___", answer: "amarillo", hint: "Solens färg" },
-                { sv: "Snön är vit", template: "La nieve es ___", answer: "blanca", hint: "Snöns färg (femininum)" },
-                { sv: "Natten är svart", template: "La noche es ___", answer: "negra", hint: "Mörkrets färg (femininum)" },
-                { sv: "Rosen är röd", template: "La rosa es ___", answer: "roja", hint: "Kärlekens färg (femininum)" }
-            ],
-            "emociones": [
-                { sv: "Jag är glad", template: "Estoy ___", answer: "contento", hint: "Positiv känsla" },
-                { sv: "Jag är trött", template: "Estoy ___", answer: "cansado", hint: "Efter en lång dag" },
-                { sv: "Hon är ledsen", template: "Ella está ___", answer: "triste", hint: "Negativ känsla, sorgen" },
-                { sv: "Jag mår bra", template: "Estoy ___", answer: "bien", hint: "Positivt tillstånd" },
-                { sv: "Han är arg", template: "Él está ___", answer: "enfadado", hint: "Irriterad, upprörd" }
-            ],
-            "dias_semana": [
-                { sv: "Idag är det måndag", template: "Hoy es ___", answer: "lunes", hint: "Första arbetsdagen" },
-                { sv: "Imorgon är det fredag", template: "Mañana es ___", answer: "viernes", hint: "Sista arbetsdagen" },
-                { sv: "Jag gillar lördagar", template: "Me gustan los ___", answer: "sábados", hint: "Första helgdagen" },
-                { sv: "Söndagar är lugna", template: "Los ___ son tranquilos", answer: "domingos", hint: "Vilodag" }
-            ],
-            "verbos": [
-                { sv: "Jag pratar spanska", template: "___ español", answer: "Hablo", hint: "Verb: att prata (jag-form)" },
-                { sv: "Jag arbetar på kontoret", template: "___ en la oficina", answer: "Trabajo", hint: "Verb: att arbeta (jag-form)" },
-                { sv: "Jag vill lära mig", template: "___ aprender", answer: "Quiero", hint: "Verb: att vilja (jag-form)" },
-                { sv: "Jag behöver hjälp", template: "___ ayuda", answer: "Necesito", hint: "Verb: att behöva (jag-form)" },
-                { sv: "Jag gillar kaffe", template: "Me ___ el café", answer: "gusta", hint: "Verb: att gilla" }
-            ],
-            "interrogativos": [
-                { sv: "Vad gör du?", template: "¿___ haces?", answer: "Qué", hint: "Frågeord: vad" },
-                { sv: "Var är du?", template: "¿___ estás?", answer: "Dónde", hint: "Frågeord: var" },
-                { sv: "Hur mår du?", template: "¿___ estás?", answer: "Cómo", hint: "Frågeord: hur" },
-                { sv: "Vem är det?", template: "¿___ es?", answer: "Quién", hint: "Frågeord: vem" },
-                { sv: "När kommer du?", template: "¿___ vienes?", answer: "Cuándo", hint: "Frågeord: när" },
-                { sv: "Varför?", template: "¿Por ___?", answer: "qué", hint: "Frågeord: varför" }
-            ],
-            "ser_estar": [
-                { sv: "Jag är svensk (nationalitet)", template: "___ sueco", answer: "Soy", hint: "SER för permanenta egenskaper" },
-                { sv: "Jag är i Madrid", template: "___ en Madrid", answer: "Estoy", hint: "ESTAR för plats" },
-                { sv: "Han är läkare", template: "Él ___ médico", answer: "es", hint: "SER för yrke" },
-                { sv: "Hon är trött", template: "Ella ___ cansada", answer: "está", hint: "ESTAR för tillstånd" },
-                { sv: "Boken är intressant", template: "El libro ___ interesante", answer: "es", hint: "SER för egenskaper" }
-            ]
+        const exerciseData = {
+            "saludos": {
+                "name": "Hälsningar", "icon": "👋", "color": "#f39c12",
+                "items": [
+                    {"sentence": "¡___ días!", "answer": "Buenos", "translation": "God morgon!"},
+                    {"sentence": "¡___ noches!", "answer": "Buenas", "translation": "God kväll!"},
+                    {"sentence": "¿___ tal?", "answer": "Qué", "translation": "Hur är det?"},
+                    {"sentence": "¿Cómo ___?", "answer": "estás", "translation": "Hur mår du?"},
+                    {"sentence": "Mucho ___", "answer": "gusto", "translation": "Trevligt att träffas"},
+                    {"sentence": "Hasta ___", "answer": "luego", "translation": "Vi ses!"},
+                    {"sentence": "Bien, ___", "answer": "gracias", "translation": "Bra, tack"},
+                    {"sentence": "Muy ___", "answer": "bien", "translation": "Mycket bra"}
+                ]
+            },
+            "presentacion": {
+                "name": "Presentera dig", "icon": "🗣️", "color": "#e67e22",
+                "items": [
+                    {"sentence": "Me ___ Johan", "answer": "llamo", "translation": "Jag heter Johan"},
+                    {"sentence": "Soy ___ Suecia", "answer": "de", "translation": "Jag är från Sverige"},
+                    {"sentence": "___ 30 años", "answer": "Tengo", "translation": "Jag är 30 år"},
+                    {"sentence": "___ en Palma", "answer": "Vivo", "translation": "Jag bor i Palma"},
+                    {"sentence": "¿De ___ eres?", "answer": "dónde", "translation": "Var kommer du ifrån?"},
+                    {"sentence": "¿___ te llamas?", "answer": "Cómo", "translation": "Vad heter du?"},
+                    {"sentence": "Soy ___", "answer": "sueco", "translation": "Jag är svensk"}
+                ]
+            },
+            "familia": {
+                "name": "Familjen", "icon": "👨‍👩‍👧", "color": "#9b59b6",
+                "items": [
+                    {"sentence": "Mi ___ se llama Pedro", "answer": "padre", "translation": "Min pappa heter Pedro"},
+                    {"sentence": "Mi ___ es María", "answer": "madre", "translation": "Min mamma är María"},
+                    {"sentence": "Tengo un ___", "answer": "hermano", "translation": "Jag har en bror"},
+                    {"sentence": "Tengo una ___", "answer": "hermana", "translation": "Jag har en syster"},
+                    {"sentence": "Mi ___ tiene 5 años", "answer": "hijo", "translation": "Min son är 5 år"},
+                    {"sentence": "Mi ___ es alta", "answer": "hija", "translation": "Min dotter är lång"}
+                ]
+            },
+            "verbos": {
+                "name": "Verb", "icon": "📝", "color": "#8e44ad",
+                "items": [
+                    {"sentence": "___ sueco", "answer": "Soy", "translation": "Jag är svensk (permanent)"},
+                    {"sentence": "___ cansado", "answer": "Estoy", "translation": "Jag är trött (tillfälligt)"},
+                    {"sentence": "___ dos hijos", "answer": "Tengo", "translation": "Jag har två barn"},
+                    {"sentence": "___ español", "answer": "Hablo", "translation": "Jag pratar spanska"},
+                    {"sentence": "___ en Barcelona", "answer": "Trabajo", "translation": "Jag jobbar i Barcelona"},
+                    {"sentence": "Me ___ la música", "answer": "gusta", "translation": "Jag gillar musik"}
+                ]
+            },
+            "colores": {
+                "name": "Färger", "icon": "🎨", "color": "#2ecc71",
+                "items": [
+                    {"sentence": "El cielo es ___", "answer": "azul", "translation": "Himlen är blå"},
+                    {"sentence": "La hierba es ___", "answer": "verde", "translation": "Gräset är grönt"},
+                    {"sentence": "El sol es ___", "answer": "amarillo", "translation": "Solen är gul"},
+                    {"sentence": "La sangre es ___", "answer": "roja", "translation": "Blodet är rött"},
+                    {"sentence": "La nieve es ___", "answer": "blanca", "translation": "Snön är vit"},
+                    {"sentence": "El carbón es ___", "answer": "negro", "translation": "Kolet är svart"}
+                ]
+            }
         };
 
-        // App State
-        let exercises = [];
+        let questions = [];
         let currentIndex = 0;
         let correctCount = 0;
         let wrongCount = 0;
         let streak = 0;
+        let currentCategory = null;
         let hasAnswered = false;
-        const EXERCISE_COUNT = 15;
 
-        // DOM Elements
-        const categorySelect = document.getElementById('categorySelect');
-        const startScreen = document.getElementById('startScreen');
-        const exerciseArea = document.getElementById('exerciseArea');
-        const resultsScreen = document.getElementById('resultsScreen');
-        const sentence = document.getElementById('sentence');
-        const blankDisplay = document.getElementById('blankDisplay');
-        const hintText = document.getElementById('hintText');
+        const categoryView = document.getElementById('categoryView');
+        const exerciseView = document.getElementById('exerciseView');
+        const categoriesList = document.getElementById('categoriesList');
         const answerInput = document.getElementById('answerInput');
-        const submitBtn = document.getElementById('submitBtn');
         const feedback = document.getElementById('feedback');
+        const checkBtn = document.getElementById('checkBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const resultsScreen = document.getElementById('resultsScreen');
 
-        function init() {
-            // Populate categories
-            Object.keys(sentenceTemplates).forEach(key => {
-                const option = document.createElement('option');
-                option.value = key;
-                const names = {
-                    saludos: "Hälsningar",
-                    presentacion: "Presentation",
-                    familia: "Familjen",
-                    colores: "Färger",
-                    emociones: "Känslor",
-                    dias_semana: "Veckodagar",
-                    verbos: "Verb",
-                    interrogativos: "Frågeord",
-                    ser_estar: "SER vs ESTAR"
-                };
-                option.textContent = `${names[key] || key} (${sentenceTemplates[key].length})`;
-                categorySelect.appendChild(option);
+        function initCategories() {
+            const saved = JSON.parse(localStorage.getItem('spanishFillBlank') || '{}');
+            const categoryProgress = saved.categoryProgress || {};
+            Object.keys(exerciseData).forEach(key => {
+                const cat = exerciseData[key];
+                const progress = categoryProgress[key] || 0;
+                const circumference = 2 * Math.PI * 18;
+                const offset = circumference - (progress / 100) * circumference;
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                item.innerHTML = `
+                    <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">${cat.icon}</div>
+                    <div class="category-info"><div class="category-name">${cat.name}</div><div class="category-count">${cat.items.length} övningar</div></div>
+                    <div class="progress-circle"><svg width="45" height="45"><circle class="bg" cx="22.5" cy="22.5" r="18"></circle><circle class="progress" cx="22.5" cy="22.5" r="18" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="stroke: ${cat.color}"></circle></svg></div>
+                `;
+                item.addEventListener('click', () => startExercise(key));
+                categoriesList.appendChild(item);
             });
+            updateOverviewStats();
+        }
 
-            document.getElementById('startBtn').addEventListener('click', startExercise);
-            document.getElementById('restartBtn').addEventListener('click', startExercise);
-            submitBtn.addEventListener('click', checkAnswer);
-            nextBtn.addEventListener('click', nextExercise);
-
-            answerInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    if (!hasAnswered) {
-                        checkAnswer();
-                    } else {
-                        nextExercise();
-                    }
-                }
-            });
+        function updateOverviewStats() {
+            const saved = JSON.parse(localStorage.getItem('spanishFillBlank') || '{}');
+            document.getElementById('totalSessions').textContent = saved.sessions || 0;
+            document.getElementById('totalCorrect').textContent = saved.totalCorrect || 0;
+            const total = (saved.totalCorrect || 0) + (saved.totalWrong || 0);
+            const acc = total > 0 ? Math.round((saved.totalCorrect / total) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${acc}%`;
         }
 
         function shuffle(array) {
@@ -561,143 +311,115 @@
             return array;
         }
 
-        function startExercise() {
-            const category = categorySelect.value;
-            let allExercises = [];
-
-            if (category === 'all') {
-                Object.values(sentenceTemplates).forEach(items => {
-                    allExercises = allExercises.concat(items);
-                });
-            } else {
-                allExercises = [...sentenceTemplates[category]];
-            }
-
-            shuffle(allExercises);
-            exercises = allExercises.slice(0, Math.min(EXERCISE_COUNT, allExercises.length));
-
-            currentIndex = 0;
-            correctCount = 0;
-            wrongCount = 0;
-            streak = 0;
-
-            startScreen.classList.add('hidden');
-            resultsScreen.classList.add('hidden');
-            exerciseArea.classList.remove('hidden');
-
-            displayExercise();
+        function startExercise(category) {
+            currentCategory = category;
+            let items = category === 'all'
+                ? Object.values(exerciseData).flatMap(c => c.items)
+                : exerciseData[category].items;
+            questions = shuffle([...items]);
+            currentIndex = 0; correctCount = 0; wrongCount = 0; streak = 0;
+            const title = category === 'all' ? 'Alla kategorier' : exerciseData[category].name;
+            document.getElementById('exerciseTitle').textContent = title;
+            categoryView.classList.add('hidden');
+            exerciseView.classList.add('active');
+            resultsScreen.classList.remove('show');
+            displayQuestion();
         }
 
-        function displayExercise() {
-            if (currentIndex >= exercises.length) {
-                showResults();
-                return;
-            }
-
+        function displayQuestion() {
+            if (currentIndex >= questions.length) { showResults(); return; }
             hasAnswered = false;
-            const ex = exercises[currentIndex];
-
-            // Display sentence with blank
-            const parts = ex.template.split('___');
-            sentence.innerHTML = parts[0] + '<span class="blank" id="blankDisplay">___</span>' + (parts[1] || '');
-
-            hintText.textContent = ex.hint;
-            document.getElementById('exerciseLabel').textContent = `Svenska: "${ex.sv}"`;
-
+            const q = questions[currentIndex];
+            document.getElementById('questionSentence').innerHTML = q.sentence.replace('___', '<span class="blank">___</span>');
+            document.getElementById('questionTranslation').textContent = q.translation;
             answerInput.value = '';
             answerInput.className = 'answer-input';
             answerInput.disabled = false;
             answerInput.focus();
-
-            submitBtn.disabled = false;
             feedback.classList.remove('show', 'correct', 'wrong');
+            checkBtn.style.display = 'block';
             nextBtn.classList.remove('show');
-
             updateProgress();
-            updateStats();
-        }
-
-        function normalizeAnswer(str) {
-            return str.toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[¡¿!?.,]/g, '')
-                .trim();
         }
 
         function checkAnswer() {
             if (hasAnswered) return;
-
-            const userAnswer = answerInput.value.trim();
-            if (!userAnswer) return;
-
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const correct = questions[currentIndex].answer.toLowerCase();
             hasAnswered = true;
-            const ex = exercises[currentIndex];
-            const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(ex.answer);
-
             answerInput.disabled = true;
-            submitBtn.disabled = true;
-
-            if (isCorrect) {
-                correctCount++;
-                streak++;
+            if (userAnswer === correct) {
+                correctCount++; streak++;
                 answerInput.classList.add('correct');
-                document.getElementById('blankDisplay').textContent = ex.answer;
-                document.getElementById('blankDisplay').style.color = '#2ecc71';
-                document.getElementById('feedbackText').textContent = 'Rätt!';
-                document.getElementById('correctAnswer').textContent = '';
+                feedback.textContent = 'Rätt!';
                 feedback.className = 'feedback show correct';
             } else {
-                wrongCount++;
-                streak = 0;
+                wrongCount++; streak = 0;
                 answerInput.classList.add('wrong');
-                document.getElementById('blankDisplay').textContent = ex.answer;
-                document.getElementById('blankDisplay').style.color = '#2ecc71';
-                document.getElementById('feedbackText').textContent = 'Inte riktigt...';
-                document.getElementById('correctAnswer').textContent = `Rätt svar: ${ex.answer}`;
+                feedback.textContent = `Fel! Rätt svar: ${questions[currentIndex].answer}`;
                 feedback.className = 'feedback show wrong';
             }
-
+            checkBtn.style.display = 'none';
             nextBtn.classList.add('show');
             updateStats();
         }
 
-        function nextExercise() {
-            currentIndex++;
-            displayExercise();
-        }
+        function nextQuestion() { currentIndex++; displayQuestion(); }
 
         function updateProgress() {
-            const progress = (currentIndex / exercises.length) * 100;
+            const progress = (currentIndex / questions.length) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
-            document.getElementById('progressText').textContent = `Uppgift ${currentIndex + 1} av ${exercises.length}`;
-            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+            document.getElementById('exerciseProgressText').textContent = `${currentIndex + 1}/${questions.length}`;
         }
 
         function updateStats() {
             document.getElementById('correctCount').textContent = correctCount;
             document.getElementById('wrongCount').textContent = wrongCount;
-            document.getElementById('streakCount').textContent = streak;
+            document.getElementById('currentStreak').textContent = streak;
         }
 
         function showResults() {
-            exerciseArea.classList.add('hidden');
-            resultsScreen.classList.remove('hidden');
-
             document.getElementById('finalCorrect').textContent = correctCount;
             document.getElementById('finalWrong').textContent = wrongCount;
             const total = correctCount + wrongCount;
             const percent = total > 0 ? Math.round((correctCount / total) * 100) : 0;
             document.getElementById('finalPercent').textContent = `${percent}%`;
+            resultsScreen.classList.add('show');
+            saveProgress(percent);
+        }
 
+        function saveProgress(percent) {
             const saved = JSON.parse(localStorage.getItem('spanishFillBlank') || '{}');
             saved.totalCorrect = (saved.totalCorrect || 0) + correctCount;
             saved.totalWrong = (saved.totalWrong || 0) + wrongCount;
             saved.sessions = (saved.sessions || 0) + 1;
+            if (currentCategory && currentCategory !== 'all') {
+                saved.categoryProgress = saved.categoryProgress || {};
+                saved.categoryProgress[currentCategory] = Math.max(saved.categoryProgress[currentCategory] || 0, percent);
+            }
             localStorage.setItem('spanishFillBlank', JSON.stringify(saved));
         }
 
-        init();
+        function backToCategories() {
+            exerciseView.classList.remove('active');
+            categoryView.classList.remove('hidden');
+            resultsScreen.classList.remove('show');
+            updateOverviewStats();
+            categoriesList.innerHTML = '';
+            initCategories();
+        }
+
+        document.getElementById('practiceAllBtn').addEventListener('click', () => startExercise('all'));
+        document.getElementById('randomBtn').addEventListener('click', () => startExercise('all'));
+        document.getElementById('backToCategories').addEventListener('click', backToCategories);
+        document.getElementById('backFromResults').addEventListener('click', backToCategories);
+        document.getElementById('restartBtn').addEventListener('click', () => { resultsScreen.classList.remove('show'); startExercise(currentCategory); });
+        checkBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+        answerInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { hasAnswered ? nextQuestion() : checkAnswer(); }
+        });
+        initCategories();
     </script>
 </body>
 </html>

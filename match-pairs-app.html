@@ -3,482 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matcha Par - Spanish</title>
+    <title>Spanskbert - Matcha par</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             min-height: 100vh;
             color: #fff;
         }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 16px; background: rgba(255,255,255,0.1);
+            border: none; border-radius: 10px; color: #888;
+            font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+            text-decoration: none; margin-bottom: 20px;
         }
-
-        header {
-            text-align: center;
-            padding: 25px 0;
-        }
-
+        .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        header { text-align: center; padding: 20px 0 30px; }
         header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 8px;
+            font-size: 2.5rem;
             background: linear-gradient(90deg, #2ecc71, #27ae60);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
         }
-
-        header p {
-            color: #888;
+        header p { color: #888; font-size: 1rem; }
+        .stats-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 18px 12px; text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; }
+        .stat-value.matches { color: #2ecc71; }
+        .stat-value.games { color: #27ae60; }
+        .stat-value.best { color: #f39c12; }
+        .stat-label { font-size: 0.8rem; color: #888; margin-top: 5px; }
+        .main-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+        .main-btn {
+            padding: 18px 20px; border: none; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
         }
-
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .main-btn.primary { background: linear-gradient(90deg, #2ecc71, #27ae60); color: #fff; }
+        .main-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .section-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .categories-list { display: flex; flex-direction: column; gap: 10px; }
+        .category-item {
+            display: flex; align-items: center; padding: 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 15px; cursor: pointer; transition: all 0.2s;
         }
-
-        .stat {
-            text-align: center;
-            padding: 10px 18px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+        .category-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+        .category-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-right: 15px; flex-shrink: 0;
         }
-
-        .stat-value {
-            font-size: 1.6rem;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 3px;
-        }
-
+        .category-info { flex: 1; }
+        .category-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+        .category-count { font-size: 0.9rem; color: #888; }
+        .progress-circle { width: 45px; height: 45px; }
+        .progress-circle svg { transform: rotate(-90deg); }
+        .progress-circle .bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 4; }
+        .progress-circle .progress { fill: none; stroke: #2ecc71; stroke-width: 4; stroke-linecap: round; }
+        .game-view { display: none; }
+        .game-view.active { display: block; }
+        .category-view { display: block; }
+        .category-view.hidden { display: none; }
+        .game-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .game-title { font-size: 1.3rem; font-weight: 600; }
+        .game-timer { color: #3498db; font-size: 1.2rem; font-weight: bold; }
+        .stats-bar { display: flex; justify-content: center; gap: 25px; margin-bottom: 20px; }
+        .stat { text-align: center; padding: 10px 18px; background: rgba(255,255,255,0.05); border-radius: 12px; }
+        .stat .stat-value { font-size: 1.4rem; }
         .stat.matches .stat-value { color: #2ecc71; }
         .stat.attempts .stat-value { color: #f39c12; }
-        .stat.time .stat-value { color: #3498db; }
-
-        .category-selector {
-            margin-bottom: 20px;
+        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .word-column { display: flex; flex-direction: column; gap: 10px; }
+        .word-btn {
+            padding: 16px; border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 12px; background: rgba(255,255,255,0.05);
+            color: #fff; font-size: 1rem; cursor: pointer;
+            transition: all 0.2s; text-align: center;
         }
-
-        .category-selector label {
-            display: block;
-            margin-bottom: 6px;
-            color: #888;
-        }
-
-        .category-selector select {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .category-selector select option {
-            background: #1a1a2e;
-        }
-
-        .start-screen, .results {
-            text-align: center;
-            padding: 40px 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-        }
-
-        .start-btn, .restart-btn {
-            padding: 16px 45px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            cursor: pointer;
+        .word-btn:hover:not(.matched):not(.selected) { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); }
+        .word-btn.selected { border-color: #3498db; background: rgba(52, 152, 219, 0.3); }
+        .word-btn.matched { border-color: #2ecc71; background: rgba(46, 204, 113, 0.3); opacity: 0.6; cursor: default; }
+        .word-btn.wrong { border-color: #e74c3c; background: rgba(231, 76, 60, 0.3); animation: shake 0.3s; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+        .results { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; display: none; }
+        .results.show { display: block; }
+        .results h2 { font-size: 1.8rem; margin-bottom: 20px; }
+        .results-stats { display: flex; justify-content: center; gap: 30px; margin: 25px 0; }
+        .results-stat { text-align: center; }
+        .results-stat-value { font-size: 2.5rem; font-weight: bold; }
+        .results-stat-label { color: #888; font-size: 0.9rem; }
+        .restart-btn {
+            padding: 16px 40px; border: none; border-radius: 15px;
+            font-size: 1rem; cursor: pointer;
             background: linear-gradient(90deg, #2ecc71, #27ae60);
-            color: #fff;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s;
+            color: #fff; font-weight: 600; margin-top: 15px; transition: all 0.3s;
         }
-
-        .start-btn:hover, .restart-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .game-area {
-            display: none;
-        }
-
-        .game-area.show {
-            display: block;
-        }
-
-        .columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 25px;
-        }
-
-        .column {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .column-header {
-            text-align: center;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #888;
-        }
-
-        .word-card {
-            padding: 16px 20px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            background: rgba(255,255,255,0.03);
-            text-align: center;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            user-select: none;
-        }
-
-        .word-card:hover:not(.matched):not(.selected) {
-            border-color: rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.08);
-        }
-
-        .word-card.selected {
-            border-color: #3498db;
-            background: rgba(52, 152, 219, 0.2);
-            transform: scale(1.02);
-        }
-
-        .word-card.matched {
-            border-color: #2ecc71;
-            background: rgba(46, 204, 113, 0.2);
-            cursor: default;
-            opacity: 0.7;
-        }
-
-        .word-card.wrong {
-            border-color: #e74c3c;
-            background: rgba(231, 76, 60, 0.2);
-            animation: shake 0.4s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
-        }
-
-        .word-card.spanish {
-            border-left: 4px solid #e74c3c;
-        }
-
-        .word-card.swedish {
-            border-left: 4px solid #3498db;
-        }
-
-        .progress-container {
-            margin-bottom: 20px;
-        }
-
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            color: #888;
-            font-size: 0.85rem;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            border-radius: 3px;
-            transition: width 0.3s;
-        }
-
-        .results-stats {
-            display: flex;
-            justify-content: center;
-            gap: 35px;
-            margin: 25px 0;
-            flex-wrap: wrap;
-        }
-
-        .results-stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .results-stat-label {
-            color: #888;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .instructions {
-            text-align: center;
-            color: #666;
-            font-size: 0.85rem;
-            margin-top: 15px;
-        }
-
-        @media (max-width: 600px) {
-            .columns {
-                gap: 15px;
-            }
-            .word-card {
-                padding: 12px 15px;
-                font-size: 1rem;
-            }
+        .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        @media (max-width: 500px) {
+            .container { padding: 15px; }
+            header h1 { font-size: 2rem; }
+            .word-btn { padding: 12px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Matcha Par</h1>
-            <p>Koppla ihop spanska ord med svenska översättningar</p>
-        </header>
-
-        <div class="stats-bar">
-            <div class="stat matches">
-                <div class="stat-value" id="matchCount">0</div>
-                <div class="stat-label">Matchade</div>
+        <div class="category-view" id="categoryView">
+            <a href="index.html" class="back-btn"><span>←</span> Huvudmeny</a>
+            <header>
+                <h1>Matcha par</h1>
+                <p>Koppla ihop spanska och svenska ord</p>
+            </header>
+            <div class="stats-overview">
+                <div class="stat-card"><div class="stat-value games" id="totalGames">0</div><div class="stat-label">Spel</div></div>
+                <div class="stat-card"><div class="stat-value matches" id="totalMatches">0</div><div class="stat-label">Matchade</div></div>
+                <div class="stat-card"><div class="stat-value best" id="bestTime">--</div><div class="stat-label">Bästa tid</div></div>
             </div>
-            <div class="stat attempts">
-                <div class="stat-value" id="attemptCount">0</div>
-                <div class="stat-label">Försök</div>
+            <div class="main-buttons">
+                <button class="main-btn primary" id="practiceAllBtn">Spela nu</button>
+                <button class="main-btn secondary" id="randomBtn">Slumpa</button>
             </div>
-            <div class="stat time">
-                <div class="stat-value" id="timeDisplay">0:00</div>
-                <div class="stat-label">Tid</div>
-            </div>
+            <div class="section-title">Kategorier</div>
+            <div class="categories-list" id="categoriesList"></div>
         </div>
 
-        <div class="category-selector">
-            <label for="categorySelect">Välj kategori:</label>
-            <select id="categorySelect">
-                <option value="all">Alla kategorier</option>
-            </select>
-        </div>
-
-        <div class="start-screen" id="startScreen">
-            <p style="font-size: 1.05rem; color: #888; margin-bottom: 12px;">
-                Klicka på ett spanskt ord, sedan på dess svenska översättning för att matcha dem.
-            </p>
-            <p style="color: #666; font-size: 0.9rem;">6 par per omgång</p>
-            <button class="start-btn" id="startBtn">Starta!</button>
-        </div>
-
-        <div class="game-area" id="gameArea">
-            <div class="progress-container">
-                <div class="progress-text">
-                    <span id="progressText">0 av 6 matchade</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+        <div class="game-view" id="gameView">
+            <button class="back-btn" id="backToCategories"><span>←</span> Tillbaka</button>
+            <div class="game-header">
+                <div class="game-title" id="gameTitle">Kategori</div>
+                <div class="game-timer" id="gameTimer">0:00</div>
             </div>
-
-            <div class="columns">
-                <div class="column" id="spanishColumn">
-                    <div class="column-header">Spanska</div>
-                </div>
-                <div class="column" id="swedishColumn">
-                    <div class="column-header">Svenska</div>
-                </div>
+            <div class="stats-bar">
+                <div class="stat matches"><div class="stat-value" id="matchCount">0</div><div class="stat-label">Matchade</div></div>
+                <div class="stat attempts"><div class="stat-value" id="attemptCount">0</div><div class="stat-label">Försök</div></div>
             </div>
-
-            <div class="instructions">
-                Klicka på ett ord från varje kolumn för att matcha dem
+            <div class="game-grid" id="gameGrid">
+                <div class="word-column" id="spanishColumn"></div>
+                <div class="word-column" id="swedishColumn"></div>
             </div>
-        </div>
-
-        <div class="results hidden" id="resultsScreen">
-            <h2>Omgång klar!</h2>
-            <div class="results-stats">
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalMatches" style="color: #2ecc71;">6</div>
-                    <div class="results-stat-label">Matchade</div>
+            <div class="results" id="resultsScreen">
+                <h2>Alla matchade!</h2>
+                <div class="results-stats">
+                    <div class="results-stat"><div class="results-stat-value" id="finalTime" style="color: #3498db;">0:00</div><div class="results-stat-label">Tid</div></div>
+                    <div class="results-stat"><div class="results-stat-value" id="finalAttempts" style="color: #f39c12;">0</div><div class="results-stat-label">Försök</div></div>
                 </div>
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalAttempts" style="color: #f39c12;">0</div>
-                    <div class="results-stat-label">Försök</div>
-                </div>
-                <div class="results-stat">
-                    <div class="results-stat-value" id="finalTime" style="color: #3498db;">0:00</div>
-                    <div class="results-stat-label">Tid</div>
-                </div>
+                <button class="restart-btn" id="restartBtn">Spela igen!</button>
+                <br><button class="back-btn" id="backFromResults" style="margin-top: 15px;">← Välj annan kategori</button>
             </div>
-            <p id="accuracyText" style="color: #888; margin-bottom: 15px;"></p>
-            <button class="restart-btn" id="restartBtn">Ny omgång!</button>
         </div>
     </div>
 
     <script>
-        const flashcardData = {
-            "numeros_cardinales": {
-                "name": "Siffror",
-                "items": [
-                    {"es": "cero", "sv": "0"}, {"es": "uno", "sv": "1"}, {"es": "dos", "sv": "2"},
-                    {"es": "tres", "sv": "3"}, {"es": "cuatro", "sv": "4"}, {"es": "cinco", "sv": "5"},
-                    {"es": "seis", "sv": "6"}, {"es": "siete", "sv": "7"}, {"es": "ocho", "sv": "8"},
-                    {"es": "nueve", "sv": "9"}, {"es": "diez", "sv": "10"}, {"es": "veinte", "sv": "20"}
-                ]
-            },
+        const gameData = {
             "saludos": {
-                "name": "Hälsningar",
+                "name": "Hälsningar", "icon": "👋", "color": "#f39c12",
                 "items": [
-                    {"es": "¡Hola!", "sv": "Hej!"},
-                    {"es": "¿Qué tal?", "sv": "Hur är det?"},
-                    {"es": "¡Buenos días!", "sv": "God morgon!"},
-                    {"es": "¡Buenas tardes!", "sv": "God eftermiddag!"},
-                    {"es": "¡Buenas noches!", "sv": "God kväll!"},
-                    {"es": "Adiós", "sv": "Hejdå"},
-                    {"es": "¡Hasta luego!", "sv": "Vi ses!"},
-                    {"es": "Mucho gusto", "sv": "Trevligt att träffas"},
-                    {"es": "Bien, gracias", "sv": "Bra, tack"}
+                    {"es": "¡Hola!", "sv": "Hej!"}, {"es": "Adiós", "sv": "Hejdå"},
+                    {"es": "¡Buenos días!", "sv": "God morgon!"}, {"es": "¡Buenas noches!", "sv": "God kväll!"},
+                    {"es": "¿Qué tal?", "sv": "Hur är det?"}, {"es": "Gracias", "sv": "Tack"}
                 ]
             },
-            "interrogativos": {
-                "name": "Frågeord",
+            "numeros": {
+                "name": "Siffror", "icon": "#", "color": "#3498db",
                 "items": [
-                    {"es": "¿Qué?", "sv": "Vad?"},
-                    {"es": "¿Quién?", "sv": "Vem?"},
-                    {"es": "¿Cómo?", "sv": "Hur?"},
-                    {"es": "¿Cuándo?", "sv": "När?"},
-                    {"es": "¿Dónde?", "sv": "Var?"},
-                    {"es": "¿Por qué?", "sv": "Varför?"},
-                    {"es": "¿Cuánto?", "sv": "Hur mycket?"}
+                    {"es": "uno", "sv": "1"}, {"es": "dos", "sv": "2"}, {"es": "tres", "sv": "3"},
+                    {"es": "cuatro", "sv": "4"}, {"es": "cinco", "sv": "5"}, {"es": "diez", "sv": "10"}
                 ]
             },
             "familia": {
-                "name": "Familjen",
+                "name": "Familjen", "icon": "👨‍👩‍👧", "color": "#9b59b6",
                 "items": [
-                    {"es": "el padre", "sv": "pappan"},
-                    {"es": "la madre", "sv": "mamman"},
-                    {"es": "el hijo", "sv": "sonen"},
-                    {"es": "la hija", "sv": "dottern"},
-                    {"es": "el hermano", "sv": "brodern"},
-                    {"es": "la hermana", "sv": "systern"},
-                    {"es": "el abuelo", "sv": "farfar/morfar"},
-                    {"es": "la abuela", "sv": "farmor/mormor"}
+                    {"es": "el padre", "sv": "pappan"}, {"es": "la madre", "sv": "mamman"},
+                    {"es": "el hijo", "sv": "sonen"}, {"es": "la hija", "sv": "dottern"},
+                    {"es": "el hermano", "sv": "brodern"}, {"es": "la hermana", "sv": "systern"}
                 ]
             },
             "colores": {
-                "name": "Färger",
+                "name": "Färger", "icon": "🎨", "color": "#2ecc71",
                 "items": [
-                    {"es": "negro", "sv": "svart"},
-                    {"es": "blanco", "sv": "vit"},
-                    {"es": "rojo", "sv": "röd"},
-                    {"es": "azul", "sv": "blå"},
-                    {"es": "verde", "sv": "grön"},
-                    {"es": "amarillo", "sv": "gul"},
-                    {"es": "naranja", "sv": "orange"},
-                    {"es": "rosa", "sv": "rosa"}
+                    {"es": "rojo", "sv": "röd"}, {"es": "azul", "sv": "blå"}, {"es": "verde", "sv": "grön"},
+                    {"es": "amarillo", "sv": "gul"}, {"es": "negro", "sv": "svart"}, {"es": "blanco", "sv": "vit"}
                 ]
             },
             "dias_semana": {
-                "name": "Veckodagar",
+                "name": "Veckodagar", "icon": "📅", "color": "#1abc9c",
                 "items": [
-                    {"es": "lunes", "sv": "måndag"},
-                    {"es": "martes", "sv": "tisdag"},
-                    {"es": "miércoles", "sv": "onsdag"},
-                    {"es": "jueves", "sv": "torsdag"},
-                    {"es": "viernes", "sv": "fredag"},
-                    {"es": "sábado", "sv": "lördag"},
-                    {"es": "domingo", "sv": "söndag"}
-                ]
-            },
-            "emociones": {
-                "name": "Känslor",
-                "items": [
-                    {"es": "contento", "sv": "glad"},
-                    {"es": "triste", "sv": "ledsen"},
-                    {"es": "enfadado", "sv": "arg"},
-                    {"es": "cansado", "sv": "trött"},
-                    {"es": "enfermo", "sv": "sjuk"},
-                    {"es": "bien", "sv": "bra"}
-                ]
-            },
-            "verbos": {
-                "name": "Verb",
-                "items": [
-                    {"es": "soy", "sv": "jag är (permanent)"},
-                    {"es": "estoy", "sv": "jag är (tillfälligt)"},
-                    {"es": "tengo", "sv": "jag har"},
-                    {"es": "vivo", "sv": "jag bor"},
-                    {"es": "trabajo", "sv": "jag arbetar"},
-                    {"es": "hablo", "sv": "jag pratar"},
-                    {"es": "quiero", "sv": "jag vill"}
+                    {"es": "lunes", "sv": "måndag"}, {"es": "martes", "sv": "tisdag"},
+                    {"es": "miércoles", "sv": "onsdag"}, {"es": "jueves", "sv": "torsdag"},
+                    {"es": "viernes", "sv": "fredag"}, {"es": "sábado", "sv": "lördag"}
                 ]
             }
         };
 
-        // App State
         let pairs = [];
         let selectedSpanish = null;
         let selectedSwedish = null;
         let matchCount = 0;
         let attemptCount = 0;
-        let startTime = null;
         let timerInterval = null;
-        const PAIRS_PER_ROUND = 6;
+        let seconds = 0;
+        let currentCategory = null;
 
-        // DOM Elements
-        const categorySelect = document.getElementById('categorySelect');
-        const startScreen = document.getElementById('startScreen');
-        const gameArea = document.getElementById('gameArea');
-        const resultsScreen = document.getElementById('resultsScreen');
+        const categoryView = document.getElementById('categoryView');
+        const gameView = document.getElementById('gameView');
+        const categoriesList = document.getElementById('categoriesList');
         const spanishColumn = document.getElementById('spanishColumn');
         const swedishColumn = document.getElementById('swedishColumn');
+        const resultsScreen = document.getElementById('resultsScreen');
 
-        function init() {
-            Object.keys(flashcardData).forEach(key => {
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = `${flashcardData[key].name} (${flashcardData[key].items.length})`;
-                categorySelect.appendChild(option);
+        function initCategories() {
+            const saved = JSON.parse(localStorage.getItem('spanishMatchPairs') || '{}');
+            Object.keys(gameData).forEach(key => {
+                const cat = gameData[key];
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                item.innerHTML = `
+                    <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">${cat.icon}</div>
+                    <div class="category-info"><div class="category-name">${cat.name}</div><div class="category-count">${cat.items.length} par</div></div>
+                    <div class="progress-circle"><svg width="45" height="45"><circle class="bg" cx="22.5" cy="22.5" r="18"></circle><circle class="progress" cx="22.5" cy="22.5" r="18" stroke-dasharray="113" stroke-dashoffset="113" style="stroke: ${cat.color}"></circle></svg></div>
+                `;
+                item.addEventListener('click', () => startGame(key));
+                categoriesList.appendChild(item);
             });
+            updateOverviewStats();
+        }
 
-            document.getElementById('startBtn').addEventListener('click', startGame);
-            document.getElementById('restartBtn').addEventListener('click', startGame);
+        function updateOverviewStats() {
+            const saved = JSON.parse(localStorage.getItem('spanishMatchPairs') || '{}');
+            document.getElementById('totalGames').textContent = saved.sessions || 0;
+            document.getElementById('totalMatches').textContent = saved.totalMatches || 0;
+            document.getElementById('bestTime').textContent = saved.bestTime ? formatTime(saved.bestTime) : '--';
         }
 
         function shuffle(array) {
@@ -489,170 +247,132 @@
             return array;
         }
 
-        function startGame() {
-            const category = categorySelect.value;
-            let allItems = [];
+        function formatTime(s) { return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
 
-            if (category === 'all') {
-                Object.values(flashcardData).forEach(cat => {
-                    allItems = allItems.concat(cat.items);
-                });
-            } else {
-                allItems = [...flashcardData[category].items];
-            }
-
-            shuffle(allItems);
-            pairs = allItems.slice(0, Math.min(PAIRS_PER_ROUND, allItems.length));
-
-            matchCount = 0;
-            attemptCount = 0;
-            selectedSpanish = null;
-            selectedSwedish = null;
-
-            startScreen.classList.add('hidden');
-            resultsScreen.classList.add('hidden');
-            gameArea.classList.add('show');
-
-            renderCards();
+        function startGame(category) {
+            currentCategory = category;
+            pairs = shuffle([...(category === 'all' ? Object.values(gameData).flatMap(c => c.items) : gameData[category].items)]).slice(0, 6);
+            matchCount = 0; attemptCount = 0; seconds = 0;
+            selectedSpanish = null; selectedSwedish = null;
+            document.getElementById('gameTitle').textContent = category === 'all' ? 'Alla' : gameData[category].name;
+            categoryView.classList.add('hidden');
+            gameView.classList.add('active');
+            resultsScreen.classList.remove('show');
+            renderGame();
             startTimer();
+        }
+
+        function renderGame() {
+            spanishColumn.innerHTML = '';
+            swedishColumn.innerHTML = '';
+            const spanishWords = shuffle(pairs.map((p,i) => ({text: p.es, index: i})));
+            const swedishWords = shuffle(pairs.map((p,i) => ({text: p.sv, index: i})));
+            spanishWords.forEach(w => {
+                const btn = document.createElement('button');
+                btn.className = 'word-btn';
+                btn.textContent = w.text;
+                btn.dataset.index = w.index;
+                btn.dataset.lang = 'es';
+                btn.addEventListener('click', () => selectWord(btn, 'es'));
+                spanishColumn.appendChild(btn);
+            });
+            swedishWords.forEach(w => {
+                const btn = document.createElement('button');
+                btn.className = 'word-btn';
+                btn.textContent = w.text;
+                btn.dataset.index = w.index;
+                btn.dataset.lang = 'sv';
+                btn.addEventListener('click', () => selectWord(btn, 'sv'));
+                swedishColumn.appendChild(btn);
+            });
             updateStats();
         }
 
-        function renderCards() {
-            // Clear columns (keep headers)
-            spanishColumn.innerHTML = '<div class="column-header">Spanska</div>';
-            swedishColumn.innerHTML = '<div class="column-header">Svenska</div>';
-
-            // Create shuffled arrays for each column
-            const spanishWords = shuffle(pairs.map((p, i) => ({ text: p.es, index: i })));
-            const swedishWords = shuffle(pairs.map((p, i) => ({ text: p.sv, index: i })));
-
-            spanishWords.forEach(word => {
-                const card = document.createElement('div');
-                card.className = 'word-card spanish';
-                card.textContent = word.text;
-                card.dataset.index = word.index;
-                card.dataset.type = 'spanish';
-                card.addEventListener('click', () => selectCard(card, 'spanish'));
-                spanishColumn.appendChild(card);
-            });
-
-            swedishWords.forEach(word => {
-                const card = document.createElement('div');
-                card.className = 'word-card swedish';
-                card.textContent = word.text;
-                card.dataset.index = word.index;
-                card.dataset.type = 'swedish';
-                card.addEventListener('click', () => selectCard(card, 'swedish'));
-                swedishColumn.appendChild(card);
-            });
-        }
-
-        function selectCard(card, type) {
-            if (card.classList.contains('matched')) return;
-
-            if (type === 'spanish') {
-                if (selectedSpanish) {
-                    selectedSpanish.classList.remove('selected');
-                }
-                selectedSpanish = card;
-                card.classList.add('selected');
+        function selectWord(btn, lang) {
+            if (btn.classList.contains('matched')) return;
+            if (lang === 'es') {
+                if (selectedSpanish) selectedSpanish.classList.remove('selected');
+                selectedSpanish = btn;
+                btn.classList.add('selected');
             } else {
-                if (selectedSwedish) {
-                    selectedSwedish.classList.remove('selected');
-                }
-                selectedSwedish = card;
-                card.classList.add('selected');
+                if (selectedSwedish) selectedSwedish.classList.remove('selected');
+                selectedSwedish = btn;
+                btn.classList.add('selected');
             }
-
-            if (selectedSpanish && selectedSwedish) {
-                checkMatch();
-            }
+            if (selectedSpanish && selectedSwedish) checkMatch();
         }
 
         function checkMatch() {
             attemptCount++;
-            const isMatch = selectedSpanish.dataset.index === selectedSwedish.dataset.index;
-
-            if (isMatch) {
-                matchCount++;
-                selectedSpanish.classList.remove('selected');
-                selectedSwedish.classList.remove('selected');
+            const esIndex = selectedSpanish.dataset.index;
+            const svIndex = selectedSwedish.dataset.index;
+            if (esIndex === svIndex) {
                 selectedSpanish.classList.add('matched');
                 selectedSwedish.classList.add('matched');
-
-                if (matchCount >= pairs.length) {
-                    setTimeout(showResults, 500);
-                }
+                selectedSpanish.classList.remove('selected');
+                selectedSwedish.classList.remove('selected');
+                matchCount++;
+                if (matchCount === pairs.length) { stopTimer(); showResults(); }
             } else {
                 selectedSpanish.classList.add('wrong');
                 selectedSwedish.classList.add('wrong');
-
                 setTimeout(() => {
-                    selectedSpanish.classList.remove('selected', 'wrong');
-                    selectedSwedish.classList.remove('selected', 'wrong');
-                    selectedSpanish = null;
-                    selectedSwedish = null;
-                }, 600);
+                    selectedSpanish.classList.remove('wrong', 'selected');
+                    selectedSwedish.classList.remove('wrong', 'selected');
+                    selectedSpanish = null; selectedSwedish = null;
+                }, 500);
+                return;
             }
-
-            if (isMatch) {
-                selectedSpanish = null;
-                selectedSwedish = null;
-            }
-
+            selectedSpanish = null; selectedSwedish = null;
             updateStats();
-        }
-
-        function startTimer() {
-            startTime = Date.now();
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function updateTimer() {
-            const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const mins = Math.floor(elapsed / 60);
-            const secs = elapsed % 60;
-            document.getElementById('timeDisplay').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
         function updateStats() {
             document.getElementById('matchCount').textContent = matchCount;
             document.getElementById('attemptCount').textContent = attemptCount;
-
-            const progress = (matchCount / pairs.length) * 100;
-            document.getElementById('progressFill').style.width = `${progress}%`;
-            document.getElementById('progressText').textContent = `${matchCount} av ${pairs.length} matchade`;
-            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
         }
 
-        function showResults() {
+        function startTimer() {
             clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                seconds++;
+                document.getElementById('gameTimer').textContent = formatTime(seconds);
+            }, 1000);
+        }
 
-            const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const mins = Math.floor(elapsed / 60);
-            const secs = elapsed % 60;
-            const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+        function stopTimer() { clearInterval(timerInterval); }
 
-            const accuracy = Math.round((matchCount / attemptCount) * 100);
-
-            gameArea.classList.remove('show');
-            resultsScreen.classList.remove('hidden');
-
-            document.getElementById('finalMatches').textContent = matchCount;
+        function showResults() {
+            document.getElementById('finalTime').textContent = formatTime(seconds);
             document.getElementById('finalAttempts').textContent = attemptCount;
-            document.getElementById('finalTime').textContent = timeStr;
-            document.getElementById('accuracyText').textContent = `Träffsäkerhet: ${accuracy}%`;
+            resultsScreen.classList.add('show');
+            saveProgress();
+        }
 
+        function saveProgress() {
             const saved = JSON.parse(localStorage.getItem('spanishMatchPairs') || '{}');
-            saved.totalMatches = (saved.totalMatches || 0) + matchCount;
-            saved.totalAttempts = (saved.totalAttempts || 0) + attemptCount;
             saved.sessions = (saved.sessions || 0) + 1;
+            saved.totalMatches = (saved.totalMatches || 0) + matchCount;
+            if (!saved.bestTime || seconds < saved.bestTime) saved.bestTime = seconds;
             localStorage.setItem('spanishMatchPairs', JSON.stringify(saved));
         }
 
-        init();
+        function backToCategories() {
+            stopTimer();
+            gameView.classList.remove('active');
+            categoryView.classList.remove('hidden');
+            resultsScreen.classList.remove('show');
+            updateOverviewStats();
+            categoriesList.innerHTML = '';
+            initCategories();
+        }
+
+        document.getElementById('practiceAllBtn').addEventListener('click', () => startGame('all'));
+        document.getElementById('randomBtn').addEventListener('click', () => startGame('all'));
+        document.getElementById('backToCategories').addEventListener('click', backToCategories);
+        document.getElementById('backFromResults').addEventListener('click', backToCategories);
+        document.getElementById('restartBtn').addEventListener('click', () => { resultsScreen.classList.remove('show'); startGame(currentCategory); });
+        initCategories();
     </script>
 </body>
 </html>

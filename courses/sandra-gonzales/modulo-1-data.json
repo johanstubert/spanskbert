@@ -1,0 +1,456 @@
+{
+  "metadata": {
+    "module": "Módulo 1 - Fundamentos",
+    "source": "Sandra Gonzales - PDFs",
+    "created": "2026-01-20",
+    "description": "Grundläggande spanska: presentation, familj, siffror, färger, verb"
+  },
+  "categories": {
+    "alfabeto": {
+      "name": "El Abecedario - Alfabetet",
+      "description": "Spanska alfabetet med uttal",
+      "items": [
+        {"letter": "A", "pronunciation": "a", "example": "Amalia"},
+        {"letter": "B", "pronunciation": "be", "example": "Barcelona", "note": "B och V uttalas likadant"},
+        {"letter": "C", "pronunciation": "ce", "example": "Cecilia", "note": "Ca/Co/Cu = K-ljud, Ce/Ci = TH-ljud (eller S i Latinamerika)"},
+        {"letter": "D", "pronunciation": "de", "example": "Daniel"},
+        {"letter": "E", "pronunciation": "e", "example": "Elena"},
+        {"letter": "F", "pronunciation": "efe", "example": "Fernando"},
+        {"letter": "G", "pronunciation": "ge", "example": "Gabriel", "note": "Ga/Go/Gu = hårt G, Ge/Gi = H-ljud"},
+        {"letter": "H", "pronunciation": "hache", "example": "Hola", "note": "H är alltid stumt!"},
+        {"letter": "I", "pronunciation": "i", "example": "Isabel"},
+        {"letter": "J", "pronunciation": "jota", "example": "Javier", "note": "Uttalas som starkt H"},
+        {"letter": "K", "pronunciation": "ca", "example": "Kenia"},
+        {"letter": "L", "pronunciation": "ele", "example": "Líbano"},
+        {"letter": "M", "pronunciation": "eme", "example": "Madrid"},
+        {"letter": "N", "pronunciation": "ene", "example": "Nicolás"},
+        {"letter": "Ñ", "pronunciation": "eñe", "example": "España", "note": "Som 'nj' på svenska"},
+        {"letter": "O", "pronunciation": "o", "example": "Orlando"},
+        {"letter": "P", "pronunciation": "pe", "example": "Pablo"},
+        {"letter": "Q", "pronunciation": "cu", "example": "Quito", "note": "Alltid Que/Qui, U:et uttalas inte"},
+        {"letter": "R", "pronunciation": "ere", "example": "Ricardo", "note": "Rullande R, starkare i början av ord"},
+        {"letter": "S", "pronunciation": "ese", "example": "Sara"},
+        {"letter": "T", "pronunciation": "te", "example": "Teresa"},
+        {"letter": "U", "pronunciation": "u", "example": "Uruguay"},
+        {"letter": "V", "pronunciation": "uve", "example": "Venezuela", "note": "Uttalas som B"},
+        {"letter": "W", "pronunciation": "uve doble", "example": "Walter"},
+        {"letter": "X", "pronunciation": "equis", "example": "Alex"},
+        {"letter": "Y", "pronunciation": "ye", "example": "Yucatán"},
+        {"letter": "Z", "pronunciation": "ceta", "example": "Zaragoza", "note": "TH-ljud i Spanien, S i Latinamerika"}
+      ]
+    },
+    "numeros_cardinales": {
+      "name": "Los Números - Siffror",
+      "description": "Kardinaltal 0-1.000.000",
+      "items": [
+        {"es": "cero", "sv": "0", "num": 0},
+        {"es": "uno", "sv": "1", "num": 1},
+        {"es": "dos", "sv": "2", "num": 2},
+        {"es": "tres", "sv": "3", "num": 3},
+        {"es": "cuatro", "sv": "4", "num": 4},
+        {"es": "cinco", "sv": "5", "num": 5},
+        {"es": "seis", "sv": "6", "num": 6},
+        {"es": "siete", "sv": "7", "num": 7},
+        {"es": "ocho", "sv": "8", "num": 8},
+        {"es": "nueve", "sv": "9", "num": 9},
+        {"es": "diez", "sv": "10", "num": 10},
+        {"es": "once", "sv": "11", "num": 11},
+        {"es": "doce", "sv": "12", "num": 12},
+        {"es": "trece", "sv": "13", "num": 13},
+        {"es": "catorce", "sv": "14", "num": 14},
+        {"es": "quince", "sv": "15", "num": 15},
+        {"es": "dieciséis", "sv": "16", "num": 16},
+        {"es": "diecisiete", "sv": "17", "num": 17},
+        {"es": "dieciocho", "sv": "18", "num": 18},
+        {"es": "diecinueve", "sv": "19", "num": 19},
+        {"es": "veinte", "sv": "20", "num": 20},
+        {"es": "veintiuno", "sv": "21", "num": 21},
+        {"es": "veintidós", "sv": "22", "num": 22},
+        {"es": "veintitrés", "sv": "23", "num": 23},
+        {"es": "veinticuatro", "sv": "24", "num": 24},
+        {"es": "veinticinco", "sv": "25", "num": 25},
+        {"es": "veintiséis", "sv": "26", "num": 26},
+        {"es": "veintisiete", "sv": "27", "num": 27},
+        {"es": "veintiocho", "sv": "28", "num": 28},
+        {"es": "veintinueve", "sv": "29", "num": 29},
+        {"es": "treinta", "sv": "30", "num": 30},
+        {"es": "cuarenta", "sv": "40", "num": 40},
+        {"es": "cincuenta", "sv": "50", "num": 50},
+        {"es": "sesenta", "sv": "60", "num": 60},
+        {"es": "setenta", "sv": "70", "num": 70},
+        {"es": "ochenta", "sv": "80", "num": 80},
+        {"es": "noventa", "sv": "90", "num": 90},
+        {"es": "cien", "sv": "100", "num": 100},
+        {"es": "ciento uno", "sv": "101", "num": 101},
+        {"es": "doscientos", "sv": "200", "num": 200},
+        {"es": "trescientos", "sv": "300", "num": 300},
+        {"es": "cuatrocientos", "sv": "400", "num": 400},
+        {"es": "quinientos", "sv": "500", "num": 500},
+        {"es": "seiscientos", "sv": "600", "num": 600},
+        {"es": "setecientos", "sv": "700", "num": 700},
+        {"es": "ochocientos", "sv": "800", "num": 800},
+        {"es": "novecientos", "sv": "900", "num": 900},
+        {"es": "mil", "sv": "1000", "num": 1000},
+        {"es": "diez mil", "sv": "10 000", "num": 10000},
+        {"es": "cien mil", "sv": "100 000", "num": 100000},
+        {"es": "un millón", "sv": "1 000 000", "num": 1000000}
+      ]
+    },
+    "numeros_ordinales": {
+      "name": "Números Ordinales - Ordningstal",
+      "description": "Ordningstal 1:a - 10:e",
+      "items": [
+        {"es": "primero", "sv": "första", "num": 1},
+        {"es": "segundo", "sv": "andra", "num": 2},
+        {"es": "tercero", "sv": "tredje", "num": 3},
+        {"es": "cuarto", "sv": "fjärde", "num": 4},
+        {"es": "quinto", "sv": "femte", "num": 5},
+        {"es": "sexto", "sv": "sjätte", "num": 6},
+        {"es": "séptimo", "sv": "sjunde", "num": 7},
+        {"es": "octavo", "sv": "åttonde", "num": 8},
+        {"es": "noveno", "sv": "nionde", "num": 9},
+        {"es": "décimo", "sv": "tionde", "num": 10}
+      ]
+    },
+    "saludos": {
+      "name": "Saludos y Despedidas - Hälsningar",
+      "description": "Hälsningsfraser och avsked",
+      "items": [
+        {"es": "¡Hola!", "sv": "Hej!", "type": "saludo"},
+        {"es": "¿Qué tal?", "sv": "Hur är det?", "type": "saludo"},
+        {"es": "¿Cómo estás?", "sv": "Hur mår du?", "type": "saludo", "note": "Informellt (tú)"},
+        {"es": "¿Cómo está?", "sv": "Hur mår ni?", "type": "saludo", "note": "Formellt (usted)"},
+        {"es": "¡Buenos días!", "sv": "God morgon!", "type": "saludo", "note": "Fram till lunch"},
+        {"es": "¡Buenas tardes!", "sv": "God eftermiddag!", "type": "saludo", "note": "Efter lunch"},
+        {"es": "¡Buenas noches!", "sv": "God kväll/natt!", "type": "saludo"},
+        {"es": "Bien, ¿y tú?", "sv": "Bra, och du?", "type": "respuesta"},
+        {"es": "Muy bien, gracias", "sv": "Mycket bra, tack", "type": "respuesta"},
+        {"es": "Adiós", "sv": "Hejdå", "type": "despedida"},
+        {"es": "¡Hasta luego!", "sv": "Vi ses!", "type": "despedida"},
+        {"es": "¡Hasta pronto!", "sv": "Vi ses snart!", "type": "despedida"},
+        {"es": "¡Hasta mañana!", "sv": "Vi ses imorgon!", "type": "despedida"},
+        {"es": "Mucho gusto", "sv": "Trevligt att träffas", "type": "presentacion"},
+        {"es": "Encantado/a", "sv": "Trevligt att träffas", "type": "presentacion"}
+      ]
+    },
+    "interrogativos": {
+      "name": "Pronombres Interrogativos - Frågeord",
+      "description": "Frågeord för att ställa frågor",
+      "items": [
+        {"es": "¿Qué?", "sv": "Vad?", "use": "Frågar om saker/definition", "example": "¿Qué es eso? - Vad är det där?"},
+        {"es": "¿Quién?", "sv": "Vem?", "use": "Frågar om personer", "example": "¿Quién es? - Vem är det?"},
+        {"es": "¿Quiénes?", "sv": "Vilka?", "use": "Frågar om flera personer", "example": "¿Quiénes son? - Vilka är de?"},
+        {"es": "¿Cuál?", "sv": "Vilken?", "use": "Väljer mellan alternativ", "example": "¿Cuál es tu nombre? - Vad heter du?"},
+        {"es": "¿Cuáles?", "sv": "Vilka?", "use": "Väljer mellan flera", "example": "¿Cuáles son los mejores? - Vilka är bäst?"},
+        {"es": "¿Cómo?", "sv": "Hur?", "use": "Frågar om sätt/tillstånd", "example": "¿Cómo estás? - Hur mår du?"},
+        {"es": "¿Cuándo?", "sv": "När?", "use": "Frågar om tid", "example": "¿Cuándo llega? - När kommer hen?"},
+        {"es": "¿Cuánto?", "sv": "Hur mycket?", "use": "Frågar om mängd (singular)", "example": "¿Cuánto cuesta? - Hur mycket kostar det?"},
+        {"es": "¿Cuántos?", "sv": "Hur många?", "use": "Frågar om antal (maskulin)", "example": "¿Cuántos años tienes? - Hur gammal är du?"},
+        {"es": "¿Cuántas?", "sv": "Hur många?", "use": "Frågar om antal (feminin)", "example": "¿Cuántas hermanas tienes? - Hur många systrar har du?"},
+        {"es": "¿Dónde?", "sv": "Var?", "use": "Frågar om plats", "example": "¿Dónde vives? - Var bor du?"},
+        {"es": "¿De dónde?", "sv": "Varifrån?", "use": "Frågar om ursprung", "example": "¿De dónde eres? - Var kommer du ifrån?"},
+        {"es": "¿Por qué?", "sv": "Varför?", "use": "Frågar om anledning", "example": "¿Por qué estudias español? - Varför läser du spanska?"},
+        {"es": "Porque", "sv": "Därför att", "use": "Svar på varför", "example": "Porque quiero viajar - För att jag vill resa"}
+      ]
+    },
+    "familia": {
+      "name": "La Familia - Familjen",
+      "description": "Familjemedlemmar och relationer",
+      "items": [
+        {"es": "el padre", "sv": "pappan", "plural": "los padres"},
+        {"es": "la madre", "sv": "mamman", "plural": "las madres"},
+        {"es": "los padres", "sv": "föräldrarna", "note": "Kan betyda både 'papporna' och 'föräldrarna'"},
+        {"es": "el hijo", "sv": "sonen", "plural": "los hijos"},
+        {"es": "la hija", "sv": "dottern", "plural": "las hijas"},
+        {"es": "los hijos", "sv": "barnen", "note": "Kan betyda både 'sönerna' och 'barnen'"},
+        {"es": "el hermano", "sv": "brodern", "plural": "los hermanos"},
+        {"es": "la hermana", "sv": "systern", "plural": "las hermanas"},
+        {"es": "el abuelo", "sv": "farfar/morfar", "plural": "los abuelos"},
+        {"es": "la abuela", "sv": "farmor/mormor", "plural": "las abuelas"},
+        {"es": "el nieto", "sv": "barnbarnet (pojke)", "plural": "los nietos"},
+        {"es": "la nieta", "sv": "barnbarnet (flicka)", "plural": "las nietas"},
+        {"es": "el tío", "sv": "farbror/morbror", "plural": "los tíos"},
+        {"es": "la tía", "sv": "faster/moster", "plural": "las tías"},
+        {"es": "el primo", "sv": "kusinen (man)", "plural": "los primos"},
+        {"es": "la prima", "sv": "kusinen (kvinna)", "plural": "las primas"},
+        {"es": "el sobrino", "sv": "systersonen/brorsonen", "plural": "los sobrinos"},
+        {"es": "la sobrina", "sv": "systerdottern/brordottern", "plural": "las sobrinas"},
+        {"es": "el marido", "sv": "maken", "alt": "el esposo"},
+        {"es": "la mujer", "sv": "hustrun", "alt": "la esposa"},
+        {"es": "el novio", "sv": "pojkvännen", "plural": "los novios"},
+        {"es": "la novia", "sv": "flickvännen", "plural": "las novias"},
+        {"es": "la pareja", "sv": "partnern", "note": "Könsneutral"},
+        {"es": "el cuñado", "sv": "svågern", "plural": "los cuñados"},
+        {"es": "la cuñada", "sv": "svägerskan", "plural": "las cuñadas"},
+        {"es": "el suegro", "sv": "svärfadern", "plural": "los suegros"},
+        {"es": "la suegra", "sv": "svärmodern", "plural": "las suegras"},
+        {"es": "el yerno", "sv": "svärsonen", "plural": "los yernos"},
+        {"es": "la nuera", "sv": "svärdottern", "plural": "las nueras"}
+      ]
+    },
+    "estado_civil": {
+      "name": "Estado Civil - Civilstånd",
+      "description": "Civilstånd och relationsord",
+      "items": [
+        {"es": "soltero/a", "sv": "singel/ogift", "example": "Estoy soltero"},
+        {"es": "casado/a", "sv": "gift", "example": "Estoy casado con María"},
+        {"es": "separado/a", "sv": "separerad", "example": "Estoy separada"},
+        {"es": "divorciado/a", "sv": "skild", "example": "Estoy divorciado"},
+        {"es": "viudo/a", "sv": "änka/änkling", "example": "Soy viuda"}
+      ]
+    },
+    "posesivos": {
+      "name": "Los Posesivos - Possessiva pronomen",
+      "description": "Ägandeord",
+      "items": [
+        {"person": "yo", "singular_m": "mi", "singular_f": "mi", "plural_m": "mis", "plural_f": "mis", "example": "mi libro, mis libros"},
+        {"person": "tú", "singular_m": "tu", "singular_f": "tu", "plural_m": "tus", "plural_f": "tus", "example": "tu amigo, tus amigas"},
+        {"person": "él/ella/usted", "singular_m": "su", "singular_f": "su", "plural_m": "sus", "plural_f": "sus", "example": "su hermano, sus hermanas"},
+        {"person": "nosotros", "singular_m": "nuestro", "singular_f": "nuestra", "plural_m": "nuestros", "plural_f": "nuestras", "example": "nuestro primo, nuestra prima"},
+        {"person": "vosotros", "singular_m": "vuestro", "singular_f": "vuestra", "plural_m": "vuestros", "plural_f": "vuestras", "example": "vuestro gato, vuestra gata"},
+        {"person": "ellos/ellas/ustedes", "singular_m": "su", "singular_f": "su", "plural_m": "sus", "plural_f": "sus", "example": "su hijo, sus hijos"}
+      ]
+    },
+    "colores": {
+      "name": "Los Colores - Färger",
+      "description": "Grundläggande färger",
+      "items": [
+        {"es": "negro", "sv": "svart"},
+        {"es": "gris", "sv": "grå"},
+        {"es": "marrón", "sv": "brun"},
+        {"es": "azul", "sv": "blå"},
+        {"es": "verde", "sv": "grön"},
+        {"es": "amarillo", "sv": "gul"},
+        {"es": "naranja", "sv": "orange"},
+        {"es": "rojo", "sv": "röd"},
+        {"es": "rosa", "sv": "rosa"},
+        {"es": "blanco", "sv": "vit"},
+        {"es": "morado", "sv": "lila"}
+      ]
+    },
+    "emociones": {
+      "name": "¿Cómo estás? - Känslor",
+      "description": "Känslouttryck med ESTAR",
+      "items": [
+        {"es": "Estoy contento/a", "sv": "Jag är glad"},
+        {"es": "Estoy triste", "sv": "Jag är ledsen"},
+        {"es": "Estoy enfadado/a", "sv": "Jag är arg"},
+        {"es": "Estoy sorprendido/a", "sv": "Jag är förvånad"},
+        {"es": "Estoy enfermo/a", "sv": "Jag är sjuk"},
+        {"es": "Estoy cansado/a", "sv": "Jag är trött"},
+        {"es": "Estoy dormido/a", "sv": "Jag är sömnig"},
+        {"es": "Estoy bien", "sv": "Jag mår bra"},
+        {"es": "Estoy mal", "sv": "Jag mår dåligt"}
+      ]
+    },
+    "adjetivos_personalidad": {
+      "name": "Adjetivos - Personlighetsord",
+      "description": "Adjektiv för att beskriva personlighet",
+      "items": [
+        {"es": "sincero/a", "sv": "ärlig"},
+        {"es": "generoso/a", "sv": "generös"},
+        {"es": "simpático/a", "sv": "trevlig/sympatisk"},
+        {"es": "valiente", "sv": "modig"},
+        {"es": "optimista", "sv": "optimistisk"},
+        {"es": "inteligente", "sv": "intelligent"},
+        {"es": "cariñoso/a", "sv": "kärleksfull"},
+        {"es": "alegre", "sv": "glad/munter"},
+        {"es": "moreno/a", "sv": "mörkhårig/mörkhyad"},
+        {"es": "rubio/a", "sv": "blond"}
+      ]
+    },
+    "ser_vs_estar": {
+      "name": "SER vs ESTAR",
+      "description": "Skillnaden mellan de två verben för 'att vara'",
+      "ser": {
+        "use": "Permanenta/inneboende egenskaper",
+        "cases": [
+          {"case": "Nacionalidad", "example": "Somos franceses", "sv": "Vi är fransmän"},
+          {"case": "Identificación", "example": "Yo soy Laura", "sv": "Jag är Laura"},
+          {"case": "Profesión", "example": "Mikel es médico", "sv": "Mikel är läkare"},
+          {"case": "Descripción", "example": "Ane es morena", "sv": "Ane är mörkhårig"},
+          {"case": "Carácter", "example": "Él es muy alegre", "sv": "Han är mycket glad (som person)"}
+        ],
+        "conjugation": [
+          {"person": "yo", "form": "soy"},
+          {"person": "tú", "form": "eres"},
+          {"person": "él/ella/usted", "form": "es"},
+          {"person": "nosotros", "form": "somos"},
+          {"person": "vosotros", "form": "sois"},
+          {"person": "ellos/ustedes", "form": "son"}
+        ]
+      },
+      "estar": {
+        "use": "Tillfälliga tillstånd/plats",
+        "cases": [
+          {"case": "Localización", "example": "El museo está en Bilbao", "sv": "Museet ligger i Bilbao"},
+          {"case": "Estados de ánimo", "example": "Hoy estoy contenta", "sv": "Idag är jag glad"}
+        ],
+        "conjugation": [
+          {"person": "yo", "form": "estoy"},
+          {"person": "tú", "form": "estás"},
+          {"person": "él/ella/usted", "form": "está"},
+          {"person": "nosotros", "form": "estamos"},
+          {"person": "vosotros", "form": "estáis"},
+          {"person": "ellos/ustedes", "form": "están"}
+        ]
+      },
+      "important_rule": "ESTAR bien/mal (fungerar) - SER bien/mal existerar INTE!"
+    },
+    "paises_nacionalidades": {
+      "name": "Países y Nacionalidades",
+      "description": "Länder och nationaliteter",
+      "items": [
+        {"pais": "España", "m": "español", "f": "española", "sv": "Spanien/spansk"},
+        {"pais": "Suecia", "m": "sueco", "f": "sueca", "sv": "Sverige/svensk"},
+        {"pais": "China", "m": "chino", "f": "china", "sv": "Kina/kinesisk"},
+        {"pais": "Ecuador", "m": "ecuatoriano", "f": "ecuatoriana", "sv": "Ecuador/ecuadoriansk"},
+        {"pais": "Marruecos", "m": "marroquí", "f": "marroquí", "sv": "Marocko/marockansk"},
+        {"pais": "Ucrania", "m": "ucraniano", "f": "ucraniana", "sv": "Ukraina/ukrainsk"},
+        {"pais": "Nigeria", "m": "nigeriano", "f": "nigeriana", "sv": "Nigeria/nigeriansk"},
+        {"pais": "Argentina", "m": "argentino", "f": "argentina", "sv": "Argentina/argentinsk"},
+        {"pais": "Rusia", "m": "ruso", "f": "rusa", "sv": "Ryssland/rysk"},
+        {"pais": "Francia", "m": "francés", "f": "francesa", "sv": "Frankrike/fransk"},
+        {"pais": "Alemania", "m": "alemán", "f": "alemana", "sv": "Tyskland/tysk"},
+        {"pais": "Italia", "m": "italiano", "f": "italiana", "sv": "Italien/italiensk"},
+        {"pais": "Estados Unidos", "m": "estadounidense", "f": "estadounidense", "sv": "USA/amerikansk"},
+        {"pais": "México", "m": "mexicano", "f": "mexicana", "sv": "Mexiko/mexikansk"},
+        {"pais": "Colombia", "m": "colombiano", "f": "colombiana", "sv": "Colombia/colombiansk"},
+        {"pais": "Perú", "m": "peruano", "f": "peruana", "sv": "Peru/peruansk"}
+      ]
+    },
+    "verbos_basicos": {
+      "name": "Verbos Básicos - Grundverb",
+      "description": "De viktigaste verben i presens",
+      "verbs": {
+        "llamarse": {
+          "meaning": "att heta",
+          "conjugation": [
+            {"person": "yo", "form": "me llamo"},
+            {"person": "tú", "form": "te llamas"},
+            {"person": "él/ella/usted", "form": "se llama"},
+            {"person": "nosotros", "form": "nos llamamos"},
+            {"person": "vosotros", "form": "os llamáis"},
+            {"person": "ellos/ustedes", "form": "se llaman"}
+          ]
+        },
+        "tener": {
+          "meaning": "att ha",
+          "conjugation": [
+            {"person": "yo", "form": "tengo"},
+            {"person": "tú", "form": "tienes"},
+            {"person": "él/ella/usted", "form": "tiene"},
+            {"person": "nosotros", "form": "tenemos"},
+            {"person": "vosotros", "form": "tenéis"},
+            {"person": "ellos/ustedes", "form": "tienen"}
+          ]
+        },
+        "vivir": {
+          "meaning": "att bo",
+          "conjugation": [
+            {"person": "yo", "form": "vivo"},
+            {"person": "tú", "form": "vives"},
+            {"person": "él/ella/usted", "form": "vive"},
+            {"person": "nosotros", "form": "vivimos"},
+            {"person": "vosotros", "form": "vivís"},
+            {"person": "ellos/ustedes", "form": "viven"}
+          ]
+        },
+        "trabajar": {
+          "meaning": "att arbeta",
+          "conjugation": [
+            {"person": "yo", "form": "trabajo"},
+            {"person": "tú", "form": "trabajas"},
+            {"person": "él/ella/usted", "form": "trabaja"},
+            {"person": "nosotros", "form": "trabajamos"},
+            {"person": "vosotros", "form": "trabajáis"},
+            {"person": "ellos/ustedes", "form": "trabajan"}
+          ]
+        },
+        "hablar": {
+          "meaning": "att prata",
+          "conjugation": [
+            {"person": "yo", "form": "hablo"},
+            {"person": "tú", "form": "hablas"},
+            {"person": "él/ella/usted", "form": "habla"},
+            {"person": "nosotros", "form": "hablamos"},
+            {"person": "vosotros", "form": "habláis"},
+            {"person": "ellos/ustedes", "form": "hablan"}
+          ]
+        },
+        "gustar": {
+          "meaning": "att tycka om",
+          "note": "Används annorlunda! Bokstavligt: 'det behagar mig'",
+          "conjugation": [
+            {"person": "a mí", "form": "me gusta / me gustan"},
+            {"person": "a ti", "form": "te gusta / te gustan"},
+            {"person": "a él/ella", "form": "le gusta / le gustan"},
+            {"person": "a nosotros", "form": "nos gusta / nos gustan"},
+            {"person": "a vosotros", "form": "os gusta / os gustan"},
+            {"person": "a ellos", "form": "les gusta / les gustan"}
+          ],
+          "examples": ["Me gusta el cine (Jag gillar bio)", "Me gustan los animales (Jag gillar djur)"]
+        }
+      }
+    },
+    "presentacion_personal": {
+      "name": "Información Personal - Presentera dig",
+      "description": "Frågor och svar för att presentera sig",
+      "items": [
+        {"pregunta": "¿Cómo te llamas?", "respuesta": "Me llamo... / Soy...", "sv_q": "Vad heter du?", "sv_r": "Jag heter..."},
+        {"pregunta": "¿Cómo te apellidas?", "respuesta": "Me apellido...", "sv_q": "Vad har du för efternamn?", "sv_r": "Jag heter ... i efternamn"},
+        {"pregunta": "¿De dónde eres?", "respuesta": "Soy de... / Soy sueco/a", "sv_q": "Var kommer du ifrån?", "sv_r": "Jag är från... / Jag är svensk"},
+        {"pregunta": "¿Cuántos años tienes?", "respuesta": "Tengo ... años", "sv_q": "Hur gammal är du?", "sv_r": "Jag är ... år"},
+        {"pregunta": "¿Dónde vives?", "respuesta": "Vivo en...", "sv_q": "Var bor du?", "sv_r": "Jag bor i..."},
+        {"pregunta": "¿A qué te dedicas?", "respuesta": "Soy... / Trabajo como...", "sv_q": "Vad jobbar du med?", "sv_r": "Jag är... / Jag jobbar som..."},
+        {"pregunta": "¿Qué lenguas hablas?", "respuesta": "Hablo...", "sv_q": "Vilka språk talar du?", "sv_r": "Jag pratar..."},
+        {"pregunta": "¿Tienes número de teléfono?", "respuesta": "Sí, es el... / No", "sv_q": "Har du telefonnummer?", "sv_r": "Ja, det är... / Nej"},
+        {"pregunta": "¿Tienes correo electrónico?", "respuesta": "Sí, es... / No", "sv_q": "Har du email?", "sv_r": "Ja, det är... / Nej"},
+        {"pregunta": "¿Estás casado/a?", "respuesta": "Sí, estoy casado/a / No, estoy soltero/a", "sv_q": "Är du gift?", "sv_r": "Ja, jag är gift / Nej, jag är singel"}
+      ]
+    },
+    "dias_semana": {
+      "name": "Los días de la semana - Veckodagar",
+      "description": "Veckodagar på spanska",
+      "items": [
+        {"es": "lunes", "sv": "måndag"},
+        {"es": "martes", "sv": "tisdag"},
+        {"es": "miércoles", "sv": "onsdag"},
+        {"es": "jueves", "sv": "torsdag"},
+        {"es": "viernes", "sv": "fredag"},
+        {"es": "sábado", "sv": "lördag"},
+        {"es": "domingo", "sv": "söndag"}
+      ],
+      "note": "Veckodagar skrivs med liten bokstav på spanska!"
+    },
+    "tiempo_dia": {
+      "name": "Partes del día - Tid på dygnet",
+      "description": "Tidsuttryck",
+      "items": [
+        {"es": "por la mañana", "sv": "på morgonen"},
+        {"es": "al medio día", "sv": "vid lunchtid"},
+        {"es": "por la tarde", "sv": "på eftermiddagen"},
+        {"es": "por la noche", "sv": "på kvällen/natten"}
+      ]
+    },
+    "verbos_rutina": {
+      "name": "Verbos de rutina - Vardagsverb",
+      "description": "Verb för dagliga rutiner (från 'Mi día' texten)",
+      "items": [
+        {"es": "levantarse", "sv": "att gå upp", "example": "Me levanto a las siete"},
+        {"es": "desayunar", "sv": "att äta frukost", "example": "Desayuno a las ocho"},
+        {"es": "caminar", "sv": "att gå/promenera", "example": "Camino hasta la universidad"},
+        {"es": "entrar", "sv": "att gå in", "example": "Entro en clase"},
+        {"es": "salir", "sv": "att gå ut", "example": "Salgo a la una"},
+        {"es": "comer", "sv": "att äta (lunch)", "example": "Como en mi casa"},
+        {"es": "ver", "sv": "att se/titta", "example": "Veo la televisión"},
+        {"es": "estudiar", "sv": "att studera", "example": "Estudio hasta las siete"},
+        {"es": "quedar con", "sv": "att träffa", "example": "Quedo con mis amigas"},
+        {"es": "cenar", "sv": "att äta middag", "example": "Cenamos pizza"},
+        {"es": "bailar", "sv": "att dansa", "example": "Bailamos en la discoteca"},
+        {"es": "visitar", "sv": "att besöka", "example": "Visito a mi familia"},
+        {"es": "regresar", "sv": "att återvända", "example": "Regreso a casa"}
+      ]
+    }
+  }
+}

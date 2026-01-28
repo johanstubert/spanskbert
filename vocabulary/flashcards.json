@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "description": "Flashcards för glosträning - kan användas med träningsscript",
+    "lastUpdated": "2026-01-20"
+  },
+  "categories": {
+    "greetings": {
+      "name": "Hälsningar",
+      "cards": [
+        { "es": "Hola", "sv": "Hej", "level": 0 },
+        { "es": "Buenos días", "sv": "God morgon", "level": 0 },
+        { "es": "Buenas tardes", "sv": "God eftermiddag", "level": 0 },
+        { "es": "Buenas noches", "sv": "God kväll/natt", "level": 0 },
+        { "es": "Adiós", "sv": "Hejdå", "level": 0 },
+        { "es": "Hasta luego", "sv": "Vi ses", "level": 0 }
+      ]
+    },
+    "basics": {
+      "name": "Grundläggande",
+      "cards": [
+        { "es": "Sí", "sv": "Ja", "level": 0 },
+        { "es": "No", "sv": "Nej", "level": 0 },
+        { "es": "Por favor", "sv": "Snälla/tack", "level": 0 },
+        { "es": "Gracias", "sv": "Tack", "level": 0 },
+        { "es": "De nada", "sv": "Varsågod", "level": 0 },
+        { "es": "Perdón", "sv": "Förlåt/ursäkta", "level": 0 }
+      ]
+    },
+    "numbers": {
+      "name": "Siffror",
+      "cards": [
+        { "es": "uno", "sv": "1", "level": 0 },
+        { "es": "dos", "sv": "2", "level": 0 },
+        { "es": "tres", "sv": "3", "level": 0 },
+        { "es": "cuatro", "sv": "4", "level": 0 },
+        { "es": "cinco", "sv": "5", "level": 0 },
+        { "es": "seis", "sv": "6", "level": 0 },
+        { "es": "siete", "sv": "7", "level": 0 },
+        { "es": "ocho", "sv": "8", "level": 0 },
+        { "es": "nueve", "sv": "9", "level": 0 },
+        { "es": "diez", "sv": "10", "level": 0 }
+      ]
+    },
+    "sandra_lessons": {
+      "name": "Från Sandra",
+      "cards": []
+    },
+    "lalia_lessons": {
+      "name": "Från Lalia",
+      "cards": []
+    }
+  }
+}

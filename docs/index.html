@@ -134,6 +134,10 @@
             background: linear-gradient(90deg, #3498db, #2980b9);
         }
 
+        .mode-card.sentence-practice::before {
+            background: linear-gradient(90deg, #1abc9c, #16a085);
+        }
+
         .mode-icon {
             font-size: 2.5rem;
             margin-bottom: 12px;
@@ -356,11 +360,18 @@
                 <div class="mode-stats" id="sentenceBuilderStats"></div>
             </a>
 
-            <a href="flashcard-trainer.py" class="mode-card verb-trainer" style="opacity: 0.5; pointer-events: none;">
+            <a href="verb-trainer-app.html" class="mode-card verb-trainer">
                 <div class="mode-icon">📝</div>
                 <div class="mode-title">Verbträning</div>
-                <div class="mode-desc">Öva på verbböjningar. (Kommer snart)</div>
-                <div class="mode-stats"></div>
+                <div class="mode-desc">Öva på verbböjningar i presens.</div>
+                <div class="mode-stats" id="verbTrainerStats"></div>
+            </a>
+
+            <a href="sentence-practice-app.html" class="mode-card sentence-practice">
+                <div class="mode-icon">✍️</div>
+                <div class="mode-title">Meningsträning</div>
+                <div class="mode-desc">Översätt meningar från svenska till spanska.</div>
+                <div class="mode-stats" id="sentencePracticeStats"></div>
             </a>
         </div>
 
@@ -390,7 +401,12 @@
                     { key: "en_el_bar", name: "På bar/klubb", icon: "🍺", count: 14 },
                     { key: "en_el_hotel", name: "På hotellet", icon: "🏨", count: 12 },
                     { key: "direcciones", name: "Fråga om vägen", icon: "🗺️", count: 14 },
-                    { key: "emergencias", name: "Nödsituationer", icon: "🚨", count: 12 }
+                    { key: "emergencias", name: "Nödsituationer", icon: "🚨", count: 12 },
+                    { key: "en_el_medico", name: "Hos läkaren", icon: "🏥", count: 12 },
+                    { key: "deportes", name: "Sport", icon: "⚽", count: 10 },
+                    { key: "el_tiempo", name: "Väder", icon: "🌤️", count: 10 },
+                    { key: "comida_y_bebida", name: "Mat & dryck", icon: "🍕", count: 14 },
+                    { key: "en_la_escuela", name: "I skolan", icon: "🎓", count: 10 }
                 ]
             },
             "grundlaggande": {
@@ -406,7 +422,11 @@
                     { key: "dias_semana", name: "Veckodagar", icon: "📅", count: 7 },
                     { key: "presentacion", name: "Presentera dig", icon: "🗣️", count: 10 },
                     { key: "verbos", name: "Verb (yo-form)", icon: "📝", count: 10 },
-                    { key: "paises", name: "Länder", icon: "🌍", count: 8 }
+                    { key: "paises", name: "Länder", icon: "🌍", count: 8 },
+                    { key: "cuerpo", name: "Kroppen", icon: "🦴", count: 12 },
+                    { key: "ropa", name: "Kläder", icon: "👕", count: 12 },
+                    { key: "profesiones", name: "Yrken", icon: "👩‍💼", count: 10 },
+                    { key: "animales", name: "Djur", icon: "🐾", count: 12 }
                 ]
             }
         };
@@ -519,6 +539,26 @@
                 totalWrong += sentenceBuilder.totalWrong || 0;
                 document.getElementById('sentenceBuilderStats').textContent =
                     `${sentenceBuilder.sessions} pass · ${sentenceBuilder.totalCorrect || 0} rätt`;
+            }
+
+            // Verb trainer
+            const verbTrainer = JSON.parse(localStorage.getItem('spanishVerbTrainer') || '{}');
+            if (verbTrainer.sessions) {
+                totalSessions += verbTrainer.sessions;
+                totalCorrect += verbTrainer.totalCorrect || 0;
+                totalWrong += verbTrainer.totalWrong || 0;
+                document.getElementById('verbTrainerStats').textContent =
+                    `${verbTrainer.sessions} pass · ${verbTrainer.totalCorrect || 0} rätt`;
+            }
+
+            // Sentence practice
+            const sentencePractice = JSON.parse(localStorage.getItem('spanishSentencePractice') || '{}');
+            if (sentencePractice.sessions) {
+                totalSessions += sentencePractice.sessions;
+                totalCorrect += sentencePractice.totalCorrect || 0;
+                totalWrong += sentencePractice.totalWrong || 0;
+                document.getElementById('sentencePracticeStats').textContent =
+                    `${sentencePractice.sessions} pass · ${sentencePractice.totalCorrect || 0} rätt`;
             }
 
             // Update totals

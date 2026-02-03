@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanskbert - Verbträning</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 16px; background: rgba(255,255,255,0.1);
+            border: none; border-radius: 10px; color: #888;
+            font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+            text-decoration: none; margin-bottom: 20px;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        header { text-align: center; padding: 20px 0 30px; }
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px;
+        }
+        header p { color: #888; font-size: 1rem; }
+        .stats-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 18px 12px; text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; }
+        .stat-value.sessions { color: #3498db; }
+        .stat-value.correct { color: #2ecc71; }
+        .stat-value.streak { color: #f39c12; }
+        .stat-label { font-size: 0.8rem; color: #888; margin-top: 5px; }
+        .main-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+        .main-btn {
+            padding: 18px 20px; border: none; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
+        }
+        .main-btn.primary { background: linear-gradient(90deg, #3498db, #2980b9); color: #fff; }
+        .main-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .section-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .categories-list { display: flex; flex-direction: column; gap: 10px; }
+        .category-group { margin-bottom: 15px; }
+        .category-group-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; background: rgba(255,255,255,0.08);
+            border-radius: 12px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px;
+        }
+        .category-group-header:hover { background: rgba(255,255,255,0.12); }
+        .category-group-title { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 600; color: #fff; }
+        .category-group-title .group-icon { font-size: 1.2rem; }
+        .category-group-count { color: #888; font-size: 0.85rem; }
+        .category-group-arrow { color: #666; font-size: 1.2rem; transition: transform 0.3s; }
+        .category-group.expanded .category-group-arrow { transform: rotate(180deg); }
+        .category-group-items { display: none; flex-direction: column; gap: 8px; padding-left: 12px; }
+        .category-group.expanded .category-group-items { display: flex; }
+        .category-item {
+            display: flex; align-items: center; padding: 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 15px; cursor: pointer; transition: all 0.2s;
+        }
+        .category-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+        .category-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-right: 15px; flex-shrink: 0;
+        }
+        .category-info { flex: 1; }
+        .category-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+        .category-count { font-size: 0.9rem; color: #888; }
+        .progress-circle { width: 45px; height: 45px; }
+        .progress-circle svg { transform: rotate(-90deg); }
+        .progress-circle .bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 4; }
+        .progress-circle .progress { fill: none; stroke: #2ecc71; stroke-width: 4; stroke-linecap: round; }
+        .exercise-view { display: none; }
+        .exercise-view.active { display: block; }
+        .category-view { display: block; }
+        .category-view.hidden { display: none; }
+        .exercise-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .exercise-title { font-size: 1.3rem; font-weight: 600; }
+        .exercise-progress-text { color: #888; font-size: 0.95rem; }
+        .stats-bar { display: flex; justify-content: center; gap: 25px; margin-bottom: 25px; }
+        .stat { text-align: center; padding: 12px 20px; background: rgba(255,255,255,0.05); border-radius: 12px; }
+        .stat .stat-value { font-size: 1.5rem; }
+        .stat.correct .stat-value { color: #2ecc71; }
+        .stat.wrong .stat-value { color: #e74c3c; }
+        .stat.streak .stat-value { color: #f39c12; }
+        .progress-container { margin-bottom: 25px; }
+        .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #3498db, #2980b9); border-radius: 3px; transition: width 0.3s; }
+        .mode-toggle { display: flex; gap: 8px; margin-bottom: 25px; }
+        .mode-btn {
+            flex: 1; padding: 12px; border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 10px; background: transparent; color: #888;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .mode-btn.active { border-color: #3498db; color: #3498db; background: rgba(52,152,219,0.1); }
+        .question-card {
+            background: rgba(255,255,255,0.05); border-radius: 20px;
+            padding: 30px; margin-bottom: 20px; text-align: center;
+        }
+        .question-label { font-size: 0.85rem; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .verb-infinitive { font-size: 2rem; font-weight: bold; color: #fff; }
+        .verb-meaning { font-size: 1rem; color: #888; font-style: italic; margin: 8px 0; }
+        .verb-person { font-size: 1.4rem; font-weight: 600; color: #3498db; margin-top: 12px; }
+        .input-area { margin-bottom: 20px; }
+        .answer-input {
+            width: 100%; padding: 16px; font-size: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 12px;
+            background: rgba(255,255,255,0.05); color: #fff;
+            text-align: center; outline: none; transition: all 0.3s;
+        }
+        .answer-input:focus { border-color: #3498db; }
+        .answer-input.correct { border-color: #2ecc71; background: rgba(46, 204, 113, 0.2); }
+        .answer-input.wrong { border-color: #e74c3c; background: rgba(231, 76, 60, 0.2); }
+        .check-btn, .next-btn {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: #fff; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .check-btn:hover, .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .next-btn { display: none; }
+        .next-btn.show { display: block; }
+        .feedback { text-align: center; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .feedback.wrong { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .keyboard-hints { text-align: center; color: #555; font-size: 0.8rem; margin-top: 15px; }
+        .keyboard-hints kbd { background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 4px; margin: 0 2px; }
+        /* All 6 mode */
+        .all-persons-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .person-row {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 12px;
+        }
+        .person-label { font-size: 0.95rem; color: #3498db; font-weight: 600; min-width: 120px; }
+        .person-input {
+            flex: 1; padding: 10px; font-size: 1rem;
+            border: 2px solid rgba(255,255,255,0.15); border-radius: 8px;
+            background: rgba(255,255,255,0.05); color: #fff; outline: none;
+        }
+        .person-input:focus { border-color: #3498db; }
+        .person-input.correct { border-color: #2ecc71; background: rgba(46, 204, 113, 0.15); }
+        .person-input.wrong { border-color: #e74c3c; background: rgba(231, 76, 60, 0.15); }
+        .person-correct-answer { font-size: 0.85rem; color: #e74c3c; min-width: 80px; text-align: right; }
+        .results { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; display: none; }
+        .results.show { display: block; }
+        .results h2 { font-size: 1.8rem; margin-bottom: 20px; }
+        .results-stats { display: flex; justify-content: center; gap: 30px; margin: 25px 0; }
+        .results-stat { text-align: center; }
+        .results-stat-value { font-size: 2.5rem; font-weight: bold; }
+        .results-stat-label { color: #888; font-size: 0.9rem; }
+        .restart-btn {
+            padding: 16px 40px; border: none; border-radius: 15px;
+            font-size: 1rem; cursor: pointer;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: #fff; font-weight: 600; margin-top: 15px; transition: all 0.3s;
+        }
+        .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        @media (max-width: 500px) {
+            .container { padding: 15px; }
+            header h1 { font-size: 2rem; }
+            .person-label { min-width: 90px; font-size: 0.85rem; }
+            .person-input { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="category-view" id="categoryView">
+            <a href="index.html" class="back-btn"><span>&larr;</span> Huvudmeny</a>
+            <header>
+                <h1>Verbträning</h1>
+                <p>Öva på verbböjningar i presens</p>
+            </header>
+            <div class="stats-overview">
+                <div class="stat-card"><div class="stat-value sessions" id="totalSessions">0</div><div class="stat-label">Övningar</div></div>
+                <div class="stat-card"><div class="stat-value correct" id="totalCorrect">0</div><div class="stat-label">Rätt</div></div>
+                <div class="stat-card"><div class="stat-value streak" id="accuracy">0%</div><div class="stat-label">Träffsäkerhet</div></div>
+            </div>
+            <div class="main-buttons">
+                <button class="main-btn primary" id="practiceAllBtn">Öva alla</button>
+                <button class="main-btn secondary" id="randomBtn">Slumpa</button>
+            </div>
+            <div class="section-title">Kategorier</div>
+            <div class="categories-list" id="categoriesList"></div>
+        </div>
+
+        <div class="exercise-view" id="exerciseView">
+            <button class="back-btn" id="backToCategories"><span>&larr;</span> Tillbaka</button>
+            <div class="exercise-header">
+                <div class="exercise-title" id="exerciseTitle">Kategori</div>
+                <div class="exercise-progress-text" id="exerciseProgressText">1/10</div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat correct"><div class="stat-value" id="correctCount">0</div><div class="stat-label">Rätt</div></div>
+                <div class="stat wrong"><div class="stat-value" id="wrongCount">0</div><div class="stat-label">Fel</div></div>
+                <div class="stat streak"><div class="stat-value" id="currentStreak">0</div><div class="stat-label">Streak</div></div>
+            </div>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="random" id="modeRandom">Slumpad person</button>
+                <button class="mode-btn" data-mode="all6" id="modeAll6">Alla 6</button>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+            </div>
+
+            <!-- Random person mode -->
+            <div id="randomModeArea">
+                <div class="question-card">
+                    <div class="question-label">Böj verbet</div>
+                    <div class="verb-infinitive" id="verbInfinitive">hablar</div>
+                    <div class="verb-meaning" id="verbMeaning">att prata</div>
+                    <div class="verb-person" id="verbPerson">yo</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Skriv böjningen..." autocomplete="off">
+                </div>
+                <div class="feedback" id="feedback"></div>
+                <button class="check-btn" id="checkBtn">Kolla svar</button>
+                <button class="next-btn" id="nextBtn">Nästa &rarr;</button>
+            </div>
+
+            <!-- All 6 mode -->
+            <div id="all6ModeArea" style="display: none;">
+                <div class="question-card">
+                    <div class="question-label">Böj alla former</div>
+                    <div class="verb-infinitive" id="verbInfinitive6">hablar</div>
+                    <div class="verb-meaning" id="verbMeaning6">att prata</div>
+                </div>
+                <div class="all-persons-grid" id="personsGrid"></div>
+                <div class="feedback" id="feedback6"></div>
+                <button class="check-btn" id="checkBtn6">Kolla alla svar</button>
+                <button class="next-btn" id="nextBtn6">Nästa verb &rarr;</button>
+            </div>
+
+            <div class="keyboard-hints"><kbd>Enter</kbd> Kolla/Nästa</div>
+            <div class="results" id="resultsScreen">
+                <h2>Bra jobbat!</h2>
+                <div class="results-stats">
+                    <div class="results-stat"><div class="results-stat-value" id="finalCorrect" style="color: #2ecc71;">0</div><div class="results-stat-label">Rätt</div></div>
+                    <div class="results-stat"><div class="results-stat-value" id="finalWrong" style="color: #e74c3c;">0</div><div class="results-stat-label">Fel</div></div>
+                    <div class="results-stat"><div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div><div class="results-stat-label">Resultat</div></div>
+                </div>
+                <button class="restart-btn" id="restartBtn">Kör igen!</button>
+                <br><button class="back-btn" id="backFromResults" style="margin-top: 15px;">&larr; Välj annan kategori</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const personLabels = {
+            "yo": "yo",
+            "tu": "tú",
+            "el": "él/ella/usted",
+            "nosotros": "nosotros/as",
+            "vosotros": "vosotros/as",
+            "ellos": "ellos/ellas/ustedes"
+        };
+        const personKeys = ["yo", "tu", "el", "nosotros", "vosotros", "ellos"];
+
+        const verbData = {
+            "ar_regulares": {
+                "name": "AR-verb (reguljära)", "icon": "🟢", "color": "#2ecc71",
+                "verbs": [
+                    { "infinitive": "hablar", "meaning": "att prata", "conjugation": { "yo": "hablo", "tu": "hablas", "el": "habla", "nosotros": "hablamos", "vosotros": "habláis", "ellos": "hablan" } },
+                    { "infinitive": "trabajar", "meaning": "att arbeta", "conjugation": { "yo": "trabajo", "tu": "trabajas", "el": "trabaja", "nosotros": "trabajamos", "vosotros": "trabajáis", "ellos": "trabajan" } },
+                    { "infinitive": "estudiar", "meaning": "att studera", "conjugation": { "yo": "estudio", "tu": "estudias", "el": "estudia", "nosotros": "estudiamos", "vosotros": "estudiáis", "ellos": "estudian" } },
+                    { "infinitive": "comprar", "meaning": "att köpa", "conjugation": { "yo": "compro", "tu": "compras", "el": "compra", "nosotros": "compramos", "vosotros": "compráis", "ellos": "compran" } },
+                    { "infinitive": "cocinar", "meaning": "att laga mat", "conjugation": { "yo": "cocino", "tu": "cocinas", "el": "cocina", "nosotros": "cocinamos", "vosotros": "cocináis", "ellos": "cocinan" } },
+                    { "infinitive": "bailar", "meaning": "att dansa", "conjugation": { "yo": "bailo", "tu": "bailas", "el": "baila", "nosotros": "bailamos", "vosotros": "bailáis", "ellos": "bailan" } },
+                    { "infinitive": "cantar", "meaning": "att sjunga", "conjugation": { "yo": "canto", "tu": "cantas", "el": "canta", "nosotros": "cantamos", "vosotros": "cantáis", "ellos": "cantan" } },
+                    { "infinitive": "viajar", "meaning": "att resa", "conjugation": { "yo": "viajo", "tu": "viajas", "el": "viaja", "nosotros": "viajamos", "vosotros": "viajáis", "ellos": "viajan" } },
+                    { "infinitive": "llegar", "meaning": "att komma/anlända", "conjugation": { "yo": "llego", "tu": "llegas", "el": "llega", "nosotros": "llegamos", "vosotros": "llegáis", "ellos": "llegan" } },
+                    { "infinitive": "necesitar", "meaning": "att behöva", "conjugation": { "yo": "necesito", "tu": "necesitas", "el": "necesita", "nosotros": "necesitamos", "vosotros": "necesitáis", "ellos": "necesitan" } }
+                ]
+            },
+            "er_regulares": {
+                "name": "ER-verb (reguljära)", "icon": "🔵", "color": "#3498db",
+                "verbs": [
+                    { "infinitive": "comer", "meaning": "att äta", "conjugation": { "yo": "como", "tu": "comes", "el": "come", "nosotros": "comemos", "vosotros": "coméis", "ellos": "comen" } },
+                    { "infinitive": "beber", "meaning": "att dricka", "conjugation": { "yo": "bebo", "tu": "bebes", "el": "bebe", "nosotros": "bebemos", "vosotros": "bebéis", "ellos": "beben" } },
+                    { "infinitive": "leer", "meaning": "att läsa", "conjugation": { "yo": "leo", "tu": "lees", "el": "lee", "nosotros": "leemos", "vosotros": "leéis", "ellos": "leen" } },
+                    { "infinitive": "aprender", "meaning": "att lära sig", "conjugation": { "yo": "aprendo", "tu": "aprendes", "el": "aprende", "nosotros": "aprendemos", "vosotros": "aprendéis", "ellos": "aprenden" } },
+                    { "infinitive": "comprender", "meaning": "att förstå", "conjugation": { "yo": "comprendo", "tu": "comprendes", "el": "comprende", "nosotros": "comprendemos", "vosotros": "comprendéis", "ellos": "comprenden" } }
+                ]
+            },
+            "ir_regulares": {
+                "name": "IR-verb (reguljära)", "icon": "🟣", "color": "#9b59b6",
+                "verbs": [
+                    { "infinitive": "vivir", "meaning": "att bo", "conjugation": { "yo": "vivo", "tu": "vives", "el": "vive", "nosotros": "vivimos", "vosotros": "vivís", "ellos": "viven" } },
+                    { "infinitive": "escribir", "meaning": "att skriva", "conjugation": { "yo": "escribo", "tu": "escribes", "el": "escribe", "nosotros": "escribimos", "vosotros": "escribís", "ellos": "escriben" } },
+                    { "infinitive": "abrir", "meaning": "att öppna", "conjugation": { "yo": "abro", "tu": "abres", "el": "abre", "nosotros": "abrimos", "vosotros": "abrís", "ellos": "abren" } },
+                    { "infinitive": "subir", "meaning": "att gå upp", "conjugation": { "yo": "subo", "tu": "subes", "el": "sube", "nosotros": "subimos", "vosotros": "subís", "ellos": "suben" } },
+                    { "infinitive": "decidir", "meaning": "att bestämma", "conjugation": { "yo": "decido", "tu": "decides", "el": "decide", "nosotros": "decidimos", "vosotros": "decidís", "ellos": "deciden" } }
+                ]
+            },
+            "irregulares": {
+                "name": "Oregelbundna verb", "icon": "⚡", "color": "#e74c3c",
+                "verbs": [
+                    { "infinitive": "ser", "meaning": "att vara (permanent)", "conjugation": { "yo": "soy", "tu": "eres", "el": "es", "nosotros": "somos", "vosotros": "sois", "ellos": "son" } },
+                    { "infinitive": "estar", "meaning": "att vara (tillfälligt)", "conjugation": { "yo": "estoy", "tu": "estás", "el": "está", "nosotros": "estamos", "vosotros": "estáis", "ellos": "están" } },
+                    { "infinitive": "tener", "meaning": "att ha", "conjugation": { "yo": "tengo", "tu": "tienes", "el": "tiene", "nosotros": "tenemos", "vosotros": "tenéis", "ellos": "tienen" } },
+                    { "infinitive": "ir", "meaning": "att gå", "conjugation": { "yo": "voy", "tu": "vas", "el": "va", "nosotros": "vamos", "vosotros": "vais", "ellos": "van" } },
+                    { "infinitive": "hacer", "meaning": "att göra", "conjugation": { "yo": "hago", "tu": "haces", "el": "hace", "nosotros": "hacemos", "vosotros": "hacéis", "ellos": "hacen" } },
+                    { "infinitive": "poder", "meaning": "att kunna", "conjugation": { "yo": "puedo", "tu": "puedes", "el": "puede", "nosotros": "podemos", "vosotros": "podéis", "ellos": "pueden" } },
+                    { "infinitive": "querer", "meaning": "att vilja", "conjugation": { "yo": "quiero", "tu": "quieres", "el": "quiere", "nosotros": "queremos", "vosotros": "queréis", "ellos": "quieren" } },
+                    { "infinitive": "saber", "meaning": "att veta", "conjugation": { "yo": "sé", "tu": "sabes", "el": "sabe", "nosotros": "sabemos", "vosotros": "sabéis", "ellos": "saben" } },
+                    { "infinitive": "decir", "meaning": "att säga", "conjugation": { "yo": "digo", "tu": "dices", "el": "dice", "nosotros": "decimos", "vosotros": "decís", "ellos": "dicen" } },
+                    { "infinitive": "venir", "meaning": "att komma", "conjugation": { "yo": "vengo", "tu": "vienes", "el": "viene", "nosotros": "venimos", "vosotros": "venís", "ellos": "vienen" } }
+                ]
+            },
+            "reflexivos": {
+                "name": "Reflexiva verb", "icon": "🔄", "color": "#f39c12",
+                "verbs": [
+                    { "infinitive": "llamarse", "meaning": "att heta", "conjugation": { "yo": "me llamo", "tu": "te llamas", "el": "se llama", "nosotros": "nos llamamos", "vosotros": "os llamáis", "ellos": "se llaman" } },
+                    { "infinitive": "levantarse", "meaning": "att gå upp", "conjugation": { "yo": "me levanto", "tu": "te levantas", "el": "se levanta", "nosotros": "nos levantamos", "vosotros": "os levantáis", "ellos": "se levantan" } }
+                ]
+            }
+        };
+
+        const categoryGroups = {
+            "regulares": {
+                name: "Reguljära verb",
+                icon: "📗",
+                categories: ["ar_regulares", "er_regulares", "ir_regulares"]
+            },
+            "avancerade": {
+                name: "Avancerade",
+                icon: "🔥",
+                categories: ["irregulares", "reflexivos"]
+            }
+        };
+
+        let questions = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let streak = 0;
+        let currentCategory = null;
+        let hasAnswered = false;
+        let currentMode = 'random';
+
+        const categoryView = document.getElementById('categoryView');
+        const exerciseView = document.getElementById('exerciseView');
+        const categoriesList = document.getElementById('categoriesList');
+        const answerInput = document.getElementById('answerInput');
+        const feedback = document.getElementById('feedback');
+        const checkBtn = document.getElementById('checkBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const feedback6 = document.getElementById('feedback6');
+        const checkBtn6 = document.getElementById('checkBtn6');
+        const nextBtn6 = document.getElementById('nextBtn6');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const randomModeArea = document.getElementById('randomModeArea');
+        const all6ModeArea = document.getElementById('all6ModeArea');
+
+        function getVerbCount(category) {
+            return verbData[category].verbs.length;
+        }
+
+        function createCategoryItem(key, categoryProgress) {
+            const cat = verbData[key];
+            const progress = categoryProgress[key] || 0;
+            const circumference = 2 * Math.PI * 18;
+            const offset = circumference - (progress / 100) * circumference;
+            const verbCount = cat.verbs.length;
+            const item = document.createElement('div');
+            item.className = 'category-item';
+            item.innerHTML = `
+                <div class="category-icon" style="background: ${cat.color}20; color: ${cat.color};">${cat.icon}</div>
+                <div class="category-info"><div class="category-name">${cat.name}</div><div class="category-count">${verbCount} verb</div></div>
+                <div class="progress-circle"><svg width="45" height="45"><circle class="bg" cx="22.5" cy="22.5" r="18"></circle><circle class="progress" cx="22.5" cy="22.5" r="18" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="stroke: ${cat.color}"></circle></svg></div>
+            `;
+            item.addEventListener('click', () => startExercise(key));
+            return item;
+        }
+
+        function initCategories() {
+            const saved = JSON.parse(localStorage.getItem('spanishVerbTrainer') || '{}');
+            const categoryProgress = saved.categoryProgress || {};
+            const expandedGroups = JSON.parse(localStorage.getItem('spanishVerbTrainerExpanded') || '[]');
+
+            Object.keys(categoryGroups).forEach(groupKey => {
+                const group = categoryGroups[groupKey];
+                const totalVerbs = group.categories.reduce((sum, catKey) => sum + (verbData[catKey]?.verbs.length || 0), 0);
+
+                const groupEl = document.createElement('div');
+                groupEl.className = 'category-group' + (expandedGroups.includes(groupKey) ? ' expanded' : '');
+                groupEl.dataset.group = groupKey;
+
+                const header = document.createElement('div');
+                header.className = 'category-group-header';
+                header.innerHTML = `
+                    <div class="category-group-title"><span class="group-icon">${group.icon}</span>${group.name}</div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="category-group-count">${group.categories.length} kategorier · ${totalVerbs} verb</span>
+                        <span class="category-group-arrow">▼</span>
+                    </div>
+                `;
+                header.addEventListener('click', () => toggleGroup(groupKey));
+
+                const itemsContainer = document.createElement('div');
+                itemsContainer.className = 'category-group-items';
+
+                group.categories.forEach(catKey => {
+                    if (verbData[catKey]) {
+                        itemsContainer.appendChild(createCategoryItem(catKey, categoryProgress));
+                    }
+                });
+
+                groupEl.appendChild(header);
+                groupEl.appendChild(itemsContainer);
+                categoriesList.appendChild(groupEl);
+            });
+
+            updateOverviewStats();
+        }
+
+        function toggleGroup(groupKey) {
+            const groupEl = document.querySelector(`.category-group[data-group="${groupKey}"]`);
+            groupEl.classList.toggle('expanded');
+            const expandedGroups = [];
+            document.querySelectorAll('.category-group.expanded').forEach(g => expandedGroups.push(g.dataset.group));
+            localStorage.setItem('spanishVerbTrainerExpanded', JSON.stringify(expandedGroups));
+        }
+
+        function updateOverviewStats() {
+            const saved = JSON.parse(localStorage.getItem('spanishVerbTrainer') || '{}');
+            document.getElementById('totalSessions').textContent = saved.sessions || 0;
+            document.getElementById('totalCorrect').textContent = saved.totalCorrect || 0;
+            const total = (saved.totalCorrect || 0) + (saved.totalWrong || 0);
+            const acc = total > 0 ? Math.round((saved.totalCorrect / total) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${acc}%`;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startExercise(category) {
+            currentCategory = category;
+            let verbs;
+            if (category === 'all') {
+                verbs = Object.values(verbData).flatMap(c => c.verbs);
+            } else {
+                verbs = verbData[category].verbs;
+            }
+
+            if (currentMode === 'random') {
+                // Create one question per verb+person combo, then pick a subset
+                questions = [];
+                verbs.forEach(verb => {
+                    const person = personKeys[Math.floor(Math.random() * personKeys.length)];
+                    questions.push({ verb: verb, person: person });
+                });
+                shuffle(questions);
+            } else {
+                // All 6 mode: one question per verb
+                questions = shuffle([...verbs]);
+            }
+
+            currentIndex = 0; correctCount = 0; wrongCount = 0; streak = 0;
+            const title = category === 'all' ? 'Alla verb' : verbData[category].name;
+            document.getElementById('exerciseTitle').textContent = title;
+            categoryView.classList.add('hidden');
+            exerciseView.classList.add('active');
+            resultsScreen.classList.remove('show');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentIndex >= questions.length) { showResults(); return; }
+            hasAnswered = false;
+
+            if (currentMode === 'random') {
+                randomModeArea.style.display = 'block';
+                all6ModeArea.style.display = 'none';
+                const q = questions[currentIndex];
+                document.getElementById('verbInfinitive').textContent = q.verb.infinitive;
+                document.getElementById('verbMeaning').textContent = q.verb.meaning;
+                document.getElementById('verbPerson').textContent = personLabels[q.person];
+                answerInput.value = '';
+                answerInput.className = 'answer-input';
+                answerInput.disabled = false;
+                answerInput.focus();
+                feedback.classList.remove('show', 'correct', 'wrong');
+                checkBtn.style.display = 'block';
+                nextBtn.classList.remove('show');
+            } else {
+                randomModeArea.style.display = 'none';
+                all6ModeArea.style.display = 'block';
+                const verb = questions[currentIndex];
+                document.getElementById('verbInfinitive6').textContent = verb.infinitive;
+                document.getElementById('verbMeaning6').textContent = verb.meaning;
+
+                const grid = document.getElementById('personsGrid');
+                grid.innerHTML = '';
+                personKeys.forEach(pk => {
+                    const row = document.createElement('div');
+                    row.className = 'person-row';
+                    row.innerHTML = `
+                        <span class="person-label">${personLabels[pk]}</span>
+                        <input type="text" class="person-input" data-person="${pk}" placeholder="..." autocomplete="off">
+                        <span class="person-correct-answer"></span>
+                    `;
+                    grid.appendChild(row);
+                });
+
+                const firstInput = grid.querySelector('.person-input');
+                if (firstInput) firstInput.focus();
+
+                feedback6.classList.remove('show', 'correct', 'wrong');
+                checkBtn6.style.display = 'block';
+                nextBtn6.classList.remove('show');
+            }
+
+            updateProgress();
+        }
+
+        function normalize(str) {
+            return str.toLowerCase().trim()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function checkAnswer() {
+            if (hasAnswered) return;
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const q = questions[currentIndex];
+            const correct = q.verb.conjugation[q.person].toLowerCase();
+            hasAnswered = true;
+            answerInput.disabled = true;
+
+            if (userAnswer === correct || normalize(userAnswer) === normalize(correct)) {
+                correctCount++; streak++;
+                answerInput.classList.add('correct');
+                feedback.textContent = 'Rätt!';
+                feedback.className = 'feedback show correct';
+            } else {
+                wrongCount++; streak = 0;
+                answerInput.classList.add('wrong');
+                feedback.textContent = `Fel! Rätt svar: ${q.verb.conjugation[q.person]}`;
+                feedback.className = 'feedback show wrong';
+            }
+            checkBtn.style.display = 'none';
+            nextBtn.classList.add('show');
+            updateStats();
+        }
+
+        function checkAll6() {
+            if (hasAnswered) return;
+            hasAnswered = true;
+            const verb = questions[currentIndex];
+            let allCorrect = true;
+            const inputs = document.querySelectorAll('.person-input');
+
+            inputs.forEach(input => {
+                const person = input.dataset.person;
+                const userAnswer = input.value.trim().toLowerCase();
+                const correctAnswer = verb.conjugation[person].toLowerCase();
+                const correctSpan = input.parentElement.querySelector('.person-correct-answer');
+                input.disabled = true;
+
+                if (userAnswer === correctAnswer || normalize(userAnswer) === normalize(correctAnswer)) {
+                    input.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.classList.add('wrong');
+                    correctSpan.textContent = verb.conjugation[person];
+                    wrongCount++;
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                streak++;
+                feedback6.textContent = 'Alla rätt!';
+                feedback6.className = 'feedback show correct';
+            } else {
+                streak = 0;
+                feedback6.textContent = 'Några fel — se korrigeringar';
+                feedback6.className = 'feedback show wrong';
+            }
+
+            checkBtn6.style.display = 'none';
+            nextBtn6.classList.add('show');
+            updateStats();
+        }
+
+        function nextQuestion() { currentIndex++; displayQuestion(); }
+
+        function updateProgress() {
+            const progress = (currentIndex / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('exerciseProgressText').textContent = `${currentIndex + 1}/${questions.length}`;
+        }
+
+        function updateStats() {
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('wrongCount').textContent = wrongCount;
+            document.getElementById('currentStreak').textContent = streak;
+        }
+
+        function showResults() {
+            document.getElementById('finalCorrect').textContent = correctCount;
+            document.getElementById('finalWrong').textContent = wrongCount;
+            const total = correctCount + wrongCount;
+            const percent = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            document.getElementById('finalPercent').textContent = `${percent}%`;
+            randomModeArea.style.display = 'none';
+            all6ModeArea.style.display = 'none';
+            resultsScreen.classList.add('show');
+            saveProgress(percent);
+        }
+
+        function saveProgress(percent) {
+            const saved = JSON.parse(localStorage.getItem('spanishVerbTrainer') || '{}');
+            saved.totalCorrect = (saved.totalCorrect || 0) + correctCount;
+            saved.totalWrong = (saved.totalWrong || 0) + wrongCount;
+            saved.sessions = (saved.sessions || 0) + 1;
+            if (currentCategory && currentCategory !== 'all') {
+                saved.categoryProgress = saved.categoryProgress || {};
+                saved.categoryProgress[currentCategory] = Math.max(saved.categoryProgress[currentCategory] || 0, percent);
+            }
+            localStorage.setItem('spanishVerbTrainer', JSON.stringify(saved));
+        }
+
+        function backToCategories() {
+            exerciseView.classList.remove('active');
+            categoryView.classList.remove('hidden');
+            resultsScreen.classList.remove('show');
+            updateOverviewStats();
+            categoriesList.innerHTML = '';
+            initCategories();
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+        }
+
+        // Event listeners
+        document.getElementById('practiceAllBtn').addEventListener('click', () => startExercise('all'));
+        document.getElementById('randomBtn').addEventListener('click', () => startExercise('all'));
+        document.getElementById('backToCategories').addEventListener('click', backToCategories);
+        document.getElementById('backFromResults').addEventListener('click', backToCategories);
+        document.getElementById('restartBtn').addEventListener('click', () => { resultsScreen.classList.remove('show'); startExercise(currentCategory); });
+        document.getElementById('modeRandom').addEventListener('click', () => setMode('random'));
+        document.getElementById('modeAll6').addEventListener('click', () => setMode('all6'));
+        checkBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+        checkBtn6.addEventListener('click', checkAll6);
+        nextBtn6.addEventListener('click', nextQuestion);
+        answerInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { hasAnswered ? nextQuestion() : checkAnswer(); }
+        });
+
+        // Tab between inputs in all6 mode and Enter to check
+        document.getElementById('personsGrid').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (hasAnswered) {
+                    nextQuestion();
+                } else {
+                    checkAll6();
+                }
+            }
+        });
+
+        initCategories();
+    </script>
+</body>
+</html>

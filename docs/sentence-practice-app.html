@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spanskbert - Meningsbyggare</title>
+    <title>Spanskbert - Meningsträning</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -24,7 +24,7 @@
         header { text-align: center; padding: 20px 0 30px; }
         header h1 {
             font-size: 2.5rem;
-            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            background: linear-gradient(90deg, #1abc9c, #16a085);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text; margin-bottom: 8px;
         }
@@ -32,7 +32,7 @@
         .stats-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
         .stat-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 18px 12px; text-align: center; }
         .stat-value { font-size: 1.8rem; font-weight: bold; }
-        .stat-value.sessions { color: #9b59b6; }
+        .stat-value.sessions { color: #1abc9c; }
         .stat-value.correct { color: #2ecc71; }
         .stat-value.streak { color: #f39c12; }
         .stat-label { font-size: 0.8rem; color: #888; margin-top: 5px; }
@@ -41,7 +41,7 @@
             padding: 18px 20px; border: none; border-radius: 15px;
             font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
         }
-        .main-btn.primary { background: linear-gradient(90deg, #9b59b6, #e91e63); color: #fff; }
+        .main-btn.primary { background: linear-gradient(90deg, #1abc9c, #16a085); color: #fff; }
         .main-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; }
         .main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
         .section-title { font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
@@ -93,34 +93,47 @@
         .stat.streak .stat-value { color: #f39c12; }
         .progress-container { margin-bottom: 25px; }
         .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #9b59b6, #e91e63); border-radius: 3px; transition: width 0.3s; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #1abc9c, #16a085); border-radius: 3px; transition: width 0.3s; }
+        .mode-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
+        .mode-btn {
+            flex: 1; padding: 10px; border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 10px; background: transparent; color: #888;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .mode-btn.active { border-color: #1abc9c; color: #1abc9c; background: rgba(26,188,156,0.1); }
         .question-card {
             background: rgba(255,255,255,0.05); border-radius: 20px;
-            padding: 25px; margin-bottom: 20px; text-align: center;
+            padding: 30px; margin-bottom: 20px; text-align: center;
         }
         .question-label { font-size: 0.85rem; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; }
-        .question-translation { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #fff; }
-        .answer-area {
-            min-height: 60px; border: 2px dashed rgba(255,255,255,0.2);
-            border-radius: 12px; padding: 15px; margin-bottom: 20px;
-            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
-            align-items: center;
+        .question-swedish { font-size: 1.6rem; font-weight: bold; line-height: 1.5; }
+        .input-area { margin-bottom: 15px; }
+        .answer-input {
+            width: 100%; padding: 16px; font-size: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 12px;
+            background: rgba(255,255,255,0.05); color: #fff;
+            text-align: center; outline: none; transition: all 0.3s;
         }
-        .answer-area.correct { border-color: #2ecc71; background: rgba(46, 204, 113, 0.1); }
-        .answer-area.wrong { border-color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
-        .word-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
-        .word-btn {
-            padding: 12px 18px; border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 10px; background: rgba(255,255,255,0.05);
-            color: #fff; font-size: 1rem; cursor: pointer;
-            transition: all 0.2s;
+        .answer-input:focus { border-color: #1abc9c; }
+        .answer-input.correct { border-color: #2ecc71; background: rgba(46, 204, 113, 0.2); }
+        .answer-input.wrong { border-color: #e74c3c; background: rgba(231, 76, 60, 0.2); }
+        .hint-buttons { display: flex; gap: 8px; margin-bottom: 15px; }
+        .hint-btn {
+            flex: 1; padding: 10px 8px; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; background: transparent; color: #888;
+            font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
         }
-        .word-btn:hover:not(.used) { border-color: #9b59b6; background: rgba(155, 89, 182, 0.2); }
-        .word-btn.used { opacity: 0.3; cursor: default; }
-        .word-btn.in-answer { background: linear-gradient(90deg, #9b59b6, #e91e63); border-color: transparent; }
+        .hint-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .hint-btn.used { opacity: 0.5; pointer-events: none; }
+        .hint-display {
+            text-align: center; padding: 12px; border-radius: 10px;
+            margin-bottom: 15px; display: none;
+            background: rgba(26,188,156,0.15); color: #1abc9c;
+        }
+        .hint-display.show { display: block; }
         .check-btn, .next-btn {
             width: 100%; padding: 16px; border: none; border-radius: 12px;
-            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            background: linear-gradient(90deg, #1abc9c, #16a085);
             color: #fff; font-size: 1rem; font-weight: 600;
             cursor: pointer; transition: all 0.3s;
         }
@@ -131,7 +144,8 @@
         .feedback.show { display: block; }
         .feedback.correct { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
         .feedback.wrong { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
-        .correct-answer { font-size: 0.9rem; color: #888; margin-top: 10px; }
+        .keyboard-hints { text-align: center; color: #555; font-size: 0.8rem; margin-top: 15px; }
+        .keyboard-hints kbd { background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 4px; margin: 0 2px; }
         .results { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; display: none; }
         .results.show { display: block; }
         .results h2 { font-size: 1.8rem; margin-bottom: 20px; }
@@ -142,24 +156,25 @@
         .restart-btn {
             padding: 16px 40px; border: none; border-radius: 15px;
             font-size: 1rem; cursor: pointer;
-            background: linear-gradient(90deg, #9b59b6, #e91e63);
+            background: linear-gradient(90deg, #1abc9c, #16a085);
             color: #fff; font-weight: 600; margin-top: 15px; transition: all 0.3s;
         }
         .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
         @media (max-width: 500px) {
             .container { padding: 15px; }
             header h1 { font-size: 2rem; }
-            .word-btn { padding: 10px 14px; font-size: 0.9rem; }
+            .question-swedish { font-size: 1.3rem; }
+            .hint-btn { font-size: 0.75rem; padding: 8px 4px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="category-view" id="categoryView">
-            <a href="index.html" class="back-btn"><span>←</span> Huvudmeny</a>
+            <a href="index.html" class="back-btn"><span>&larr;</span> Huvudmeny</a>
             <header>
-                <h1>Meningsbyggare</h1>
-                <p>Sätt orden i rätt ordning</p>
+                <h1>Meningsträning</h1>
+                <p>Översätt meningar från svenska till spanska</p>
             </header>
             <div class="stats-overview">
                 <div class="stat-card"><div class="stat-value sessions" id="totalSessions">0</div><div class="stat-label">Övningar</div></div>
@@ -175,7 +190,7 @@
         </div>
 
         <div class="exercise-view" id="exerciseView">
-            <button class="back-btn" id="backToCategories"><span>←</span> Tillbaka</button>
+            <button class="back-btn" id="backToCategories"><span>&larr;</span> Tillbaka</button>
             <div class="exercise-header">
                 <div class="exercise-title" id="exerciseTitle">Kategori</div>
                 <div class="exercise-progress-text" id="exerciseProgressText">1/10</div>
@@ -185,19 +200,30 @@
                 <div class="stat wrong"><div class="stat-value" id="wrongCount">0</div><div class="stat-label">Fel</div></div>
                 <div class="stat streak"><div class="stat-value" id="currentStreak">0</div><div class="stat-label">Streak</div></div>
             </div>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="lenient" id="modeLenient">Snäll (utan accenter)</button>
+                <button class="mode-btn" data-mode="strict" id="modeStrict">Strikt (med accenter)</button>
+            </div>
             <div class="progress-container">
                 <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
             </div>
             <div class="question-card">
-                <div class="question-label">Bygg meningen</div>
-                <div class="question-translation" id="questionTranslation">Svensk översättning</div>
+                <div class="question-label">Översätt till spanska</div>
+                <div class="question-swedish" id="questionSwedish">Hej!</div>
             </div>
-            <div class="answer-area" id="answerArea"></div>
-            <div class="word-buttons" id="wordButtons"></div>
+            <div class="input-area">
+                <input type="text" class="answer-input" id="answerInput" placeholder="Skriv på spanska..." autocomplete="off">
+            </div>
+            <div class="hint-buttons">
+                <button class="hint-btn" id="hint1Btn">Första ordet</button>
+                <button class="hint-btn" id="hint2Btn">Ordbank</button>
+                <button class="hint-btn" id="hint3Btn">Visa svar</button>
+            </div>
+            <div class="hint-display" id="hintDisplay"></div>
             <div class="feedback" id="feedback"></div>
-            <div class="correct-answer" id="correctAnswer"></div>
             <button class="check-btn" id="checkBtn">Kolla svar</button>
-            <button class="next-btn" id="nextBtn">Nästa →</button>
+            <button class="next-btn" id="nextBtn">Nästa &rarr;</button>
+            <div class="keyboard-hints"><kbd>Enter</kbd> Kolla/Nästa</div>
             <div class="results" id="resultsScreen">
                 <h2>Bra jobbat!</h2>
                 <div class="results-stats">
@@ -206,7 +232,7 @@
                     <div class="results-stat"><div class="results-stat-value" id="finalPercent" style="color: #f39c12;">0%</div><div class="results-stat-label">Resultat</div></div>
                 </div>
                 <button class="restart-btn" id="restartBtn">Kör igen!</button>
-                <br><button class="back-btn" id="backFromResults" style="margin-top: 15px;">← Välj annan kategori</button>
+                <br><button class="back-btn" id="backFromResults" style="margin-top: 15px;">&larr; Välj annan kategori</button>
             </div>
         </div>
     </div>
@@ -216,131 +242,91 @@
             "saludos": {
                 "name": "Hälsningar", "icon": "👋", "color": "#f39c12",
                 "items": [
-                    {"sentence": "¡Buenos días!", "translation": "God morgon!"},
-                    {"sentence": "¿Cómo estás?", "translation": "Hur mår du?"},
-                    {"sentence": "Mucho gusto", "translation": "Trevligt att träffas"},
-                    {"sentence": "Hasta luego", "translation": "Vi ses!"},
-                    {"sentence": "Bien, gracias", "translation": "Bra, tack"}
+                    {"sv": "Hej!", "es": "¡Hola!", "alternatives": ["Hola"]},
+                    {"sv": "Hur är det?", "es": "¿Qué tal?", "alternatives": ["Que tal"]},
+                    {"sv": "Hur mår du?", "es": "¿Cómo estás?", "alternatives": ["Como estas"]},
+                    {"sv": "God morgon!", "es": "¡Buenos días!", "alternatives": ["Buenos dias", "Buenos días"]},
+                    {"sv": "God kväll!", "es": "¡Buenas noches!", "alternatives": ["Buenas noches"]},
+                    {"sv": "Mycket bra, tack", "es": "Muy bien, gracias", "alternatives": []},
+                    {"sv": "Vi ses!", "es": "¡Hasta luego!", "alternatives": ["Hasta luego"]},
+                    {"sv": "Hejdå", "es": "Adiós", "alternatives": ["Adios"]},
+                    {"sv": "Trevligt att träffas", "es": "Mucho gusto", "alternatives": ["Encantado", "Encantada"]}
                 ]
             },
             "presentacion": {
                 "name": "Presentera dig", "icon": "🗣️", "color": "#e67e22",
                 "items": [
-                    {"sentence": "Me llamo Johan", "translation": "Jag heter Johan"},
-                    {"sentence": "Soy de Suecia", "translation": "Jag är från Sverige"},
-                    {"sentence": "Tengo treinta años", "translation": "Jag är 30 år"},
-                    {"sentence": "Vivo en Palma", "translation": "Jag bor i Palma"},
-                    {"sentence": "Soy sueco", "translation": "Jag är svensk"}
+                    {"sv": "Jag heter Johan", "es": "Me llamo Johan", "alternatives": ["Soy Johan"]},
+                    {"sv": "Jag är från Sverige", "es": "Soy de Suecia", "alternatives": []},
+                    {"sv": "Jag är 30 år", "es": "Tengo 30 años", "alternatives": ["Tengo treinta años"]},
+                    {"sv": "Jag bor i Palma", "es": "Vivo en Palma", "alternatives": []},
+                    {"sv": "Var kommer du ifrån?", "es": "¿De dónde eres?", "alternatives": ["De donde eres"]},
+                    {"sv": "Vad heter du?", "es": "¿Cómo te llamas?", "alternatives": ["Como te llamas"]},
+                    {"sv": "Jag är svensk", "es": "Soy sueco", "alternatives": []}
                 ]
             },
             "familia": {
                 "name": "Familjen", "icon": "👨‍👩‍👧", "color": "#9b59b6",
                 "items": [
-                    {"sentence": "Mi padre se llama Pedro", "translation": "Min pappa heter Pedro"},
-                    {"sentence": "Tengo un hermano", "translation": "Jag har en bror"},
-                    {"sentence": "Mi madre es alta", "translation": "Min mamma är lång"},
-                    {"sentence": "Tengo dos hijos", "translation": "Jag har två barn"}
+                    {"sv": "Min pappa heter Pedro", "es": "Mi padre se llama Pedro", "alternatives": []},
+                    {"sv": "Min mamma är María", "es": "Mi madre es María", "alternatives": []},
+                    {"sv": "Jag har en bror", "es": "Tengo un hermano", "alternatives": []},
+                    {"sv": "Jag har en syster", "es": "Tengo una hermana", "alternatives": []},
+                    {"sv": "Min son är 5 år", "es": "Mi hijo tiene 5 años", "alternatives": ["Mi hijo tiene cinco años"]},
+                    {"sv": "Min dotter är lång", "es": "Mi hija es alta", "alternatives": []}
                 ]
             },
             "verbos": {
-                "name": "Verb", "icon": "📝", "color": "#8e44ad",
+                "name": "Verb (grundläggande)", "icon": "📝", "color": "#8e44ad",
                 "items": [
-                    {"sentence": "Hablo español", "translation": "Jag pratar spanska"},
-                    {"sentence": "Trabajo en Barcelona", "translation": "Jag jobbar i Barcelona"},
-                    {"sentence": "Me gusta la música", "translation": "Jag gillar musik"},
-                    {"sentence": "Quiero aprender", "translation": "Jag vill lära mig"},
-                    {"sentence": "Necesito ayuda", "translation": "Jag behöver hjälp"}
+                    {"sv": "Jag är svensk", "es": "Soy sueco", "alternatives": []},
+                    {"sv": "Jag är trött", "es": "Estoy cansado", "alternatives": ["Estoy cansada"]},
+                    {"sv": "Jag har två barn", "es": "Tengo dos hijos", "alternatives": []},
+                    {"sv": "Jag pratar spanska", "es": "Hablo español", "alternatives": []},
+                    {"sv": "Jag jobbar i Barcelona", "es": "Trabajo en Barcelona", "alternatives": []},
+                    {"sv": "Jag gillar musik", "es": "Me gusta la música", "alternatives": ["Me gusta la musica"]},
+                    {"sv": "Jag bor i Spanien", "es": "Vivo en España", "alternatives": ["Vivo en Espana"]},
+                    {"sv": "Jag äter lunch", "es": "Como el almuerzo", "alternatives": ["Almuerzo"]}
                 ]
             },
-            "en_el_medico": {
-                "name": "Hos läkaren", "icon": "🏥", "color": "#e74c3c",
+            "colores": {
+                "name": "Färger", "icon": "🎨", "color": "#2ecc71",
                 "items": [
-                    {"sentence": "Me duele la cabeza", "translation": "Jag har huvudvärk"},
-                    {"sentence": "Tengo fiebre", "translation": "Jag har feber"},
-                    {"sentence": "Necesito una receta", "translation": "Jag behöver ett recept"},
-                    {"sentence": "Me duele la garganta", "translation": "Jag har ont i halsen"},
-                    {"sentence": "Tomo medicamentos", "translation": "Jag tar mediciner"}
+                    {"sv": "Himlen är blå", "es": "El cielo es azul", "alternatives": []},
+                    {"sv": "Gräset är grönt", "es": "La hierba es verde", "alternatives": []},
+                    {"sv": "Solen är gul", "es": "El sol es amarillo", "alternatives": []},
+                    {"sv": "Snön är vit", "es": "La nieve es blanca", "alternatives": []},
+                    {"sv": "Kolet är svart", "es": "El carbón es negro", "alternatives": ["El carbon es negro"]}
                 ]
             },
-            "deportes": {
-                "name": "Sport", "icon": "⚽", "color": "#2ecc71",
+            "emociones": {
+                "name": "Känslor", "icon": "😊", "color": "#e74c3c",
                 "items": [
-                    {"sentence": "Me gusta el fútbol", "translation": "Jag gillar fotboll"},
-                    {"sentence": "Vamos al gimnasio", "translation": "Vi går till gymmet"},
-                    {"sentence": "Me gusta correr", "translation": "Jag gillar att springa"},
-                    {"sentence": "Hay un partido hoy", "translation": "Det är en match idag"},
-                    {"sentence": "Quiero ganar", "translation": "Jag vill vinna"}
+                    {"sv": "Jag är glad", "es": "Estoy contento", "alternatives": ["Estoy contenta"]},
+                    {"sv": "Jag är ledsen", "es": "Estoy triste", "alternatives": []},
+                    {"sv": "Jag är arg", "es": "Estoy enfadado", "alternatives": ["Estoy enfadada"]},
+                    {"sv": "Jag mår bra", "es": "Estoy bien", "alternatives": []},
+                    {"sv": "Jag mår dåligt", "es": "Estoy mal", "alternatives": []},
+                    {"sv": "Jag är sjuk", "es": "Estoy enfermo", "alternatives": ["Estoy enferma"]}
                 ]
             },
-            "el_tiempo": {
-                "name": "Väder", "icon": "🌤️", "color": "#f39c12",
+            "numeros": {
+                "name": "Siffror", "icon": "#️⃣", "color": "#3498db",
                 "items": [
-                    {"sentence": "Hace mucho sol", "translation": "Det är väldigt soligt"},
-                    {"sentence": "Hace mucho frío", "translation": "Det är väldigt kallt"},
-                    {"sentence": "Hace mucho calor", "translation": "Det är väldigt varmt"},
-                    {"sentence": "Llueve mucho hoy", "translation": "Det regnar mycket idag"},
-                    {"sentence": "Hace buen tiempo", "translation": "Det är fint väder"}
+                    {"sv": "Jag är 25 år", "es": "Tengo veinticinco años", "alternatives": ["Tengo 25 años"]},
+                    {"sv": "Det kostar 10 euro", "es": "Cuesta diez euros", "alternatives": ["Cuesta 10 euros"]},
+                    {"sv": "Jag har tre bröder", "es": "Tengo tres hermanos", "alternatives": []},
+                    {"sv": "Det finns två katter", "es": "Hay dos gatos", "alternatives": []},
+                    {"sv": "Klockan är fem", "es": "Son las cinco", "alternatives": []}
                 ]
-            },
-            "comida_y_bebida": {
-                "name": "Mat & dryck", "icon": "🍕", "color": "#e67e22",
-                "items": [
-                    {"sentence": "Quiero agua por favor", "translation": "Jag vill ha vatten tack"},
-                    {"sentence": "Me gusta el pollo", "translation": "Jag gillar kyckling"},
-                    {"sentence": "Un café con leche", "translation": "En kaffe med mjölk"},
-                    {"sentence": "Quiero pan y queso", "translation": "Jag vill ha bröd och ost"},
-                    {"sentence": "Una cerveza por favor", "translation": "En öl tack"}
-                ]
-            },
-            "en_la_escuela": {
-                "name": "I skolan", "icon": "🎓", "color": "#3498db",
-                "items": [
-                    {"sentence": "El examen es difícil", "translation": "Provet är svårt"},
-                    {"sentence": "Necesito un libro", "translation": "Jag behöver en bok"},
-                    {"sentence": "Tengo una pregunta", "translation": "Jag har en fråga"},
-                    {"sentence": "Hago los deberes", "translation": "Jag gör läxorna"},
-                    {"sentence": "La clase es divertida", "translation": "Lektionen är rolig"}
-                ]
-            },
-            "cuerpo": {
-                "name": "Kroppen", "icon": "🦴", "color": "#1abc9c",
-                "items": [
-                    {"sentence": "Me duele la cabeza", "translation": "Jag har ont i huvudet"},
-                    {"sentence": "Me duele el estómago", "translation": "Jag har ont i magen"},
-                    {"sentence": "Me duele la espalda", "translation": "Jag har ont i ryggen"},
-                    {"sentence": "Me duele el brazo", "translation": "Jag har ont i armen"},
-                    {"sentence": "Me duele la pierna", "translation": "Jag har ont i benet"}
-                ]
-            },
-            "ropa": {
-                "name": "Kläder", "icon": "👕", "color": "#e91e63",
-                "items": [
-                    {"sentence": "Necesito una camiseta", "translation": "Jag behöver en t-shirt"},
-                    {"sentence": "Me gustan los zapatos", "translation": "Jag gillar skorna"},
-                    {"sentence": "Llevo una chaqueta", "translation": "Jag har på mig en jacka"},
-                    {"sentence": "Necesito unos pantalones", "translation": "Jag behöver byxor"},
-                    {"sentence": "Me gusta el vestido", "translation": "Jag gillar klänningen"}
-                ]
-            },
-            "profesiones": {
-                "name": "Yrken", "icon": "👩‍💼", "color": "#673ab7",
-                "items": [
-                    {"sentence": "Soy médico", "translation": "Jag är läkare"},
-                    {"sentence": "Quiero ser profesor", "translation": "Jag vill bli lärare"},
-                    {"sentence": "Mi padre es ingeniero", "translation": "Min pappa är ingenjör"},
-                    {"sentence": "El bombero es valiente", "translation": "Brandmannen är modig"},
-                    {"sentence": "El cocinero cocina bien", "translation": "Kocken lagar mat bra"}
-                ]
-            },
-            "animales": {
-                "name": "Djur", "icon": "🐾", "color": "#795548",
-                "items": [
-                    {"sentence": "Tengo un perro", "translation": "Jag har en hund"},
-                    {"sentence": "Mi gato es negro", "translation": "Min katt är svart"},
-                    {"sentence": "El caballo es grande", "translation": "Hästen är stor"},
-                    {"sentence": "El león es fuerte", "translation": "Lejonet är starkt"},
-                    {"sentence": "El elefante es grande", "translation": "Elefanten är stor"}
-                ]
+            }
+        };
+
+        const categoryGroups = {
+            "grundlaggande": {
+                name: "Grundläggande",
+                icon: "📚",
+                categories: ["saludos", "presentacion", "familia", "verbos", "colores", "emociones", "numeros"]
             }
         };
 
@@ -351,32 +337,41 @@
         let streak = 0;
         let currentCategory = null;
         let hasAnswered = false;
-        let selectedWords = [];
-        let currentWords = [];
+        let accentMode = 'lenient';
+        let usedHint3 = false;
 
         const categoryView = document.getElementById('categoryView');
         const exerciseView = document.getElementById('exerciseView');
         const categoriesList = document.getElementById('categoriesList');
-        const answerArea = document.getElementById('answerArea');
-        const wordButtons = document.getElementById('wordButtons');
+        const answerInput = document.getElementById('answerInput');
         const feedback = document.getElementById('feedback');
-        const correctAnswer = document.getElementById('correctAnswer');
         const checkBtn = document.getElementById('checkBtn');
         const nextBtn = document.getElementById('nextBtn');
         const resultsScreen = document.getElementById('resultsScreen');
+        const hintDisplay = document.getElementById('hintDisplay');
 
-        const categoryGroups = {
-            "situationer": {
-                name: "Situationer",
-                icon: "🎯",
-                categories: ["en_el_medico", "deportes", "el_tiempo", "comida_y_bebida", "en_la_escuela"]
-            },
-            "grundlaggande": {
-                name: "Grundläggande",
-                icon: "📚",
-                categories: ["saludos", "presentacion", "familia", "verbos", "cuerpo", "ropa", "profesiones", "animales"]
+        function normalize(str) {
+            return str.toLowerCase().trim()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[¡¿!?.,]/g, '');
+        }
+
+        function strictNormalize(str) {
+            return str.toLowerCase().trim()
+                .replace(/[!?.,]/g, '');
+        }
+
+        function checkMatch(userAnswer, correctAnswer, alternatives) {
+            const allAnswers = [correctAnswer, ...alternatives];
+
+            if (accentMode === 'lenient') {
+                const normalizedUser = normalize(userAnswer);
+                return allAnswers.some(ans => normalize(ans) === normalizedUser);
+            } else {
+                const normalizedUser = strictNormalize(userAnswer);
+                return allAnswers.some(ans => strictNormalize(ans) === normalizedUser);
             }
-        };
+        }
 
         function createCategoryItem(key, categoryProgress) {
             const cat = exerciseData[key];
@@ -395,9 +390,9 @@
         }
 
         function initCategories() {
-            const saved = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
+            const saved = JSON.parse(localStorage.getItem('spanishSentencePractice') || '{}');
             const categoryProgress = saved.categoryProgress || {};
-            const expandedGroups = JSON.parse(localStorage.getItem('spanishSentenceBuilderExpanded') || '[]');
+            const expandedGroups = JSON.parse(localStorage.getItem('spanishSentencePracticeExpanded') || '[]');
 
             Object.keys(categoryGroups).forEach(groupKey => {
                 const group = categoryGroups[groupKey];
@@ -440,11 +435,11 @@
             groupEl.classList.toggle('expanded');
             const expandedGroups = [];
             document.querySelectorAll('.category-group.expanded').forEach(g => expandedGroups.push(g.dataset.group));
-            localStorage.setItem('spanishSentenceBuilderExpanded', JSON.stringify(expandedGroups));
+            localStorage.setItem('spanishSentencePracticeExpanded', JSON.stringify(expandedGroups));
         }
 
         function updateOverviewStats() {
-            const saved = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
+            const saved = JSON.parse(localStorage.getItem('spanishSentencePractice') || '{}');
             document.getElementById('totalSessions').textContent = saved.sessions || 0;
             document.getElementById('totalCorrect').textContent = saved.totalCorrect || 0;
             const total = (saved.totalCorrect || 0) + (saved.totalWrong || 0);
@@ -478,65 +473,58 @@
         function displayQuestion() {
             if (currentIndex >= questions.length) { showResults(); return; }
             hasAnswered = false;
-            selectedWords = [];
+            usedHint3 = false;
             const q = questions[currentIndex];
-            document.getElementById('questionTranslation').textContent = q.translation;
-            currentWords = q.sentence.replace(/[¡¿]/g, '').split(' ');
-            const shuffledWords = shuffle([...currentWords]);
-            answerArea.innerHTML = '';
-            answerArea.className = 'answer-area';
-            wordButtons.innerHTML = '';
-            shuffledWords.forEach((word, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'word-btn';
-                btn.textContent = word;
-                btn.dataset.index = i;
-                btn.addEventListener('click', () => selectWord(btn, word));
-                wordButtons.appendChild(btn);
-            });
+            document.getElementById('questionSwedish').textContent = q.sv;
+            answerInput.value = '';
+            answerInput.className = 'answer-input';
+            answerInput.disabled = false;
+            answerInput.focus();
             feedback.classList.remove('show', 'correct', 'wrong');
-            correctAnswer.textContent = '';
+            hintDisplay.classList.remove('show');
             checkBtn.style.display = 'block';
             nextBtn.classList.remove('show');
+            // Reset hint buttons
+            document.querySelectorAll('.hint-btn').forEach(btn => btn.classList.remove('used'));
             updateProgress();
         }
 
-        function selectWord(btn, word) {
-            if (hasAnswered || btn.classList.contains('used')) return;
+        function showHint(level) {
+            const q = questions[currentIndex];
+            const btn = document.getElementById(`hint${level}Btn`);
             btn.classList.add('used');
-            selectedWords.push(word);
-            const answerBtn = document.createElement('button');
-            answerBtn.className = 'word-btn in-answer';
-            answerBtn.textContent = word;
-            answerBtn.addEventListener('click', () => removeWord(answerBtn, btn, word));
-            answerArea.appendChild(answerBtn);
-        }
 
-        function removeWord(answerBtn, originalBtn, word) {
-            if (hasAnswered) return;
-            answerArea.removeChild(answerBtn);
-            originalBtn.classList.remove('used');
-            selectedWords = selectedWords.filter(w => w !== word || selectedWords.indexOf(word) !== selectedWords.lastIndexOf(word) ? w !== word : false);
-            const idx = selectedWords.indexOf(word);
-            if (idx > -1) selectedWords.splice(idx, 1);
+            if (level === 1) {
+                const firstWord = q.es.replace(/^[¡¿]/, '').split(' ')[0];
+                hintDisplay.textContent = `Första ordet: ${firstWord}...`;
+            } else if (level === 2) {
+                const words = q.es.replace(/[¡¿!?.,]/g, '').split(' ');
+                shuffle(words);
+                hintDisplay.textContent = `Ordbank: ${words.join(' · ')}`;
+            } else if (level === 3) {
+                hintDisplay.textContent = `Svar: ${q.es}`;
+                usedHint3 = true;
+            }
+            hintDisplay.classList.add('show');
         }
 
         function checkAnswer() {
             if (hasAnswered) return;
+            const userAnswer = answerInput.value.trim();
+            const q = questions[currentIndex];
             hasAnswered = true;
-            const userAnswer = selectedWords.join(' ');
-            const correctSentence = currentWords.join(' ');
-            if (userAnswer.toLowerCase() === correctSentence.toLowerCase()) {
+            answerInput.disabled = true;
+
+            if (!usedHint3 && checkMatch(userAnswer, q.es, q.alternatives || [])) {
                 correctCount++; streak++;
-                answerArea.classList.add('correct');
+                answerInput.classList.add('correct');
                 feedback.textContent = 'Rätt!';
                 feedback.className = 'feedback show correct';
             } else {
                 wrongCount++; streak = 0;
-                answerArea.classList.add('wrong');
-                feedback.textContent = 'Fel!';
+                answerInput.classList.add('wrong');
+                feedback.textContent = `Fel! Rätt svar: ${q.es}`;
                 feedback.className = 'feedback show wrong';
-                correctAnswer.textContent = `Rätt svar: ${questions[currentIndex].sentence}`;
             }
             checkBtn.style.display = 'none';
             nextBtn.classList.add('show');
@@ -568,7 +556,7 @@
         }
 
         function saveProgress(percent) {
-            const saved = JSON.parse(localStorage.getItem('spanishSentenceBuilder') || '{}');
+            const saved = JSON.parse(localStorage.getItem('spanishSentencePractice') || '{}');
             saved.totalCorrect = (saved.totalCorrect || 0) + correctCount;
             saved.totalWrong = (saved.totalWrong || 0) + wrongCount;
             saved.sessions = (saved.sessions || 0) + 1;
@@ -576,7 +564,7 @@
                 saved.categoryProgress = saved.categoryProgress || {};
                 saved.categoryProgress[currentCategory] = Math.max(saved.categoryProgress[currentCategory] || 0, percent);
             }
-            localStorage.setItem('spanishSentenceBuilder', JSON.stringify(saved));
+            localStorage.setItem('spanishSentencePractice', JSON.stringify(saved));
         }
 
         function backToCategories() {
@@ -588,13 +576,29 @@
             initCategories();
         }
 
+        function setAccentMode(mode) {
+            accentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+        }
+
+        // Event listeners
         document.getElementById('practiceAllBtn').addEventListener('click', () => startExercise('all'));
         document.getElementById('randomBtn').addEventListener('click', () => startExercise('all'));
         document.getElementById('backToCategories').addEventListener('click', backToCategories);
         document.getElementById('backFromResults').addEventListener('click', backToCategories);
         document.getElementById('restartBtn').addEventListener('click', () => { resultsScreen.classList.remove('show'); startExercise(currentCategory); });
+        document.getElementById('modeLenient').addEventListener('click', () => setAccentMode('lenient'));
+        document.getElementById('modeStrict').addEventListener('click', () => setAccentMode('strict'));
+        document.getElementById('hint1Btn').addEventListener('click', () => showHint(1));
+        document.getElementById('hint2Btn').addEventListener('click', () => showHint(2));
+        document.getElementById('hint3Btn').addEventListener('click', () => showHint(3));
         checkBtn.addEventListener('click', checkAnswer);
         nextBtn.addEventListener('click', nextQuestion);
+        answerInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { hasAnswered ? nextQuestion() : checkAnswer(); }
+        });
         initCategories();
     </script>
 </body>

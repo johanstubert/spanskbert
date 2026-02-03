@@ -210,6 +210,78 @@
                     {"es": "miércoles", "sv": "onsdag"}, {"es": "jueves", "sv": "torsdag"},
                     {"es": "viernes", "sv": "fredag"}, {"es": "sábado", "sv": "lördag"}
                 ]
+            },
+            "en_el_medico": {
+                "name": "Hos läkaren", "icon": "🏥", "color": "#e74c3c",
+                "items": [
+                    {"es": "la cabeza", "sv": "huvudet"}, {"es": "la fiebre", "sv": "feber"},
+                    {"es": "la receta", "sv": "recept"}, {"es": "la tos", "sv": "hosta"},
+                    {"es": "la alergia", "sv": "allergi"}, {"es": "el médico", "sv": "läkaren"}
+                ]
+            },
+            "deportes": {
+                "name": "Sport", "icon": "⚽", "color": "#2ecc71",
+                "items": [
+                    {"es": "el fútbol", "sv": "fotboll"}, {"es": "el tenis", "sv": "tennis"},
+                    {"es": "correr", "sv": "springa"}, {"es": "el gimnasio", "sv": "gymmet"},
+                    {"es": "ganar", "sv": "vinna"}, {"es": "perder", "sv": "förlora"}
+                ]
+            },
+            "el_tiempo": {
+                "name": "Väder", "icon": "🌤️", "color": "#f39c12",
+                "items": [
+                    {"es": "sol", "sv": "sol"}, {"es": "calor", "sv": "varmt"},
+                    {"es": "frío", "sv": "kallt"}, {"es": "llueve", "sv": "regnar"},
+                    {"es": "viento", "sv": "vind"}, {"es": "nublado", "sv": "molnigt"}
+                ]
+            },
+            "comida_y_bebida": {
+                "name": "Mat & dryck", "icon": "🍕", "color": "#e67e22",
+                "items": [
+                    {"es": "el agua", "sv": "vatten"}, {"es": "el pan", "sv": "bröd"},
+                    {"es": "el pollo", "sv": "kyckling"}, {"es": "el queso", "sv": "ost"},
+                    {"es": "el café", "sv": "kaffe"}, {"es": "la leche", "sv": "mjölk"}
+                ]
+            },
+            "en_la_escuela": {
+                "name": "I skolan", "icon": "🎓", "color": "#3498db",
+                "items": [
+                    {"es": "el libro", "sv": "boken"}, {"es": "la clase", "sv": "lektionen"},
+                    {"es": "el examen", "sv": "provet"}, {"es": "la pregunta", "sv": "frågan"},
+                    {"es": "los deberes", "sv": "läxorna"}, {"es": "el profesor", "sv": "läraren"}
+                ]
+            },
+            "cuerpo": {
+                "name": "Kroppen", "icon": "🦴", "color": "#1abc9c",
+                "items": [
+                    {"es": "la cabeza", "sv": "huvudet"}, {"es": "el ojo", "sv": "ögat"},
+                    {"es": "la mano", "sv": "handen"}, {"es": "el pie", "sv": "foten"},
+                    {"es": "el brazo", "sv": "armen"}, {"es": "la pierna", "sv": "benet"}
+                ]
+            },
+            "ropa": {
+                "name": "Kläder", "icon": "👕", "color": "#e91e63",
+                "items": [
+                    {"es": "la camiseta", "sv": "t-shirt"}, {"es": "los pantalones", "sv": "byxor"},
+                    {"es": "los zapatos", "sv": "skor"}, {"es": "la chaqueta", "sv": "jacka"},
+                    {"es": "el vestido", "sv": "klänning"}, {"es": "el sombrero", "sv": "hatt"}
+                ]
+            },
+            "profesiones": {
+                "name": "Yrken", "icon": "👩‍💼", "color": "#673ab7",
+                "items": [
+                    {"es": "el médico", "sv": "läkare"}, {"es": "el profesor", "sv": "lärare"},
+                    {"es": "el cocinero", "sv": "kock"}, {"es": "el policía", "sv": "polis"},
+                    {"es": "el bombero", "sv": "brandman"}, {"es": "el ingeniero", "sv": "ingenjör"}
+                ]
+            },
+            "animales": {
+                "name": "Djur", "icon": "🐾", "color": "#795548",
+                "items": [
+                    {"es": "el perro", "sv": "hund"}, {"es": "el gato", "sv": "katt"},
+                    {"es": "el caballo", "sv": "häst"}, {"es": "el pájaro", "sv": "fågel"},
+                    {"es": "el león", "sv": "lejon"}, {"es": "el elefante", "sv": "elefant"}
+                ]
             }
         };
 
@@ -230,10 +302,15 @@
         const resultsScreen = document.getElementById('resultsScreen');
 
         const categoryGroups = {
+            "situationer": {
+                name: "Situationer",
+                icon: "🎯",
+                categories: ["en_el_medico", "deportes", "el_tiempo", "comida_y_bebida", "en_la_escuela"]
+            },
             "grundlaggande": {
                 name: "Grundläggande",
                 icon: "📚",
-                categories: ["saludos", "numeros", "familia", "colores", "dias_semana"]
+                categories: ["saludos", "numeros", "familia", "colores", "dias_semana", "cuerpo", "ropa", "profesiones", "animales"]
             }
         };
 
